@@ -33,6 +33,8 @@ namespace VetClinicACorreia.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddTransient<SeedDb>();
+            services.AddScoped<IDoctorRepository, DoctorRepository>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

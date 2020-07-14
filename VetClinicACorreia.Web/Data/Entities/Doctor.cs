@@ -2,7 +2,7 @@
 
 namespace VetClinicACorreia.Web.Data.Entities
 {
-    public class Doctor
+    public class Doctor : IEntity
     {
 
         public int Id { get; set; }
@@ -11,6 +11,7 @@ namespace VetClinicACorreia.Web.Data.Entities
         [MaxLength(50, ErrorMessage = "The field {0} only can contains {1} characters lenght")]
         [Required]
         public string Name { get; set; }
+
 
         [Display(Name = "Profissional Certificate")]
         public string ProfissionalCertificate { get; set; }
@@ -34,6 +35,7 @@ namespace VetClinicACorreia.Web.Data.Entities
 
         [Display(Name = "Is Available ?")]
         public bool IsAvailable { get; set; }
+
 
         [Display(Name = "Doctor's Office")]
         public string DoctorsOffice { get; set; }
