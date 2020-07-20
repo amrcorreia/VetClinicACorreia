@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetClinicACorreia.Web.Data;
 using VetClinicACorreia.Web.Data.Entities;
+using VetClinicACorreia.Web.Helpers;
 
 namespace VetClinicACorreia.Web.Controllers
 {
     public class DoctorsController : Controller
     {
         private readonly IDoctorRepository _doctorRepository;
+        private readonly IUserHelper _userHelper;
 
-        public DoctorsController(IDoctorRepository doctorRepository)
+        public DoctorsController(IDoctorRepository doctorRepository, IUserHelper userHelper)
         {
             _doctorRepository = doctorRepository;
+            _userHelper = userHelper;
         }
 
         // GET: Doctors
@@ -57,7 +60,7 @@ namespace VetClinicACorreia.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-
+                doctor.User = await _userHelper.GetUserByEmailAsync("correiandreiamr@gmail.com");
                 await _doctorRepository.CreateAsync(doctor);
                 return RedirectToAction(nameof(Index));
             }
@@ -91,6 +94,7 @@ namespace VetClinicACorreia.Web.Controllers
             {
                 try
                 {
+                    doctor.User = await _userHelper.GetUserByEmailAsync("correiandreiamr@gmail.com");
                     await _doctorRepository.UpdateAsync(doctor);
                 }
                 catch (DbUpdateConcurrencyException)

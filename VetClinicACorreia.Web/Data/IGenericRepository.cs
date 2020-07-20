@@ -9,14 +9,14 @@ namespace VetClinicACorreia.Web.Data
     {
         IQueryable<T> GetAll();
 
-        Task<T> GetByIdAsync(int id); //vai buscar por id
+        Task<T> GetByIdAsync(int id); //get entity by id
 
-        Task CreateAsync(T entity); //criar uma entidade nova
+        Task CreateAsync(T entity); //create new entity
 
-        Task UpdateAsync(T entity); //update a uma entidade
+        Task UpdateAsync(T entity); //update entity
 
-        Task DeleteAsync(T entity); //apaga uma entidade
+        Task DeleteAsync(T entity); //delete entity
 
-        Task<bool> ExistsAsync(int id); //ver se existe
+        Task<bool> ExistsAsync(int id); //check if exists
     }
 }

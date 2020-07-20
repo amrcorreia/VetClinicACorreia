@@ -43,5 +43,8 @@ namespace VetClinicACorreia.Web.Data.Entities
 
         public string Observations { get; set; }
 
+
+        public User User { get; set; }
+
     }
 }
