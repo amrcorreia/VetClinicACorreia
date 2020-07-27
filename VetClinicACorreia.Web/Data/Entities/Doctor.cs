@@ -17,6 +17,10 @@ namespace VetClinicACorreia.Web.Data.Entities
         public string ProfissionalCertificate { get; set; }
 
 
+        [Display(Name = "Image")]
+        public string ImageUrl { get; set; }
+
+
         public string Speciality { get; set; }
 
 

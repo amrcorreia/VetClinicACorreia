@@ -8,6 +8,6 @@ namespace VetClinicACorreia.Web.Data
 {
     public interface IDoctorRepository : IGenericRepository<Doctor>
     {
-
+        
     }
 }

@@ -1,5 +1,4 @@
 ﻿@model VetClinicACorreia.Web.Data.Entities.Doctor
-
 @{
     ViewData["Title"] = "Delete";
 }
@@ -26,6 +25,12 @@
         <dt>
             @Html.DisplayNameFor(model => model.Speciality)
         </dt>
+        <dd>
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src=" @Url.Content(Model.ImageUrl)" alt="Image" style="width:100px;height:150px;max-height:100%;height:auto" />
+            }
+        </dd>
         <dd>
             @Html.DisplayFor(model => model.Speciality)
         </dd>
