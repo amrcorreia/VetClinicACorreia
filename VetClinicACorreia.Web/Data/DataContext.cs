@@ -8,6 +8,11 @@ namespace VetClinicACorreia.Web.Data
     {
         public DbSet<Doctor> Doctors { get; set; }
 
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Pet> Pets { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }

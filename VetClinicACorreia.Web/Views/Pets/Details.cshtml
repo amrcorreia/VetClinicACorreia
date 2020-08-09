@@ -1,0 +1,169 @@
+﻿@model VetClinicACorreia.Web.Data.Entities.Pet
+
+@{
+    ViewData["Title"] = "Details";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AdminLTE 3 | General Form Elements</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+</head>
+<body class="hold-transition sidebar-mini">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- left column -->
+                    <div class="col-md-12">
+                        <!-- jquery validation -->
+                        <div class="card card-info" style="margin-top:10px">
+                            <div class="card-header">
+                                <h3 class="card-title">Doctor Details</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <form asp-action="Edit" enctype="multipart/form-data">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="hidden" asp-for="Id" />
+                                @*<input type="hidden" asp-for="ImageUrl" />*@
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <!-- text input -->
+                                                <div class="form-group">
+                                                    <dt>
+                                                        @Html.DisplayNameFor(model => model.Name)
+                                                    </dt>
+                                                    <dd>
+                                                        @Html.DisplayFor(model => model.Name)
+                                                    </dd>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <dt>
+                                                        @Html.DisplayNameFor(model => model.Chip)
+                                                    </dt>
+                                                    <dd>
+                                                        @Html.DisplayFor(model => model.Chip)
+                                                    </dd>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <!-- text input -->
+                                                <div class="form-group">
+                                                    <dt>
+                                                        @Html.DisplayNameFor(model => model.ChipDate)
+                                                    </dt>
+                                                    <dd>
+                                                        @Html.DisplayFor(model => model.ChipDate)
+                                                    </dd>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <dt>
+                                                        @Html.DisplayNameFor(model => model.Specie)
+                                                    </dt>
+                                                    <dd>
+                                                        @Html.DisplayFor(model => model.Specie)
+                                                    </dd>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="form-group">
+                                                    <dt>
+                                                        @Html.DisplayNameFor(model => model.Sterilized)
+                                                    </dt>
+                                                    <dd>
+                                                        @Html.DisplayFor(model => model.Sterilized)
+                                                    </dd>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <!-- text input -->
+                                                <div class="form-group">
+                                                    @*<dt>
+                                                        @Html.DisplayNameFor(model => model.ImageUrl)
+                                                    </dt>
+                                                    <dd>
+                                                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                                        {
+                                                            <img src=" @Url.Content(Model.ImageUrl)" alt="Image" style="width:100px;height:150px;max-height:100%;height:auto" />
+                                                        }
+                                                    </dd>*@
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <dt>
+                                                        @Html.DisplayNameFor(model => model.BirthDate)
+                                                    </dt>
+                                                    <dd>
+                                                        @Html.DisplayFor(model => model.BirthDate)
+                                                    </dd>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <!-- text input -->
+                                                <div class="form-group">
+                                                    <dt>
+                                                        @Html.DisplayNameFor(model => model.Observations)
+                                                    </dt>
+                                                    <dd>
+                                                        @Html.DisplayFor(model => model.Observations)
+                                                    </dd>
+                                                </div>
+                                            
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                                        <a asp-action="Index" class="btn btn-success">Back to List</a>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!--/.col (left) -->
+                    <!-- right column -->
+                    <div class="col-md-6">
+
+                    </div>
+                    <!--/.col (right) -->
+                </div>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+
+        </section>
+</body>
+</html>
+
+
+

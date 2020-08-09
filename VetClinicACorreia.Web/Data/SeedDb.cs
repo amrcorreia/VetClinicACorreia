@@ -57,8 +57,16 @@ namespace VetClinicACorreia.Web.Data
             _context.Doctors.Add(new Doctor
             {
                 Name = name,
+                ProfissionalCertificate = "Lalala",
+                ImageUrl = "image",
                 Speciality = "Dermatologista",
+                TIN = _random.Next(10000000).ToString(),
+                Mobile = _random.Next(10000000).ToString(),
+                Email = "xpto@youvet.com",
+                WorkingSchedule = "Morning",
                 IsAvailable = false,
+                DoctorsOffice = "1",
+                Observations = "Welcome to App YourVet",
                 User = user
             });
         }

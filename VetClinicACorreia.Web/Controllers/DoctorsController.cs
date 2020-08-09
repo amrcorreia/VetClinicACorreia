@@ -98,8 +98,14 @@ namespace VetClinicACorreia.Web.Controllers
                 ImageUrl = path,
                 IsAvailable = view.IsAvailable,
                 Name = view.Name,
+                Speciality = view.Speciality,
+                ProfissionalCertificate = view.ProfissionalCertificate,
+                TIN = view.TIN,
                 Mobile = view.Mobile,
                 Email = view.Email,
+                WorkingSchedule = view.WorkingSchedule,
+                DoctorsOffice = view.DoctorsOffice,
+                Observations = view.Observations,
                 User = view.User
             };
         }
@@ -131,8 +137,14 @@ namespace VetClinicACorreia.Web.Controllers
                 ImageUrl = doctor.ImageUrl,
                 IsAvailable = doctor.IsAvailable,
                 Name = doctor.Name,
+                Speciality = doctor.Speciality,
+                ProfissionalCertificate = doctor.ProfissionalCertificate,
+                TIN = doctor.TIN,
                 Mobile = doctor.Mobile,
                 Email = doctor.Email,
+                WorkingSchedule = doctor.WorkingSchedule,
+                DoctorsOffice = doctor.DoctorsOffice,
+                Observations = doctor.Observations,
                 User = doctor.User
             };
         }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 
 namespace VetClinicACorreia.Web.Data.Entities
 {
@@ -12,7 +13,6 @@ namespace VetClinicACorreia.Web.Data.Entities
         [Required]
         public string Name { get; set; }
 
-
         [Display(Name = "Profissional Certificate")]
         public string ProfissionalCertificate { get; set; }
 
@@ -20,10 +20,11 @@ namespace VetClinicACorreia.Web.Data.Entities
         [Display(Name = "Image")]
         public string ImageUrl { get; set; }
 
-
+        [Required]
         public string Speciality { get; set; }
 
-
+        [MaxLength(9, ErrorMessage = "The field {0} only can contains {1} characters lenght")]
+        [MinLength(9, ErrorMessage = "The field {0} have to contains {1} characters lenght")]
         public string TIN { get; set; }
 
 
