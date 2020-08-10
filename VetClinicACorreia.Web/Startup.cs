@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VetClinicACorreia.Web.Data;
 using VetClinicACorreia.Web.Data.Entities;
+using VetClinicACorreia.Web.Data.Repositories;
 using VetClinicACorreia.Web.Helpers;
 
 namespace VetClinicACorreia.Web
@@ -40,17 +41,23 @@ namespace VetClinicACorreia.Web
             {
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             });
-            
+
+
+            services.AddTransient<SeedDb>();
+            services.AddScoped<IUserHelper, UserHelper>();
+            services.AddScoped<IImageHelper, ImageHelper>();
+            services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddScoped<IDoctorRepository, DoctorRepository>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IPetRepository, PetRepository>();
+            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-            services.AddTransient<SeedDb>();
-            services.AddScoped<IUserHelper, UserHelper>();
-            services.AddScoped<IDoctorRepository, DoctorRepository>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -70,6 +77,7 @@ namespace VetClinicACorreia.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>

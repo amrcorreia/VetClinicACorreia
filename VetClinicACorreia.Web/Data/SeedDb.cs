@@ -50,6 +50,51 @@ namespace VetClinicACorreia.Web.Data
                 this.AddDoctor("Castro de Andrade", user);
                 await _context.SaveChangesAsync();
             }
+
+            if (!_context.Customers.Any())
+            {
+                this.AddCustomer("Ana Oliveira");
+                this.AddCustomer("Carlos Vasconcelos");
+                this.AddCustomer("Pedro Vigo");
+                await _context.SaveChangesAsync();
+            }
+
+            if (!_context.Pets.Any())
+            {
+                this.AddPet("Boby");
+                this.AddPet("Max");
+                this.AddPet("Lacie");
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private void AddPet(string name)
+        {
+            _context.Pets.Add(new Pet
+            {
+                Name = name,
+                Chip = _random.Next(10000000).ToString(),
+                ChipDate = DateTime.Today,
+                ImageUrl = "image",
+                Specie = "Boxer",
+                Sterilized = false,
+                BirthDate = DateTime.Today,
+                Observations = "Welcome to App YourVet"
+                //Animals = pet falta associar o pet
+            });
+        }
+
+        private void AddCustomer(string name)
+        {
+            _context.Customers.Add(new Customer
+            {
+                Name = name,
+                TIN = _random.Next(10000000).ToString(),
+                Mobile = _random.Next(10000000).ToString(),
+                Email = "xpto@gmail.com",
+                Observations = "Welcome to App YourVet!!"
+                //Animals = pet falta associar o pet
+            });
         }
 
         private void AddDoctor(string name, User user)
@@ -62,7 +107,7 @@ namespace VetClinicACorreia.Web.Data
                 Speciality = "Dermatologista",
                 TIN = _random.Next(10000000).ToString(),
                 Mobile = _random.Next(10000000).ToString(),
-                Email = "xpto@youvet.com",
+                Email = "xpto@yourvet.com",
                 WorkingSchedule = "Morning",
                 IsAvailable = false,
                 DoctorsOffice = "1",

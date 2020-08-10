@@ -1,4 +1,4 @@
-﻿@model VetClinicACorreia.Web.Data.Entities.Pet
+﻿@model VetClinicACorreia.Web.Models.PetViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -92,12 +92,12 @@
                                             <div class="col-sm-6">
                                                 <!-- text input -->
                                                 <div class="form-group">
-                                                    <label asp-for="ImageUrl" class="control-label">Image</label>
+                                                    <label asp-for="ImageFile" class="control-label">Image</label>
                                                     <div class="input-group">
                                                         <div class="custom-file">
-                                                            <label asp-for="ImageUrl" class="custom-file-label" for="InputFile">Choose file</label>
-                                                            <input asp-for="ImageUrl" type="file" class="custom-file-input" id="exampleInputFile">
-                                                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                                                            <label asp-for="ImageFile" class="custom-file-label" for="InputFile">Choose file</label>
+                                                            <input asp-for="ImageFile" type="file" class="custom-file-input" id="exampleInputFile">
+                                                            <span asp-validation-for="ImageFile" class="text-danger"></span>
                                                         </div>
                                                     </div>
                                                 </div>

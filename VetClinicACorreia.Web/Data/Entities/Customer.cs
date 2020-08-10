@@ -28,6 +28,9 @@ namespace VetClinicACorreia.Web.Data.Entities
         public string Observations { get; set; }
 
 
-        public List<Pet> Animals { get; set; } = new List<Pet>();
+        public List<Pet> Pets { get; set; } = new List<Pet>();
+
+
+        //public User User { get; set; }
     }
 }

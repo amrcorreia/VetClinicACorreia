@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\Doctors\" />
+    <Folder Include="wwwroot\images\Pets\" />
   </ItemGroup>
 
 </Project>

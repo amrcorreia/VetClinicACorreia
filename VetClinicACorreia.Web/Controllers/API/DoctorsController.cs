@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VetClinicACorreia.Web.Data;
+using VetClinicACorreia.Web.Data.Repositories;
 
 namespace VetClinicACorreia.Web.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DoctorsController : Controller
     {
         private readonly IDoctorRepository _doctorRepository;
@@ -21,7 +23,7 @@ namespace VetClinicACorreia.Web.Controllers.API
 
         public IActionResult GetDoctors()
         {
-            return Ok(_doctorRepository.GetAll());
+            return Ok(_doctorRepository.GetAllWithUsers());
         }
     }
 }

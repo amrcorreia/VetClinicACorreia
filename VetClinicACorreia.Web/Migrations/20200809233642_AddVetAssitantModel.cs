@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace VetClinicACorreia.Web.Migrations
 {
-    public partial class AddCustomerPetAppointmentModels : Migration
+    public partial class AddVetAssitantModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -41,29 +41,12 @@ namespace VetClinicACorreia.Web.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true)
+                    FirstName = table.Column<string>(maxLength: 50, nullable: true),
+                    LastName = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Customers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 50, nullable: false),
-                    TIN = table.Column<string>(nullable: true),
-                    Mobile = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true),
-                    Observations = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,13 +156,37 @@ namespace VetClinicACorreia.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    TIN = table.Column<string>(nullable: true),
+                    Mobile = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    Observations = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customers_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Doctors",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
-                    ProfissionalCertificate = table.Column<string>(nullable: true),
+                    ProfissionalLicence = table.Column<string>(nullable: true),
                     ImageUrl = table.Column<string>(nullable: true),
                     Speciality = table.Column<string>(nullable: false),
                     TIN = table.Column<string>(maxLength: 9, nullable: true),
@@ -211,6 +218,7 @@ namespace VetClinicACorreia.Web.Migrations
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     Chip = table.Column<string>(nullable: true),
                     ChipDate = table.Column<DateTime>(nullable: false),
+                    ImageUrl = table.Column<string>(nullable: true),
                     Specie = table.Column<string>(nullable: true),
                     Sterilized = table.Column<bool>(nullable: false),
                     BirthDate = table.Column<DateTime>(nullable: false),
@@ -235,10 +243,10 @@ namespace VetClinicACorreia.Web.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Description = table.Column<string>(nullable: true),
-                    SelectedDoctorId = table.Column<int>(nullable: true),
+                    DoctorIdId = table.Column<int>(nullable: true),
                     AppointmentDate = table.Column<DateTime>(nullable: false),
-                    CustomerNameId = table.Column<int>(nullable: true),
-                    PetNameId = table.Column<int>(nullable: true),
+                    CustomerIdId = table.Column<int>(nullable: true),
+                    PetIdId = table.Column<int>(nullable: true),
                     AppointmentObservations = table.Column<string>(nullable: true),
                     AppointmentHour = table.Column<string>(nullable: true)
                 },
@@ -246,39 +254,39 @@ namespace VetClinicACorreia.Web.Migrations
                 {
                     table.PrimaryKey("PK_Appointments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Appointments_Customers_CustomerNameId",
-                        column: x => x.CustomerNameId,
+                        name: "FK_Appointments_Customers_CustomerIdId",
+                        column: x => x.CustomerIdId,
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Appointments_Pets_PetNameId",
-                        column: x => x.PetNameId,
-                        principalTable: "Pets",
+                        name: "FK_Appointments_Doctors_DoctorIdId",
+                        column: x => x.DoctorIdId,
+                        principalTable: "Doctors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Appointments_Doctors_SelectedDoctorId",
-                        column: x => x.SelectedDoctorId,
-                        principalTable: "Doctors",
+                        name: "FK_Appointments_Pets_PetIdId",
+                        column: x => x.PetIdId,
+                        principalTable: "Pets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_CustomerNameId",
+                name: "IX_Appointments_CustomerIdId",
                 table: "Appointments",
-                column: "CustomerNameId");
+                column: "CustomerIdId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_PetNameId",
+                name: "IX_Appointments_DoctorIdId",
                 table: "Appointments",
-                column: "PetNameId");
+                column: "DoctorIdId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_SelectedDoctorId",
+                name: "IX_Appointments_PetIdId",
                 table: "Appointments",
-                column: "SelectedDoctorId");
+                column: "PetIdId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -320,6 +328,11 @@ namespace VetClinicACorreia.Web.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Customers_UserId",
+                table: "Customers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Doctors_UserId",
                 table: "Doctors",
                 column: "UserId");
@@ -351,10 +364,10 @@ namespace VetClinicACorreia.Web.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Pets");
+                name: "Doctors");
 
             migrationBuilder.DropTable(
-                name: "Doctors");
+                name: "Pets");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

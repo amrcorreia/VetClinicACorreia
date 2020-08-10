@@ -1,4 +1,4 @@
-﻿@model VetClinicACorreia.Web.Data.Entities.Pet
+﻿@model VetClinicACorreia.Web.Models.PetViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -41,6 +41,7 @@
                             <form asp-action="Edit" enctype="multipart/form-data">
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <input type="hidden" asp-for="Id" />
+                                <input type="hidden" asp-for="ImageUrl" />
                                 @*<input type="hidden" asp-for="ImageUrl" />*@
                                 <div class="card-body">
                                     <div class="form-group">
@@ -93,16 +94,16 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <!-- text input -->
-                                                @*<div class="form-group">
-                                                    <label asp-for="ImageUrl" class="control-label">Image</label>
+                                                <div class="form-group">
+                                                    <label asp-for="ImageFile" class="control-label">Image</label>
                                                     <div class="input-group">
                                                         <div class="custom-file">
-                                                            <label asp-for="ImageUrl" class="custom-file-label" for="InputFile">Choose file</label>
-                                                            <input asp-for="ImageUrl" type="file" class="custom-file-input" id="exampleInputFile">
-                                                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                                                            <label asp-for="ImageFile" class="custom-file-label" for="InputFile">Choose file</label>
+                                                            <input asp-for="ImageFile" type="file" class="custom-file-input" id="exampleInputFile">
+                                                            <span asp-validation-for="ImageFile" class="text-danger"></span>
                                                         </div>
                                                     </div>
-                                                </div>*@
+                                                </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
@@ -121,14 +122,14 @@
                                                     <span asp-validation-for="Observations" class="text-danger"></span>
                                                 </div>
                                             </div>
-                                            
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="submit" value="Save" class="btn btn-primary" />
-                                        <a asp-action="Index" class="btn btn-success">Back to List</a>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="submit" value="Save" class="btn btn-primary" />
+                                            <a asp-action="Index" class="btn btn-success">Back to List</a>
+                                        </div>
                                     </div>
                                 </div>
-                                    </div>
                             </form>
 
                         </div>

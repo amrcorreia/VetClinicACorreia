@@ -10,8 +10,8 @@ using VetClinicACorreia.Web.Data;
 namespace VetClinicACorreia.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200808220638_AddCustomerPetAppointmentModels")]
-    partial class AddCustomerPetAppointmentModels
+    [Migration("20200809233642_AddVetAssitantModel")]
+    partial class AddVetAssitantModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -143,21 +143,21 @@ namespace VetClinicACorreia.Web.Migrations
 
                     b.Property<string>("AppointmentObservations");
 
-                    b.Property<int?>("CustomerNameId");
+                    b.Property<int?>("CustomerIdId");
 
                     b.Property<string>("Description");
 
-                    b.Property<int?>("PetNameId");
+                    b.Property<int?>("DoctorIdId");
 
-                    b.Property<int?>("SelectedDoctorId");
+                    b.Property<int?>("PetIdId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerNameId");
+                    b.HasIndex("CustomerIdId");
 
-                    b.HasIndex("PetNameId");
+                    b.HasIndex("DoctorIdId");
 
-                    b.HasIndex("SelectedDoctorId");
+                    b.HasIndex("PetIdId");
 
                     b.ToTable("Appointments");
                 });
@@ -180,7 +180,11 @@ namespace VetClinicACorreia.Web.Migrations
 
                     b.Property<string>("TIN");
 
+                    b.Property<string>("UserId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Customers");
                 });
@@ -207,7 +211,7 @@ namespace VetClinicACorreia.Web.Migrations
 
                     b.Property<string>("Observations");
 
-                    b.Property<string>("ProfissionalCertificate");
+                    b.Property<string>("ProfissionalLicence");
 
                     b.Property<string>("Speciality")
                         .IsRequired();
@@ -239,6 +243,8 @@ namespace VetClinicACorreia.Web.Migrations
                     b.Property<DateTime>("ChipDate");
 
                     b.Property<int?>("CustomerId");
+
+                    b.Property<string>("ImageUrl");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -272,9 +278,11 @@ namespace VetClinicACorreia.Web.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(50);
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .HasMaxLength(50);
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -359,17 +367,24 @@ namespace VetClinicACorreia.Web.Migrations
 
             modelBuilder.Entity("VetClinicACorreia.Web.Data.Entities.Appointment", b =>
                 {
-                    b.HasOne("VetClinicACorreia.Web.Data.Entities.Customer", "CustomerName")
+                    b.HasOne("VetClinicACorreia.Web.Data.Entities.Customer", "CustomerId")
                         .WithMany()
-                        .HasForeignKey("CustomerNameId");
+                        .HasForeignKey("CustomerIdId");
 
-                    b.HasOne("VetClinicACorreia.Web.Data.Entities.Pet", "PetName")
+                    b.HasOne("VetClinicACorreia.Web.Data.Entities.Doctor", "DoctorId")
                         .WithMany()
-                        .HasForeignKey("PetNameId");
+                        .HasForeignKey("DoctorIdId");
 
-                    b.HasOne("VetClinicACorreia.Web.Data.Entities.Doctor", "SelectedDoctor")
+                    b.HasOne("VetClinicACorreia.Web.Data.Entities.Pet", "PetId")
                         .WithMany()
-                        .HasForeignKey("SelectedDoctorId");
+                        .HasForeignKey("PetIdId");
+                });
+
+            modelBuilder.Entity("VetClinicACorreia.Web.Data.Entities.Customer", b =>
+                {
+                    b.HasOne("VetClinicACorreia.Web.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("VetClinicACorreia.Web.Data.Entities.Doctor", b =>
@@ -382,7 +397,7 @@ namespace VetClinicACorreia.Web.Migrations
             modelBuilder.Entity("VetClinicACorreia.Web.Data.Entities.Pet", b =>
                 {
                     b.HasOne("VetClinicACorreia.Web.Data.Entities.Customer")
-                        .WithMany("Animals")
+                        .WithMany("Pets")
                         .HasForeignKey("CustomerId");
                 });
 #pragma warning restore 612, 618

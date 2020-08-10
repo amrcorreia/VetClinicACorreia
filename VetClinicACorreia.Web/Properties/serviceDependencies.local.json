@@ -1,12 +1,3 @@
 {
-  "dependencies": {
-    "mssql2": {
-      "type": "mssql.local",
-      "connectionId": "VetClinicACorreiaWebContext"
-    },
-    "mssql3": {
-      "type": "mssql.local",
-      "connectionId": "Data)"
-    }
-  }
+  "dependencies": {}
 }

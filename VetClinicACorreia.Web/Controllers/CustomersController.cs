@@ -2,30 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetClinicACorreia.Web.Data;
 using VetClinicACorreia.Web.Data.Entities;
+using VetClinicACorreia.Web.Data.Repositories;
 
 namespace VetClinicACorreia.Web.Controllers
 {
     public class CustomersController : Controller
     {
-        private readonly DataContext _context;
+        private readonly ICustomerRepository _customerRepository;
 
-        public CustomersController(DataContext context)
+        public CustomersController(ICustomerRepository customerRepository)
         {
-            _context = context;
+            _customerRepository = customerRepository;
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public IActionResult Index()
         {
-            return View(await _context.Customers.ToListAsync());
+            return View(_customerRepository.GetAll());
         }
 
         // GET: Customers/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,8 +37,7 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var customer = await _customerRepository.GetByIdAsync(id.Value);
             if (customer == null)
             {
                 return NotFound();
@@ -44,6 +47,7 @@ namespace VetClinicACorreia.Web.Controllers
         }
 
         // GET: Customers/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -54,18 +58,18 @@ namespace VetClinicACorreia.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,TIN,Mobile,Email,Observations")] Customer customer)
+        public async Task<IActionResult> Create(Customer customer)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(customer);
-                await _context.SaveChangesAsync();
+                await _customerRepository.CreateAsync(customer);
                 return RedirectToAction(nameof(Index));
             }
             return View(customer);
         }
 
         // GET: Customers/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,7 +77,7 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _customerRepository.GetByIdAsync(id.Value);
             if (customer == null)
             {
                 return NotFound();
@@ -86,23 +90,17 @@ namespace VetClinicACorreia.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,TIN,Mobile,Email,Observations")] Customer customer)
+        public async Task<IActionResult> Edit(Customer customer)
         {
-            if (id != customer.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(customer);
-                    await _context.SaveChangesAsync();
+                    await _customerRepository.UpdateAsync(customer);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CustomerExists(customer.Id))
+                    if (!await _customerRepository.ExistsAsync(customer.Id))
                     {
                         return NotFound();
                     }
@@ -117,6 +115,7 @@ namespace VetClinicACorreia.Web.Controllers
         }
 
         // GET: Customers/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,8 +123,7 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var customer = await _customerRepository.GetByIdAsync(id.Value);
             if (customer == null)
             {
                 return NotFound();
@@ -139,15 +137,9 @@ namespace VetClinicACorreia.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
+            var customer = await _customerRepository.GetByIdAsync(id);
+            await _customerRepository.DeleteAsync(customer);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CustomerExists(int id)
-        {
-            return _context.Customers.Any(e => e.Id == id);
         }
     }
 }

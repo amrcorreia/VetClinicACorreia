@@ -13,7 +13,7 @@ namespace VetClinicACorreia.Web.Data.Entities
         [Required]
         public string Name { get; set; }
 
-        [Display(Name = "Profissional Certificate")]
+        [Display(Name = "Profissional Licence")]
         public string ProfissionalCertificate { get; set; }
 
 
@@ -50,6 +50,21 @@ namespace VetClinicACorreia.Web.Data.Entities
 
 
         public User User { get; set; }
+
+
+        public string ImageFullPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this.ImageUrl))
+                {
+                    return null;
+                }
+
+                return $"https://vetclinicacorreia.azurewebsites.net{this.ImageUrl.Substring(1)}";
+            }
+        }
+
 
     }
 }

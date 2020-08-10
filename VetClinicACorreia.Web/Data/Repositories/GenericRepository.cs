@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using VetClinicACorreia.Web.Data.Entities;
 
-namespace VetClinicACorreia.Web.Data
+namespace VetClinicACorreia.Web.Data.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class, IEntity
     {

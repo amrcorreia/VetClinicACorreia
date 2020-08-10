@@ -2,30 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetClinicACorreia.Web.Data;
 using VetClinicACorreia.Web.Data.Entities;
+using VetClinicACorreia.Web.Data.Repositories;
 
 namespace VetClinicACorreia.Web.Controllers
 {
     public class AppointmentsController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IAppointmentRepository _appointmentRepository;
 
-        public AppointmentsController(DataContext context)
+        public AppointmentsController(IAppointmentRepository appointmentRepository)
         {
-            _context = context;
+            _appointmentRepository = appointmentRepository;
         }
+
 
         // GET: Appointments
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public IActionResult Index()
         {
-            return View(await _context.Appointments.ToListAsync());
+            return View(_appointmentRepository.GetAll());
         }
 
+        
         // GET: Appointments/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,8 +39,7 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.Appointments
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var appointment = await _appointmentRepository.GetByIdAsync(id.Value);
             if (appointment == null)
             {
                 return NotFound();
@@ -43,7 +48,9 @@ namespace VetClinicACorreia.Web.Controllers
             return View(appointment);
         }
 
+     
         // GET: Appointments/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -54,18 +61,18 @@ namespace VetClinicACorreia.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Description,AppointmentDate,AppointmentObservations,AppointmentHour")] Appointment appointment)
+        public async Task<IActionResult> Create(Appointment appointment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(appointment);
-                await _context.SaveChangesAsync();
+                await _appointmentRepository.CreateAsync(appointment);
                 return RedirectToAction(nameof(Index));
             }
             return View(appointment);
         }
 
         // GET: Appointments/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,7 +80,7 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.Appointments.FindAsync(id);
+            var appointment = await _appointmentRepository.GetByIdAsync(id.Value);
             if (appointment == null)
             {
                 return NotFound();
@@ -86,23 +93,17 @@ namespace VetClinicACorreia.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,AppointmentDate,AppointmentObservations,AppointmentHour")] Appointment appointment)
+        public async Task<IActionResult> Edit(Appointment appointment)
         {
-            if (id != appointment.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(appointment);
-                    await _context.SaveChangesAsync();
+                    await _appointmentRepository.UpdateAsync(appointment);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AppointmentExists(appointment.Id))
+                    if (!await _appointmentRepository.ExistsAsync(appointment.Id))
                     {
                         return NotFound();
                     }
@@ -117,6 +118,7 @@ namespace VetClinicACorreia.Web.Controllers
         }
 
         // GET: Appointments/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,8 +126,7 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.Appointments
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var appointment = await _appointmentRepository.GetByIdAsync(id.Value);
             if (appointment == null)
             {
                 return NotFound();
@@ -139,15 +140,9 @@ namespace VetClinicACorreia.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var appointment = await _context.Appointments.FindAsync(id);
-            _context.Appointments.Remove(appointment);
-            await _context.SaveChangesAsync();
+            var appointment = await _appointmentRepository.GetByIdAsync(id);
+            await _appointmentRepository.DeleteAsync(appointment);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool AppointmentExists(int id)
-        {
-            return _context.Appointments.Any(e => e.Id == id);
         }
     }
 }

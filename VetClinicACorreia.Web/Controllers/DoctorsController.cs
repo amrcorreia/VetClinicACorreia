@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using VetClinicACorreia.Web.Data;
 using VetClinicACorreia.Web.Data.Entities;
+using VetClinicACorreia.Web.Data.Repositories;
 using VetClinicACorreia.Web.Helpers;
 using VetClinicACorreia.Web.Models;
 
@@ -19,20 +21,30 @@ namespace VetClinicACorreia.Web.Controllers
     {
         private readonly IDoctorRepository _doctorRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IImageHelper _imageHelper;
+        private readonly IConverterHelper _converterHelper;
 
-        public DoctorsController(IDoctorRepository doctorRepository, IUserHelper userHelper)
+        public DoctorsController(
+            IDoctorRepository doctorRepository, 
+            IUserHelper userHelper,
+            IImageHelper imageHelper,
+            IConverterHelper converterHelper)
         {
             _doctorRepository = doctorRepository;
             _userHelper = userHelper;
+            _imageHelper = imageHelper;
+            _converterHelper = converterHelper;
         }
 
         // GET: Doctors
+        [Authorize]
         public IActionResult Index()
         {
-            return View(_doctorRepository.GetAll());
+            return View(_doctorRepository.GetAll().OrderBy(d => d.Name));
         }
 
         // GET: Doctors/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -50,6 +62,7 @@ namespace VetClinicACorreia.Web.Controllers
         }
 
         // GET: Doctors/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -66,20 +79,10 @@ namespace VetClinicACorreia.Web.Controllers
 
             if (model.ImageFile != null && model.ImageFile.Length > 0)
             {
-                path = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot\\images\\Doctors",
-                    model.ImageFile.FileName);
-
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    await model.ImageFile.CopyToAsync(stream);
-                }
-
-                path = $"~/images/Doctors/{model.ImageFile.FileName}";
+                path = await _imageHelper.UploadImageAsync(model.ImageFile, "Doctors");
             }
 
-            var doctor = this.ToDoctor(model, path);
+            var doctor = _converterHelper.ToDoctor(model, path, true);
 
             if (ModelState.IsValid)
             {
@@ -90,27 +93,28 @@ namespace VetClinicACorreia.Web.Controllers
             return View(model);
         }
 
-        private Doctor ToDoctor(DoctorViewModel view, string path)
-        {
-            return new Doctor
-            {
-                Id = view.Id,
-                ImageUrl = path,
-                IsAvailable = view.IsAvailable,
-                Name = view.Name,
-                Speciality = view.Speciality,
-                ProfissionalCertificate = view.ProfissionalCertificate,
-                TIN = view.TIN,
-                Mobile = view.Mobile,
-                Email = view.Email,
-                WorkingSchedule = view.WorkingSchedule,
-                DoctorsOffice = view.DoctorsOffice,
-                Observations = view.Observations,
-                User = view.User
-            };
-        }
+        //private Doctor ToDoctor(DoctorViewModel view, string path)
+        //{
+        //    return new Doctor
+        //    {
+        //        Id = view.Id,
+        //        ImageUrl = path,
+        //        IsAvailable = view.IsAvailable,
+        //        Name = view.Name,
+        //        Speciality = view.Speciality,
+        //        ProfissionalCertificate = view.ProfissionalCertificate,
+        //        TIN = view.TIN,
+        //        Mobile = view.Mobile,
+        //        Email = view.Email,
+        //        WorkingSchedule = view.WorkingSchedule,
+        //        DoctorsOffice = view.DoctorsOffice,
+        //        Observations = view.Observations,
+        //        User = view.User
+        //    };
+        //}
 
         // GET: Doctors/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -124,30 +128,30 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            var view = this.ToDoctorViewModel(doctor);
+            var view = _converterHelper.ToDoctorViewModel(doctor);
 
             return View(view);
         }
 
-        private DoctorViewModel ToDoctorViewModel(Doctor doctor)
-        {
-            return new DoctorViewModel
-            {
-                Id = doctor.Id,
-                ImageUrl = doctor.ImageUrl,
-                IsAvailable = doctor.IsAvailable,
-                Name = doctor.Name,
-                Speciality = doctor.Speciality,
-                ProfissionalCertificate = doctor.ProfissionalCertificate,
-                TIN = doctor.TIN,
-                Mobile = doctor.Mobile,
-                Email = doctor.Email,
-                WorkingSchedule = doctor.WorkingSchedule,
-                DoctorsOffice = doctor.DoctorsOffice,
-                Observations = doctor.Observations,
-                User = doctor.User
-            };
-        }
+        //private DoctorViewModel ToDoctorViewModel(Doctor doctor)
+        //{
+        //    return new DoctorViewModel
+        //    {
+        //        Id = doctor.Id,
+        //        ImageUrl = doctor.ImageUrl,
+        //        IsAvailable = doctor.IsAvailable,
+        //        Name = doctor.Name,
+        //        Speciality = doctor.Speciality,
+        //        ProfissionalCertificate = doctor.ProfissionalCertificate,
+        //        TIN = doctor.TIN,
+        //        Mobile = doctor.Mobile,
+        //        Email = doctor.Email,
+        //        WorkingSchedule = doctor.WorkingSchedule,
+        //        DoctorsOffice = doctor.DoctorsOffice,
+        //        Observations = doctor.Observations,
+        //        User = doctor.User
+        //    };
+        //}
 
         // POST: Doctors/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -164,20 +168,10 @@ namespace VetClinicACorreia.Web.Controllers
 
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {
-                        path = Path.Combine(
-                            Directory.GetCurrentDirectory(),
-                            "wwwroot\\images\\Doctors",
-                            model.ImageFile.FileName);
-
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            await model.ImageFile.CopyToAsync(stream);
-                        }
-
-                        path = $"~/images/Doctors/{model.ImageFile.FileName}";
+                        path = await _imageHelper.UploadImageAsync(model.ImageFile, "Doctors");
                     }
 
-                    var doctor = this.ToDoctor(model, path);
+                    var doctor = _converterHelper.ToDoctor(model, path, false);
 
                     doctor.User = await _userHelper.GetUserByEmailAsync("correiandreiamr@gmail.com");
                     await _doctorRepository.UpdateAsync(doctor);
@@ -199,6 +193,7 @@ namespace VetClinicACorreia.Web.Controllers
         }
 
         // GET: Doctors/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

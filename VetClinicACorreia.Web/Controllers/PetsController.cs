@@ -1,31 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VetClinicACorreia.Web.Data;
 using VetClinicACorreia.Web.Data.Entities;
+using VetClinicACorreia.Web.Data.Repositories;
+using VetClinicACorreia.Web.Helpers;
+using VetClinicACorreia.Web.Models;
 
 namespace VetClinicACorreia.Web.Controllers
 {
     public class PetsController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IPetRepository _petRepository;
+        private readonly IImageHelper _imageHelper;
+        private readonly IConverterHelper _converterHelper;
 
-        public PetsController(DataContext context)
+        public PetsController(
+            IPetRepository petRepository,
+            IImageHelper imageHelper,
+            IConverterHelper converterHelper)
         {
-            _context = context;
+            _petRepository = petRepository;
+            _imageHelper = imageHelper;
+            _converterHelper = converterHelper;
         }
 
         // GET: Pets
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public IActionResult Index()
         {
-            return View(await _context.Pets.ToListAsync());
+            return View(_petRepository.GetAll());
         }
 
         // GET: Pets/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,8 +47,7 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            var pet = await _context.Pets
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var pet = await _petRepository.GetByIdAsync(id.Value);
             if (pet == null)
             {
                 return NotFound();
@@ -44,6 +57,7 @@ namespace VetClinicACorreia.Web.Controllers
         }
 
         // GET: Pets/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -54,18 +68,43 @@ namespace VetClinicACorreia.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Pet pet)
+        public async Task<IActionResult> Create(PetViewModel model)
         {
+            var path = string.Empty;
+
+            if (model.ImageFile != null && model.ImageFile.Length > 0)
+            {
+                path = await _imageHelper.UploadImageAsync(model.ImageFile, "Pets");
+            }
+
+            var pet = _converterHelper.ToPet(model, path, true);
+
             if (ModelState.IsValid)
             {
-                _context.Add(pet);
-                await _context.SaveChangesAsync();
+                await _petRepository.CreateAsync(pet);
                 return RedirectToAction(nameof(Index));
             }
-            return View(pet);
+            return View(model);
         }
 
+        //private Pet ToPet(PetViewModel view, string path)
+        //{
+        //    return new Pet
+        //    {
+        //        Id = view.Id,
+        //        ImageUrl = path,
+        //        Name = view.Name,
+        //        Specie = view.Specie,
+        //        Sterilized = view.Sterilized,
+        //        Chip = view.Chip,
+        //        ChipDate = view.ChipDate,
+        //        BirthDate = view.BirthDate,
+        //        Observations = view.Observations
+        //    };
+        //}
+
         // GET: Pets/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,36 +112,57 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            var pet = await _context.Pets.FindAsync(id);
+            var pet = await _petRepository.GetByIdAsync(id.Value);
             if (pet == null)
             {
                 return NotFound();
             }
-            return View(pet);
+            var view = _converterHelper.ToPetViewModel(pet);
+
+            return View(view);
         }
+
+        //private PetViewModel ToPetViewModel(Pet pet)
+        //{
+        //    return new PetViewModel
+        //    {
+        //        Id = pet.Id,
+        //        ImageUrl = pet.ImageUrl,
+        //        Name = pet.Name,
+        //        Specie = pet.Specie,
+        //        Sterilized = pet.Sterilized,
+        //        Chip = pet.Chip,
+        //        ChipDate = pet.ChipDate,
+        //        BirthDate = pet.BirthDate,
+        //        Observations = pet.Observations
+        //    };
+        //}
 
         // POST: Pets/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Pet pet)
+        public async Task<IActionResult> Edit(PetViewModel model)
         {
-            if (id != pet.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(pet);
-                    await _context.SaveChangesAsync();
+                    var path = model.ImageUrl;
+
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        path = await _imageHelper.UploadImageAsync(model.ImageFile, "Pets");
+                    }
+
+                    var pet = _converterHelper.ToPet(model, path, false);
+
+                    await _petRepository.UpdateAsync(pet);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PetExists(pet.Id))
+                    if (!await _petRepository.ExistsAsync(model.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +173,11 @@ namespace VetClinicACorreia.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(pet);
+            return View(model);
         }
 
         // GET: Pets/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,8 +185,7 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            var pet = await _context.Pets
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var pet = await _petRepository.GetByIdAsync(id.Value);
             if (pet == null)
             {
                 return NotFound();
@@ -139,15 +199,9 @@ namespace VetClinicACorreia.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var pet = await _context.Pets.FindAsync(id);
-            _context.Pets.Remove(pet);
-            await _context.SaveChangesAsync();
+            var customer = await _petRepository.GetByIdAsync(id);
+            await _petRepository.DeleteAsync(customer);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PetExists(int id)
-        {
-            return _context.Pets.Any(e => e.Id == id);
         }
     }
 }
