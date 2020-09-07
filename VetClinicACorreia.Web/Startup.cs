@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using VetClinicACorreia.Web.Data;
 using VetClinicACorreia.Web.Data.Entities;
 using VetClinicACorreia.Web.Data.Repositories;
@@ -27,6 +29,8 @@ namespace VetClinicACorreia.Web
         {
             services.AddIdentity<User, IdentityRole>(cfg =>
            {
+               cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+               cfg.SignIn.RequireConfirmedEmail = true;
                cfg.User.RequireUniqueEmail = true;
                cfg.Password.RequireDigit = false;
                cfg.Password.RequiredUniqueChars = 0;
@@ -35,8 +39,22 @@ namespace VetClinicACorreia.Web
                cfg.Password.RequireUppercase = false;
                cfg.Password.RequiredLength = 6;
            })
-           .AddEntityFrameworkStores<DataContext>();
-            
+           .AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<DataContext>();
+
+            services.AddAuthentication()
+                .AddCookie()
+                .AddJwtBearer(cfg =>
+                {
+                    cfg.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = this.Configuration["Tokens:Issuer"],
+                        ValidAudience = this.Configuration["Tokens:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(this.Configuration["Tokens:Key"]))
+                    };
+                });
+
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
@@ -44,13 +62,17 @@ namespace VetClinicACorreia.Web
 
 
             services.AddTransient<SeedDb>();
+
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IImageHelper, ImageHelper>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddScoped<IMailHelper, MailHelper>();
             services.AddScoped<IDoctorRepository, DoctorRepository>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddScoped<IPetRepository, PetRepository>();
-            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            services.AddScoped<IVetAssistantRepository, VetAssistantRepository>();
+            //services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
+            //services.AddScoped<ISpecialityRepository, SpecialityRepository>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -58,6 +80,14 @@ namespace VetClinicACorreia.Web
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                //options.LoginPath = "/Account/NotAuthorized"; TODO esta opção é uma alternativa ao redirecionalemnto ao Login
+                options.AccessDeniedPath = "/Account/NotAuthorized";
+            });
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -74,6 +104,8 @@ namespace VetClinicACorreia.Web
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

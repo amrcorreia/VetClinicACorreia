@@ -23,6 +23,8 @@ namespace VetClinicACorreia.Web.Data.Entities
         [Display(Name = "Customer Name")]
         public Customer CustomerId { get; set; }
 
+        public User User { get; set; }
+
 
         [Display(Name = "Pet Name")]
         public Pet PetId { get; set; }
@@ -33,5 +35,19 @@ namespace VetClinicACorreia.Web.Data.Entities
         [Display(Name = "App Hour")]
         public string AppointmentHour { get; set; }
 
+                
+        [Display(Name = "Appointment Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}", ApplyFormatInEditMode = false)]
+        public DateTime? AppointmentDateLocal 
+        {
+            get
+            {
+                if (this.AppointmentDate == null)
+                {
+                    return null;
+                }
+                return this.AppointmentDate.ToLocalTime();
+            } 
+        }
     }
 }

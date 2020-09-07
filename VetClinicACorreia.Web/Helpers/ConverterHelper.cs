@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VetClinicACorreia.Web.Data;
 using VetClinicACorreia.Web.Data.Entities;
 using VetClinicACorreia.Web.Models;
 
@@ -9,6 +11,13 @@ namespace VetClinicACorreia.Web.Helpers
 {
     public class ConverterHelper : IConverterHelper
     {
+        private readonly DataContext _context;
+
+        public ConverterHelper(DataContext context)
+        {
+            _context = context;
+        }
+        
         public Doctor ToDoctor(DoctorViewModel model, string path, bool isNew)
         {
             return new Doctor
@@ -16,15 +25,16 @@ namespace VetClinicACorreia.Web.Helpers
                 Id = isNew ? 0 : model.Id,
                 ImageUrl = path,
                 IsAvailable = model.IsAvailable,
-                Name = model.Name,
-                Speciality = model.Speciality,
-                ProfissionalCertificate = model.ProfissionalCertificate,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                //Speciality = model.Speciality,
+                ProfissionalLicence = model.ProfissionalLicence,
                 TIN = model.TIN,
                 Mobile = model.Mobile,
-                Email = model.Email,
-                WorkingSchedule = model.WorkingSchedule,
-                DoctorsOffice = model.DoctorsOffice,
-                Observations = model.Observations,
+                //Email = model.Email,
+                //WorkingSchedule = model.WorkingSchedule,
+                //DoctorsOffice = model.DoctorsOffice,
+                Remarks = model.Remarks,
                 User = model.User
             };
         }
@@ -36,33 +46,70 @@ namespace VetClinicACorreia.Web.Helpers
                 Id = model.Id,
                 ImageUrl = model.ImageUrl,
                 IsAvailable = model.IsAvailable,
-                Name = model.Name,
-                Speciality = model.Speciality,
-                ProfissionalCertificate = model.ProfissionalCertificate,
+                FirstName = model.LastName,
+                LastName = model.LastName,
+                //Speciality = model.Speciality,
+                ProfissionalLicence = model.ProfissionalLicence,
                 TIN = model.TIN,
                 Mobile = model.Mobile,
-                Email = model.Email,
-                WorkingSchedule = model.WorkingSchedule,
-                DoctorsOffice = model.DoctorsOffice,
-                Observations = model.Observations,
+                //Email = model.Email,
+                //WorkingSchedule = model.WorkingSchedule,
+                //DoctorsOffice = model.DoctorsOffice,
+                Remarks = model.Remarks,
                 User = model.User
             };
         }
 
+        //public Customer ToCustomer(CustomerViewModel model, string path, bool isNew)
+        //{
+        //    return new Customer
+        //    {
+        //        Id = isNew ? 0 : model.Id,
+        //        Name = model.Name,
+        //        TIN = model.TIN,
+        //        Mobile = model.Mobile,
+        //        Email = model.Email,
+        //        Remarks = model.Remarks,
+        //        User = model.User
+        //    };
+        //}
+
+        //public CustomerViewModel ToCustomerViewModel(Customer model)
+        //{
+        //    return new CustomerViewModel
+        //    {
+        //        Id = model.Id,
+        //        Name = model.Name,
+        //        TIN = model.TIN,
+        //        Mobile = model.Mobile,
+        //        Email = model.Email,
+        //        Remarks = model.Remarks,
+        //        User = model.User
+        //    };
+        //}
+
+
+
+
         public Pet ToPet(PetViewModel model, string path, bool isNew)
         {
-            return new Pet
+            Customer customer = _context.Customers.Find(model.CustomerId);
+            PetType petType = _context.PetTypes.Find(model.PetTypeId);
+
+            Pet pet = new Pet
             {
                 Id = isNew ? 0 : model.Id,
                 ImageUrl = path,
                 Name = model.Name,
-                Specie = model.Specie,
-                Sterilized = model.Sterilized,
-                Chip = model.Chip,
-                ChipDate = model.ChipDate,
-                BirthDate = model.BirthDate,
-                Observations = model.Observations
+                //Sterilized = model.Sterilized,
+                //Chip = model.Chip,
+                //ChipDate = model.ChipDate,
+                //BirthDate = model.BirthDate,
+                Remarks = model.Remarks,
+                PetType = petType,
+                Customer = customer
             };
+            return pet;
         }
 
         public PetViewModel ToPetViewModel(Pet model)
@@ -72,13 +119,36 @@ namespace VetClinicACorreia.Web.Helpers
                 Id = model.Id,
                 ImageUrl = model.ImageUrl,
                 Name = model.Name,
-                Specie = model.Specie,
-                Sterilized = model.Sterilized,
-                Chip = model.Chip,
-                ChipDate = model.ChipDate,
-                BirthDate = model.BirthDate,
-                Observations = model.Observations
+                //Sterilized = model.Sterilized,
+                //Chip = model.Chip,
+                //ChipDate = model.ChipDate,
+                //BirthDate = model.BirthDate,
+                Remarks = model.Remarks,
+                Customer = model.Customer,
+                PetType = model.PetType,
+                CustomerId = model.Customer.Id,
+                PetTypeId = model.PetType.Id,
+                PetTypes = GetComboPetTypes()
             };
+        }
+
+        public IEnumerable<SelectListItem> GetComboPetTypes()
+        {
+            var list = _context.PetTypes.Select(pt => new SelectListItem
+            {
+                Text = pt.Name,
+                Value = $"{pt.Id}"
+            })
+                .OrderBy(pt => pt.Text)
+                .ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Select a pet type...]",
+                Value = "0"
+            });
+
+            return list;
         }
     }
 }

@@ -1,104 +1,78 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Contacts</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+﻿<section class="" id="contact-section">
+    <div class="container">
+        <div class="row no-gutters">
+            <div class="col-lg-6 bg-primary">
+                <form action="#" class="p-5 contact-form">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
-    <!-- Google Font: Source Sans Pro -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-</head>
-<body class="hold-transition sidebar-mini">
-    <!-- Content Wrapper. Contains page content -->
-    
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            @{
-                ViewData["Title"] = "Contact";
-            }
-            @*<h2>@ViewData["Title"]</h2>
-            <h3>@ViewData["Message"]</h3>*@
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Contacts</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Contacts</li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
-        <!-- Main content -->
-        <section class="content">
+                    <h2 class="h4 mb-5 heading">Contact Form</h2>
 
-            <!-- Default box -->
-            <div class="card card-solid">
-                <div class="card-body pb-0">
-                    <div class="row d-flex align-items-stretch">
-                        <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
-                            <div class="card bg-light">
-                                <div class="card-header text-muted border-bottom-0">
-                                    Programmer student
-                                </div>
-                                <div class="card-body pt-0">
-                                    <div class="row">
-                                        <div class="col-7">
-                                            <h2 class="lead"><b>Andreia Correia</b></h2>
-                                            <p class="text-muted text-sm"><b>About: </b> C# / JavaScript / SQL / css / html </p>
-                                            <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span> Address: Rua Jau, 1300-312 Lisbon</li>
-                                                <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> Phone #: + 351 777 888 999</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-5 text-center">
-                                            <img src="~/dist/img/user7-128x128.jpg" alt="" class="img-circle img-fluid">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="text-right">
-                                        <a href="#" class="btn btn-sm bg-teal">
-                                            <i class="fas fa-comments"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-user"></i> View Profile
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="row form-group">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label for="fname">First Name</label>
+                            <input type="text" id="fname" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lname">Last Name</label>
+                            <input type="text" id="lname" class="form-control">
                         </div>
                     </div>
-                </div>
+
+                    <div class="row form-group">
+
+                        <div class="col-md-12">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control">
+                        </div>
                     </div>
-                    </section>
+
+                    <div class="row form-group">
+
+                        <div class="col-md-12">
+                            <label for="subject">Subject</label>
+                            <input type="subject" id="subject" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <label for="message">Message</label>
+                            <textarea name="message" id="message" cols="30" rows="7" class="form-control" placeholder="Write your notes or questions here..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <input type="submit" value="Send Message" class="btn btn-dark btn-md text-white">
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="col-lg-6 bg-secondary">
+                <div class="row justify-content-center align-items-center h-100">
+                    <div class="col-lg-6 text-center heading-section mb-5 align-self-center">
+                        <div class="paws">
+                            <span class="icon-paw"></span>
+                        </div>
+                        <h2 class="text-white mb-5">Contact Us</h2>
+                        <ul class="list-unstyled text-left address">
+                            <li>
+                                <span class="d-block">Address:</span>
+                                <p>Lisbon, Portugal</p>
+                            </li>
+                            <li>
+                                <span class="d-block">Phone:</span>
+                                <p>+(000) 123 4567 89</p>
+                            </li>
+                            <li>
+                                <span class="d-block">Email:</span>
+                                <p>info@yourvet.com</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-</body>
-</html>
-
-
-
-
-@*<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
-
-<address>
-    <strong>Support:</strong> <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>*@
+    </div>
+</section>

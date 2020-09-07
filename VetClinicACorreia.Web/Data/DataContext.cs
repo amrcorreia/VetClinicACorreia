@@ -8,13 +8,22 @@ namespace VetClinicACorreia.Web.Data
     public class DataContext : IdentityDbContext<User>
     {
         public DbSet<Doctor> Doctors { get; set; }
+        //public DbSet<Speciality> Specialities { get; set; }
+        public DbSet<VetAssistant> VetAssistants { get; set; }
 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Pet> Pets { get; set; }
+        
+        public DbSet<PetType> PetTypes { get; set; }
+
         public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<VetAssistant> VetAssistants { get; set; }
+        
+        
+        public DbSet<Country> Countries { get; set; }
 
+        //public DbSet<City> Cities { get; set; }
 
+        
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }

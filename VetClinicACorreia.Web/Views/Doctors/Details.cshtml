@@ -3,198 +3,316 @@
 @{
     ViewData["Title"] = "Details";
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 3 | General Form Elements</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
-    <!-- Google Font: Source Sans Pro -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-</head>
-<body class="hold-transition sidebar-mini">
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <!-- left column -->
-                    <div class="col-md-12">
-                        <!-- jquery validation -->
-                        <div class="card card-info" style="margin-top:10px">
-                            <div class="card-header">
-                                <h3 class="card-title">Doctor Details</h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <!-- form start -->
-                            <form asp-action="Edit" enctype="multipart/form-data">
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <input type="hidden" asp-for="Id" />
-                                <input type="hidden" asp-for="ImageUrl" />
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <!-- text input -->
-                                                <div class="form-group">
-                                                    <dt>
-                                                        @Html.DisplayNameFor(model => model.Name)
-                                                    </dt>
-                                                    <dd>
-                                                        @Html.DisplayFor(model => model.Name)
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <dt>
-                                                        @Html.DisplayNameFor(model => model.Speciality)
-                                                    </dt>
-                                                    <dd>
-                                                        @Html.DisplayFor(model => model.Speciality)
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <!-- text input -->
-                                                <div class="form-group">
-                                                    <dt>
-                                                        @Html.DisplayNameFor(model => model.ProfissionalCertificate)
-                                                    </dt>
-                                                    <dd>
-                                                        @Html.DisplayFor(model => model.ProfissionalCertificate)
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <div class="form-group">
-                                                    <dt>
-                                                        @Html.DisplayNameFor(model => model.TIN)
-                                                    </dt>
-                                                    <dd>
-                                                        @Html.DisplayFor(model => model.TIN)
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <div class="form-group">
-                                                    <dt>
-                                                        @Html.DisplayNameFor(model => model.IsAvailable)
-                                                    </dt>
-                                                    <dd>
-                                                        @Html.DisplayFor(model => model.IsAvailable)
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <!-- text input -->
-                                                <div class="form-group">
-                                                    <dt>
-                                                        @Html.DisplayNameFor(model => model.ImageUrl)
-                                                    </dt>
-                                                    <dd>
-                                                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
-                                                        {
-                                                            <img src=" @Url.Content(Model.ImageUrl)" alt="Image" style="width:100px;height:150px;max-height:100%;height:auto" />
-                                                        }
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <dt>
-                                                        @Html.DisplayNameFor(model => model.Mobile)
-                                                    </dt>
-                                                    <dd>
-                                                        @Html.DisplayFor(model => model.Mobile)
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <!-- text input -->
-                                                <div class="form-group">
-                                                    <dt>
-                                                        @Html.DisplayNameFor(model => model.Email)
-                                                    </dt>
-                                                    <dd>
-                                                        @Html.DisplayFor(model => model.Email)
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <dt>
-                                                        @Html.DisplayNameFor(model => model.WorkingSchedule)
-                                                    </dt>
-                                                    <dd>
-                                                        @Html.DisplayFor(model => model.WorkingSchedule)
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <!-- text input -->
-                                                <div class="form-group">
-                                                    <dt>
-                                                        @Html.DisplayNameFor(model => model.DoctorsOffice)
-                                                    </dt>
-                                                    <dd>
-                                                        @Html.DisplayFor(model => model.DoctorsOffice)
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <dt>
-                                                        @Html.DisplayNameFor(model => model.Observations)
-                                                    </dt>
-                                                    <dd>
-                                                        @Html.DisplayFor(model => model.Observations)
-                                                    </dd>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-                                        <a asp-action="Index" class="btn btn-success">Back to List</a>
-                                    </div>
-                                </div>
-                            </form>
+<section>
+    <div style="margin:auto; width:800px; height:300px">
+        <br />
+        <br />
+        <br />
 
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!--/.col (left) -->
-                    <!-- right column -->
-                    <div class="col-md-6">
+        <h4>Customer details</h4>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.User.FullName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.User.FullName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.User.Email)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.User.Email)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.User.PhoneNumber)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.User.PhoneNumber)
+            </dd>
+        </dl>
 
-                    </div>
-                    <!--/.col (right) -->
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Doctor</a>
+            <a asp-action="Index" class="btn btn-success">Back to List</a>
+        </div>
+        <br />
+        
+    </div>
+    <div id="deleteDialog" class="modal fade">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
+                    <h4 class="modal-title">Delete</h4>
                 </div>
-                <!-- /.row -->
-            </div><!-- /.container-fluid -->
+                <div class="modal-body">
+                    <p>Do you want to delete the doctor?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
+                    <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-        </section>
-</body>
-</html>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var id = 0;
+            $('a[id*=btnDelete]').click(function () {
+                debugger;
+                id = $(this).parent()[0].id;
+                $("#deleteDialog").modal('show');
+                return false;
+            });
+            $("#btnNoDelete").click(function () {
+                $("#deleteDialog").modal('hide');
+                return false;
+            });
+            $("#btnYesDelete").click(function () {
+                window.location.href = '/Doctors/Delete/' + id;
+            });
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @*@model VetClinicACorreia.Web.Data.Entities.Doctor
+
+        @{
+            ViewData["Title"] = "Details";
+        }
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <title>AdminLTE 3 | General Form Elements</title>
+             Tell the browser to be responsive to screen width
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+             Font Awesome
+            <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
+             Ionicons
+            <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+             Theme style
+            <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+             Google Font: Source Sans Pro
+            <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+        </head>
+        <body class="hold-transition sidebar-mini">
+             Content Wrapper. Contains page content
+            <div class="content-wrapper">
+                 Content Header (Page header)
+                 Main content
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                             left column
+                            <div class="col-md-12">
+                                 jquery validation
+                                <div class="card card-info" style="margin-top:10px">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Doctor Details</h3>
+                                    </div>
+                                     /.card-header
+                                     form start
+                                    <form asp-action="Edit" enctype="multipart/form-data">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <input type="hidden" asp-for="Id" />
+                                        <input type="hidden" asp-for="ImageUrl" />
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                         text input
+                                                        <div class="form-group">
+                                                            <dt>
+                                                                @Html.DisplayNameFor(model => model.Name)
+                                                            </dt>
+                                                            <dd>
+                                                                @Html.DisplayFor(model => model.Name)
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <dt>
+                                                                @Html.DisplayNameFor(model => model.Speciality)
+                                                            </dt>
+                                                            <dd>
+                                                                @Html.DisplayFor(model => model.Speciality)
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                         text input
+                                                        <div class="form-group">
+                                                            <dt>
+                                                                @Html.DisplayNameFor(model => model.ProfissionalCertificate)
+                                                            </dt>
+                                                            <dd>
+                                                                @Html.DisplayFor(model => model.ProfissionalCertificate)
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group">
+                                                            <dt>
+                                                                @Html.DisplayNameFor(model => model.TIN)
+                                                            </dt>
+                                                            <dd>
+                                                                @Html.DisplayFor(model => model.TIN)
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <div class="form-group">
+                                                            <dt>
+                                                                @Html.DisplayNameFor(model => model.IsAvailable)
+                                                            </dt>
+                                                            <dd>
+                                                                @Html.DisplayFor(model => model.IsAvailable)
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                         text input
+                                                        <div class="form-group">
+                                                            <dt>
+                                                                @Html.DisplayNameFor(model => model.ImageUrl)
+                                                            </dt>
+                                                            <dd>
+                                                                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                                                {
+                                                                    <img src=" @Url.Content(Model.ImageUrl)" alt="Image" style="width:100px;height:150px;max-height:100%;height:auto" />
+                                                                }
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <dt>
+                                                                @Html.DisplayNameFor(model => model.Mobile)
+                                                            </dt>
+                                                            <dd>
+                                                                @Html.DisplayFor(model => model.Mobile)
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                         text input
+                                                        <div class="form-group">
+                                                            <dt>
+                                                                @Html.DisplayNameFor(model => model.Email)
+                                                            </dt>
+                                                            <dd>
+                                                                @Html.DisplayFor(model => model.Email)
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <dt>
+                                                                @Html.DisplayNameFor(model => model.WorkingSchedule)
+                                                            </dt>
+                                                            <dd>
+                                                                @Html.DisplayFor(model => model.WorkingSchedule)
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                         text input
+                                                        <div class="form-group">
+                                                            <dt>
+                                                                @Html.DisplayNameFor(model => model.DoctorsOffice)
+                                                            </dt>
+                                                            <dd>
+                                                                @Html.DisplayFor(model => model.DoctorsOffice)
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <dt>
+                                                                @Html.DisplayNameFor(model => model.Remarks)
+                                                            </dt>
+                                                            <dd>
+                                                                @Html.DisplayFor(model => model.Remarks)
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                                                <a asp-action="Index" class="btn btn-success">Back to List</a>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                                 /.card
+                            </div>
+                            /.col (left)
+                             right column
+                            <div class="col-md-6">
+
+                            </div>
+                            /.col (right)
+                        </div>
+                         /.row
+                    </div> /.container-fluid
+
+                </section>
+        </body>
+        </html>*@
 
 
 

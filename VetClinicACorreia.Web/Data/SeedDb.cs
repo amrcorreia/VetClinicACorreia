@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VetClinicACorreia.Web.Data.Entities;
+using VetClinicACorreia.Web.Data.Repositories;
 using VetClinicACorreia.Web.Helpers;
 
 namespace VetClinicACorreia.Web.Data
@@ -12,6 +15,12 @@ namespace VetClinicACorreia.Web.Data
         private readonly DataContext _context;
         private readonly Random _random;
         private readonly IUserHelper _userHelper;
+        private User _customer1;
+        private User _customer2;
+        private User _customer3;
+        private User _vetAssistant1;
+        private User _vetAssistant2;
+        private User _vetAssistant3;
 
         public SeedDb(DataContext context, IUserHelper userHelper)
         {
@@ -20,9 +29,68 @@ namespace VetClinicACorreia.Web.Data
             _random = new Random();
         }
 
+        public UserManager<User> UserManager { get; }
+
+
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
+
+            await CheckRoles();
+            _customer1 = await CheckUserAsync("Susana", "Pimentel", "slopes@yopmail.com", string.Empty, "Customer");
+            _customer2 = await CheckUserAsync("Rodrigo", "Matias", "rmatias@yopmail.com", string.Empty, "Customer");
+            _customer3 = await CheckUserAsync("Cristina", "Soares", "cristinas@yopmail.com", string.Empty, "Customer");
+            _vetAssistant1 = await CheckUserAsync("Miguel", "Veloso", "jgalamba@yopmail.com", string.Empty, "Doctor");
+            _vetAssistant2 = await CheckUserAsync("JJ", "Benfas", "fdgdfg@yopmail.com", string.Empty, "Doctor");
+            _vetAssistant3 = await CheckUserAsync("Pedro", "Lamy", "bbbbb@yopmail.com", string.Empty, "Doctor");
+            await CheckPetTypesAsync();
+            await CheckCustomerAsync();
+            await CheckVetAssitantsAsync();
+            await CheckPetsAsync();
+            await CheckAppointmentsAsync();
+
+            //if (!_context.Specialities.Any())
+            //{
+            //    _context.Specialities.Add(new Speciality { Name = "Dermatology" });
+            //    _context.Specialities.Add(new Speciality { Name = "Ophthalmologists" });
+            //    _context.Specialities.Add(new Speciality { Name = "Radiology" });
+            //    _context.Specialities.Add(new Speciality { Name = "Toxicology" });
+            //    _context.Specialities.Add(new Speciality { Name = "Nutrition" });
+            //    _context.Specialities.Add(new Speciality { Name = "Behaviorists" });
+            //    _context.Specialities.Add(new Speciality { Name = "Anesthesia and Analgesia" });
+            //    await _context.SaveChangesAsync();
+            //}
+
+            //if (!_context.Countries.Any())
+            //{
+            //    var cities = new List<City>();
+            //    cities.Add(new City { Name = "Lisbon" });
+            //    cities.Add(new City { Name = "Oporto" });
+            //    _context.Countries.Add(new Country
+            //    {
+            //        Cities = cities,
+            //        Name = "Portugal"
+            //    });
+
+            //    var Scities = new List<City>();
+            //    Scities.Add(new City { Name = "Barcelona" });
+            //    Scities.Add(new City { Name = "Madrid" });
+            //    _context.Countries.Add(new Country
+            //    {
+            //        Cities = Scities,
+            //        Name = "Spain"
+            //    });
+
+            //    var Fcities = new List<City>();
+            //    Fcities.Add(new City { Name = "Paris" });
+            //    Fcities.Add(new City { Name = "Biarritz" });
+            //    _context.Countries.Add(new Country
+            //    {
+            //        Cities = Fcities,
+            //        Name = "France"
+            //    });
+            //    await _context.SaveChangesAsync();
+            //}
 
             var user = await _userHelper.GetUserByEmailAsync("correiandreiamr@gmail.com");
             if (user == null)
@@ -33,87 +101,185 @@ namespace VetClinicACorreia.Web.Data
                     LastName = "Correia",
                     Email = "correiandreiamr@gmail.com",
                     UserName = "correiandreiamr@gmail.com",
-                    PhoneNumber = "123654789"
+                    PhoneNumber = "123654789",
+                    //CityId = _context.Countries.FirstOrDefault().Cities.FirstOrDefault().Id,
+                    //City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault(),
+                    //SpecialityId = _context.Specialities.FirstOrDefault().Id
                 };
 
                 var result = await _userHelper.AddUserAsync(user, "123456789");
+                
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create the user in seeder.");
+                }
+
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
+
+                var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
+
+                if (!isInRole)
+                {
+                    await _userHelper.AddUserToRoleAsync(user, "Admin");
                 }
             }
 
             if (!_context.Doctors.Any())
             {
-                this.AddDoctor("António Barbosa", user);
-                this.AddDoctor("Carolina Lopes", user);
-                this.AddDoctor("Castro de Andrade", user);
-                await _context.SaveChangesAsync();
-            }
-
-            if (!_context.Customers.Any())
-            {
-                this.AddCustomer("Ana Oliveira");
-                this.AddCustomer("Carlos Vasconcelos");
-                this.AddCustomer("Pedro Vigo");
-                await _context.SaveChangesAsync();
-            }
-
-            if (!_context.Pets.Any())
-            {
-                this.AddPet("Boby");
-                this.AddPet("Max");
-                this.AddPet("Lacie");
+                //var speciality = _context.Specialities.FirstOrDefault();
+                this.AddDoctor("António", "Barbosa", user);
+                this.AddDoctor("Carolina", "Lopes", user);
+                this.AddDoctor("Castro", "de Andrade", user);
                 await _context.SaveChangesAsync();
             }
         }
 
-        private void AddPet(string name)
+        private async Task CheckRoles()
+        {
+            await _userHelper.CheckRoleAsync("Admin");
+            await _userHelper.CheckRoleAsync("Doctor");
+            await _userHelper.CheckRoleAsync("VetAssistant");
+            await _userHelper.CheckRoleAsync("Customer");
+        }
+
+        private async Task<User> CheckUserAsync(string firstName, string lastName, string email, string phone, string role)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(email);
+            if (user == null)
+            {
+
+                user = new User
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Email = email,
+                    UserName = email,
+                    PhoneNumber = phone,
+                    //CityId = _context.Countries.FirstOrDefault().Cities.FirstOrDefault().Id,
+                    //City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault(),
+                    //SpecialityId = _context.Specialities.FirstOrDefault().Id
+                };
+
+                await _userHelper.AddUserAsync(user, "123456");
+                await _userHelper.AddUserToRoleAsync(user, role);
+
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
+            }
+
+            return user;
+        }
+
+        private async Task CheckCustomerAsync()
+        {
+            if (!_context.Customers.Any())
+            {
+                _context.Customers.Add(new Customer { User = _customer1 });
+                _context.Customers.Add(new Customer { User = _customer2 });
+                _context.Customers.Add(new Customer { User = _customer3 });
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private async Task CheckVetAssitantsAsync()
+        {
+            if (!_context.VetAssistants.Any())
+            {
+                _context.VetAssistants.Add(new VetAssistant { User = _vetAssistant1 });
+                _context.VetAssistants.Add(new VetAssistant { User = _vetAssistant2 });
+                _context.VetAssistants.Add(new VetAssistant { User = _vetAssistant3 });
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private async Task CheckPetsAsync()
+        {
+            if (!_context.Pets.Any())
+            {
+                var customer = _context.Customers.FirstOrDefault();
+                var petType = _context.PetTypes.FirstOrDefault();
+                AddPet("Max", customer, petType, "Dobermann");
+                AddPet("Bolinhas", customer, petType, "Gato Persa");
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private async Task CheckAppointmentsAsync()
+        {
+            if (!_context.Appointments.Any())
+            {
+                var customer = _context.Customers.FirstOrDefault();
+                var pet = _context.Pets.FirstOrDefault();
+                //var doctor = _context.Doctors.FirstOrDefault();
+                var user = _context.Users.FirstOrDefault();
+                //AddAppointment(customer, pet, /*doctor,*/ user);
+                //AddAppointment(customer, pet, /*doctor,*/ user);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private void AddAppointment(Customer customer, Pet pet, Doctor doctor, User user)
+        {
+            _context.Appointments.Add(new Appointment
+            {
+                AppointmentDate = DateTime.Now.AddDays(+2),
+                DoctorId = doctor,
+                User = user,
+                CustomerId = customer,
+                PetId = pet,
+                Description = "Welcome to YourVet!!"
+            });
+        }
+
+        private void AddPet(string name, Customer owner, PetType petType, string race)
         {
             _context.Pets.Add(new Pet
             {
-                Name = name,
-                Chip = _random.Next(10000000).ToString(),
-                ChipDate = DateTime.Today,
-                ImageUrl = "image",
-                Specie = "Boxer",
-                Sterilized = false,
-                BirthDate = DateTime.Today,
-                Observations = "Welcome to App YourVet"
-                //Animals = pet falta associar o pet
+                Born = DateTime.Now.AddYears(-2),
+                Name = name,                
+                Customer = owner,
+                PetType = petType,
+                Race = race,
+                Remarks = "Welcome to YourVet!!"
             });
         }
 
-        private void AddCustomer(string name)
+
+        private async Task CheckPetTypesAsync()
         {
-            _context.Customers.Add(new Customer
+            if (!_context.PetTypes.Any())
             {
-                Name = name,
-                TIN = _random.Next(10000000).ToString(),
-                Mobile = _random.Next(10000000).ToString(),
-                Email = "xpto@gmail.com",
-                Observations = "Welcome to App YourVet!!"
-                //Animals = pet falta associar o pet
-            });
+                _context.PetTypes.Add(new PetType { Name = "Dog" });
+                _context.PetTypes.Add(new PetType { Name = "Cat" });
+                _context.PetTypes.Add(new PetType { Name = "Snake" });
+                _context.PetTypes.Add(new PetType { Name = "Bird" });
+                _context.PetTypes.Add(new PetType { Name = "Horse" });
+                _context.PetTypes.Add(new PetType { Name = "Fish" });
+                await _context.SaveChangesAsync();
+            }
         }
 
-        private void AddDoctor(string name, User user)
+        private void AddDoctor(string name, string lastname, User user)
         {
             _context.Doctors.Add(new Doctor
             {
-                Name = name,
-                ProfissionalCertificate = "Lalala",
-                ImageUrl = "image",
-                Speciality = "Dermatologista",
+                FirstName = name,
+                LastName = lastname,
+                ProfissionalLicence = "Lalala",
+                ImageUrl = null,
+                //SpecialityId = _context.Specialities.FirstOrDefault().Id,
+                //Speciality = _context.Specialities.FirstOrDefault(),
                 TIN = _random.Next(10000000).ToString(),
                 Mobile = _random.Next(10000000).ToString(),
-                Email = "xpto@yourvet.com",
-                WorkingSchedule = "Morning",
+                //Email = "xpto@yourvet.com",
+                //WorkingSchedule = "Morning",
                 IsAvailable = false,
-                DoctorsOffice = "1",
-                Observations = "Welcome to App YourVet",
+                //DoctorsOffice = "1",
+                Remarks = "Welcome to App YourVet",
                 User = user
             });
         }
+
     }
 }

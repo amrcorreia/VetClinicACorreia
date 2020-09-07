@@ -14,16 +14,6 @@ namespace VetClinicACorreia.Web.Controllers.API
     [Authorize]
     public class AppointmentsController : ControllerBase
     {
-        private readonly IAppointmentRepository _appointmentRepository;
-
-        public AppointmentsController(IAppointmentRepository appointmentRepository)
-        {
-            _appointmentRepository = appointmentRepository;
-        }
-
-        public IActionResult GetAppointments()
-        {
-            return Ok(_appointmentRepository.GetAll());
-        }
+        
     }
 }

@@ -1,4 +1,82 @@
-﻿@model VetClinicACorreia.Web.Models.DoctorViewModel
+﻿@model VetClinicACorreia.Web.Models.ChangeUserViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<section>
+    <div style="margin:auto; width:800px; height:300px">
+        <br />
+        <br />
+        <br />
+        <h4>Edit Doctor</h4>
+        <hr />
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label asp-for="FirstName" class="control-label"></label>
+                                <input asp-for="FirstName" class="form-control" placeholder="Enter First Name" type="text" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label asp-for="LastName" class="control-label"></label>
+                                <input asp-for="LastName" class="form-control" placeholder="Enter Last Name" type="text" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label asp-for="PhoneNumber" class="control-label"></label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="Enter TIN" type="number" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label asp-for="Username" class="control-label"></label>
+                                <input asp-for="Username" class="form-control" placeholder="Enter Email" type="email" />
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Save" class="btn btn-success" />
+                        </div>
+                        <div class="form-group">
+                            <br />
+                            <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+
+
+
+
+
+
+
+
+@*@model VetClinicACorreia.Web.Models.DoctorViewModel
 @{
     ViewData["Title"] = "Edit";
 }
@@ -8,34 +86,34 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>AdminLTE 3 | General Form Elements</title>
-    <!-- Tell the browser to be responsive to screen width -->
+     Tell the browser to be responsive to screen width 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Font Awesome -->
+     Font Awesome 
     <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
-    <!-- Ionicons -->
+     Ionicons 
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- Theme style -->
+     Theme style 
     <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
-    <!-- Google Font: Source Sans Pro -->
+     Google Font: Source Sans Pro 
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
 <body class="hold-transition sidebar-mini">
-    <!-- Content Wrapper. Contains page content -->
+     Content Wrapper. Contains page content 
     <div class="content-wrapper">
 
-        <!-- Main content -->
+         Main content 
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <!-- left column -->
+                     left column 
                     <div class="col-md-12">
-                        <!-- jquery validation -->
+                         jquery validation 
                         <div class="card card-warning" style="margin-top:10px">
                             <div class="card-header">
                                 <h3 class="card-title">Edit Doctor</h3>
                             </div>
-                            <!-- /.card-header -->
-                            <!-- form start -->
+                             /.card-header 
+                             form start 
                             <form asp-action="Edit" enctype="multipart/form-data">
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <input type="hidden" asp-for="Id" />
@@ -44,53 +122,53 @@
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                <!-- text input -->
+                                                 text input 
                                                 <div class="form-group">
-                                                    <label asp-for="Name" class="control-label"></label>
-                                                    <input asp-for="Name" class="form-control" placeholder="Enter Name" />
-                                                    <span asp-validation-for="Name" class="text-danger"></span>
-                                                </div>
+                                                        <label asp-for="Name" class="control-label"></label>
+                                                        <input asp-for="Name" class="form-control" placeholder="Enter Name" />
+                                                        <span asp-validation-for="Name" class="text-danger"></span>
+                                                    </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label asp-for="Speciality" class="control-label"></label>
-                                                    <input asp-for="Speciality" class="form-control" placeholder="Enter Speciality" />
-                                                    <span asp-validation-for="Speciality" class="text-danger"></span>
-                                                </div>
+                                                        <label asp-for="Speciality" class="control-label"></label>
+                                                        <input asp-for="Speciality" class="form-control" placeholder="Enter Speciality" />
+                                                        <span asp-validation-for="Speciality" class="text-danger"></span>
+                                                    </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                <!-- text input -->
+                                                 text input 
                                                 <div class="form-group">
-                                                    <label asp-for="ProfissionalCertificate" class="control-label"></label>
-                                                    <input asp-for="ProfissionalCertificate" class="form-control" />
-                                                    <span asp-validation-for="ProfissionalCertificate" class="text-danger"></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <div class="form-group">
-                                                    <label asp-for="TIN" class="control-label"></label>
-                                                    <input asp-for="TIN" class="form-control" type="number" />
-                                                    <span asp-validation-for="TIN" class="text-danger"></span>
-                                                </div>
+                                                            <label asp-for="ProfissionalCertificate" class="control-label"></label>
+                                                            <input asp-for="ProfissionalCertificate" class="form-control" />
+                                                            <span asp-validation-for="ProfissionalCertificate" class="text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group">
+                                                            <label asp-for="TIN" class="control-label"></label>
+                                                            <input asp-for="TIN" class="form-control" type="number" />
+                                                            <span asp-validation-for="TIN" class="text-danger"></span>
+                                                        </div>
                                             </div>
                                             <div class="col-sm-2">
-                                                <div class="form-group">
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <br />
-                                                            <br />
-                                                            <input asp-for="IsAvailable" />
-                                                            @Html.DisplayNameFor(model => model.IsAvailable)
-                                                        </label>
+                                                    <div class="form-group">
+                                                        <div class="checkbox">
+                                                            <label>
+                                                                <br />
+                                                                <br />
+                                                                <input asp-for="IsAvailable" />
+                                                                @Html.DisplayNameFor(model => model.IsAvailable)
+                                                            </label>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                <!-- text input -->
+                                                 text input 
                                                 <div class="form-group">
                                                     <label asp-for="ImageFile" class="control-label">Image</label>
                                                     <div class="input-group">
@@ -104,32 +182,32 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label asp-for="Mobile" class="control-label"></label>
-                                                    <input asp-for="Mobile" class="form-control" />
-                                                    <span asp-validation-for="Mobile" class="text-danger"></span>
-                                                </div>
+                                                        <label asp-for="Mobile" class="control-label"></label>
+                                                        <input asp-for="Mobile" class="form-control" />
+                                                        <span asp-validation-for="Mobile" class="text-danger"></span>
+                                                    </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                <!-- text input -->
+                                                 text input 
                                                 <div class="form-group">
-                                                    <label asp-for="Email" class="control-label"></label>
-                                                    <input asp-for="Email" class="form-control" />
-                                                    <span asp-validation-for="Email" class="text-danger"></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <label asp-for="WorkingSchedule" class="control-label"></label>
-                                                    <input asp-for="WorkingSchedule" class="form-control" />
-                                                    <span asp-validation-for="WorkingSchedule" class="text-danger"></span>
-                                                </div>
+                                                            <label asp-for="Email" class="control-label"></label>
+                                                            <input asp-for="Email" class="form-control" />
+                                                            <span asp-validation-for="Email" class="text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label asp-for="WorkingSchedule" class="control-label"></label>
+                                                            <input asp-for="WorkingSchedule" class="form-control" />
+                                                            <span asp-validation-for="WorkingSchedule" class="text-danger"></span>
+                                                        </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                <!-- text input -->
+                                                 text input 
                                                 <div class="form-group">
                                                     <label asp-for="DoctorsOffice" class="control-label"></label>
                                                     <input asp-for="DoctorsOffice" class="form-control" />
@@ -138,9 +216,9 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label asp-for="Observations" class="control-label"></label>
-                                                    <input asp-for="Observations" class="form-control" />
-                                                    <span asp-validation-for="Observations" class="text-danger"></span>
+                                                    <label asp-for="Remarks" class="control-label"></label>
+                                                    <input asp-for="Remarks" class="form-control" />
+                                                    <span asp-validation-for="Remarks" class="text-danger"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -153,37 +231,38 @@
                             </form>
 
                         </div>
-                        <!-- /.card -->
+                         /.card 
                     </div>
-                    <!--/.col (left) -->
-                    <!-- right column -->
+                    /.col (left) 
+                     right column 
                     <div class="col-md-6">
 
                     </div>
-                    <!--/.col (right) -->
+                    /.col (right) 
                 </div>
-                <!-- /.row -->
-            </div><!-- /.container-fluid -->
+                 /.row 
+            </div> /.container-fluid 
 
         </section>
-        </div>
+    </div>
 
-        @section Scripts {
-            @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");
         }
-        <!-- jQuery -->
-        <script src="~/theme/plugins/jquery/jquery.min.js"></script>
-        <!-- Bootstrap 4 -->
-        <script src="~/theme/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <!-- bs-custom-file-input -->
-        <script src="~/theme/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
-        <!-- AdminLTE App -->
-        <script src="~/theme/dist/js/adminlte.min.js"></script>
-        <!-- AdminLTE for demo purposes -->
-        <script src="~/theme/dist/js/demo.js"></script>
-        <script type="text/javascript">
-            $(document).ready(function () {
-                bsCustomFileInput.init();
-            });</script>
-</body>
-</html>
+    }
+     jQuery 
+    <script src="~/theme/plugins/jquery/jquery.min.js"></script>
+     Bootstrap 4 
+    <script src="~/theme/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+     bs-custom-file-input 
+    <script src="~/theme/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+     AdminLTE App 
+    <script src="~/theme/dist/js/adminlte.min.js"></script>
+     AdminLTE for demo purposes 
+    <script src="~/theme/dist/js/demo.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            bsCustomFileInput.init();
+        });</script>
+</body>*@
+@*</html>*@

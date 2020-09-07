@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ namespace VetClinicACorreia.Web.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class DoctorsController : Controller
     {
         private readonly IDoctorRepository _doctorRepository;
@@ -21,9 +22,9 @@ namespace VetClinicACorreia.Web.Controllers.API
             _doctorRepository = doctorRepository;
         }
 
-        public IActionResult GetDoctors()
-        {
-            return Ok(_doctorRepository.GetAllWithUsers());
-        }
+        //public IActionResult GetDoctors()
+        //{
+        //    return Ok(_doctorRepository.GetAllWithUsers());
+        //}
     }
 }
