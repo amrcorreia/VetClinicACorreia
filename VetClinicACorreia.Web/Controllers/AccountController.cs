@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using VetClinicACorreia.Web.Data;
 using VetClinicACorreia.Web.Data.Entities;
 using VetClinicACorreia.Web.Data.Repositories;
 using VetClinicACorreia.Web.Helpers;
@@ -22,17 +23,21 @@ namespace VetClinicACorreia.Web.Controllers
         private readonly IConfiguration _configuration;
         private readonly ICountryRepository _countryRepository;
         private readonly IMailHelper _mailHelper;
+        private readonly DataContext _context;
 
         public AccountController(IUserHelper userHelper,
             IConfiguration configuration,
             ICountryRepository countryRepository,
-            IMailHelper mailHelper)
+            IMailHelper mailHelper,
+            DataContext dataContext)
         {
             _userHelper = userHelper;
             _configuration = configuration;
             _countryRepository = countryRepository;
             _mailHelper = mailHelper;
+            _context = dataContext;
         }
+
 
         public IActionResult Login()
         {
@@ -83,14 +88,12 @@ namespace VetClinicACorreia.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterNewUserViewModel model)
         {
-            if (this.ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByEmailAsync(model.Username);
-
                 if (user == null)
                 {
                     //var city = await _countryRepository.GetCityAsync(model.CityId);
-                    //var speciality = await _specialityRepository.GetSpecialitiesAsync(model.SpecialityId);
 
                     user = new User
                     {
@@ -98,59 +101,75 @@ namespace VetClinicACorreia.Web.Controllers
                         LastName = model.LastName,
                         Email = model.Username,
                         UserName = model.Username,
-                        PhoneNumber = model.PhoneNumber,
                         TIN = model.TIN,
+                        PhoneNumber = model.PhoneNumber,
                         //CityId = model.CityId,
-                        //City = city,
-                        //SpecialityId = model.SpecialityId,
-
+                        //City = city
                     };
 
-                    var result = await this._userHelper.AddUserAsync(user, model.Password); //guarda o user
+                    var result = await _userHelper.AddUserAsync(user, model.Password);
                     if (result != IdentityResult.Success)
                     {
                         this.ModelState.AddModelError(string.Empty, "The user couldn't be created.");
                         return this.View(model);
                     }
 
-                    var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-
-                    if (user.TIN == null)
+                    if (model.Password == "VetAssistant")
                     {
-                        var tokenLink = this.Url.Action("ConfirmEmailDoctor", "Account", new
+                        var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+
+                    
+                        var tokenLink = this.Url.Action("ConfirmEmailVetAssistant", "Account", new
                         {
                             userid = user.Id,
                             token = myToken
                         }, protocol: HttpContext.Request.Scheme);
 
-                        _mailHelper.SendMail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+                        _mailHelper.SendMail(model.Username, "YourVet - Email confirmation", $"<h1>Veterinary Assistant Email Confirmation</h1>" +
+                            $"<br/>" +
+                            $"Welcome to YouVet, you password is 123456. Please change you password as soon as possible." +
                             $"To allow the user, " +
-                            $"plase click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
+                            $"please click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
                         this.ViewBag.Message = "The instructions to allow your user has been sent to email.";
-
-                        return this.View(model);
                     }
                     else
-                    {                      
-                        var tokenLink1 = this.Url.Action("ConfirmEmail", "Account", new
+                    {
+                        User userInDB = await _userHelper.GetUserByEmailAsync(user.UserName);
+                        await _userHelper.AddUserToRoleAsync(userInDB, "Customer");
+
+                        Customer owner = new Customer
+                        {
+                            //Appointments = new List<Appointmet>(),
+                            Pets = new List<Pet>(),
+                            User = userInDB
+                        };
+
+                        _context.Customers.Add(owner);
+                        await _context.SaveChangesAsync();
+
+                        var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+
+                        var tokenLink = this.Url.Action("ConfirmEmail", "Account", new
                         {
                             userid = user.Id,
                             token = myToken
                         }, protocol: HttpContext.Request.Scheme);
 
-                        _mailHelper.SendMail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+                        _mailHelper.SendMail(model.Username, "YourVet - Email confirmation", $"<h1>Customer Email Confirmation</h1>" +
+                            $"<br/>" +
+                            $"Welcome to YouVet!!" +
                             $"To allow the user, " +
-                            $"plase click in this link:</br></br><a href = \"{tokenLink1}\">Confirm Email</a>");
+                            $"please click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
                         this.ViewBag.Message = "The instructions to allow your user has been sent to email.";
-                        return this.View(model);
                     }
-                   
+                    
+                    return this.View(model);
                 }
 
-                this.ModelState.AddModelError(string.Empty, "The username is already registered.");
+                this.ModelState.AddModelError(string.Empty, "The user already exists.");
             }
 
-            return this.View(model);
+            return View(model);
         }
 
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
@@ -171,8 +190,7 @@ namespace VetClinicACorreia.Web.Controllers
             {
                 return this.NotFound();
             }
-            //TODO
-            //Atribuir o role a Customer
+
             var isInRole = await _userHelper.IsUserInRoleAsync(user, "Customer");
 
             if (!isInRole)
@@ -183,7 +201,7 @@ namespace VetClinicACorreia.Web.Controllers
             return View();
         }
 
-        public async Task<IActionResult> ConfirmEmailDoctor(string userId, string token)
+        public async Task<IActionResult> ConfirmEmailVetAssistant(string userId, string token)
         {
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
             {
@@ -201,18 +219,16 @@ namespace VetClinicACorreia.Web.Controllers
             {
                 return this.NotFound();
             }
-            //TODO
-            //Atribuir o role a Doctor
-            var isInRole1 = await _userHelper.IsUserInRoleAsync(user, "Doctor");
 
-            if (!isInRole1)
+            var isInRole = await _userHelper.IsUserInRoleAsync(user, "VetAssistant");
+
+            if (!isInRole)
             {
-                await _userHelper.AddUserToRoleAsync(user, "Doctor");
+                await _userHelper.AddUserToRoleAsync(user, "VetAssistant");
             }
 
             return View();
         }
-
 
         public async Task<IActionResult> ChangeUser()
         {
@@ -223,6 +239,9 @@ namespace VetClinicACorreia.Web.Controllers
             {
                 model.FirstName = user.FirstName;
                 model.LastName = user.LastName;
+                model.Username = user.UserName;
+                model.PhoneNumber = user.PhoneNumber;
+                model.TIN = user.TIN;
 
                 //var city = await _countryRepository.GetCityAsync(user.CityId);
                 //if (city != null)
@@ -255,6 +274,9 @@ namespace VetClinicACorreia.Web.Controllers
                 {
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
+                    user.UserName = model.Username;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.TIN = model.TIN;
 
                     var respose = await _userHelper.UpdateUserAsync(user);
                     if (respose.Succeeded)
@@ -349,6 +371,7 @@ namespace VetClinicACorreia.Web.Controllers
             return this.BadRequest();
         }
 
+
         public IActionResult RecoverPassword()
         {
             return this.View();
@@ -373,7 +396,8 @@ namespace VetClinicACorreia.Web.Controllers
                     "Account",
                     new { token = myToken }, protocol: HttpContext.Request.Scheme);
 
-                _mailHelper.SendMail(model.Email, "Shop Password Reset", $"<h1>Shop Password Reset</h1>" +
+                _mailHelper.SendMail(model.Email, "YourVet - Password Reset", $"<h1>YourVet - Veterinary Clinic</h1>" +
+                    $"<h3>Password Reset Information</h3>" +
                 $"To reset the password click in this link:</br></br>" +
                 $"<a href = \"{link}\">Reset Password</a>");
                 this.ViewBag.Message = "The instructions to recover your password has been sent to email.";
@@ -399,7 +423,7 @@ namespace VetClinicACorreia.Web.Controllers
                 var result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
                 if (result.Succeeded)
                 {
-                    this.ViewBag.Message = "Password reset successful.";
+                    this.ViewBag.Message = "Password reset successfuly.";
                     return this.View();
                 }
 
@@ -416,12 +440,10 @@ namespace VetClinicACorreia.Web.Controllers
             return View();
         }
 
-
         //public async Task<JsonResult> GetCitiesAsync(int countryId)
         //{
         //    var country = await _countryRepository.GetCountryWithCitiesAsync(countryId);
         //    return this.Json(country.Cities.OrderBy(c => c.Name));
         //}
-
     }
 }

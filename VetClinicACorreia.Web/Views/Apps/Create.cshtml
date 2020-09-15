@@ -1,0 +1,101 @@
+﻿@model VetClinicACorreia.Web.Models.AppViewModel
+
+@{ ViewData["Title"] = "Create"; }
+
+<section>
+    <div style="margin:auto; width:800px; height:300px">
+        <br />
+        <br />
+        <br />
+
+        <h4>New Appointment</h4>
+        <hr />
+        <form asp-action="Create" enctype="multipart/form-data" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @*<input type="hidden" asp-for="Id" />*@
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label asp-for="CustomerId" class="control-label"></label>
+                                <select asp-for="CustomerId" asp-items="Model.Customers" class="form-control"></select>
+                                <span asp-validation-for="CustomerId" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="PetId" class="control-label"></label>
+                                <select asp-for="PetId" asp-items="Model.Pets" class="form-control"></select>
+                                <span asp-validation-for="PetId" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="DoctorId" class="control-label"></label>
+                                <select asp-for="DoctorId" asp-items="Model.Doctors" class="form-control"></select>
+                                <span asp-validation-for="DoctorId" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="AppDate" class="control-label"></label>
+                                <input asp-for="AppDate" class="form-control" type="date" />
+                                <span asp-validation-for="AppDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ScheduleId" class="control-label"></label>
+                                <select asp-for="ScheduleId" asp-items="Model.Doctors" class="form-control"></select>
+                                <span asp-validation-for="ScheduleId" class="text-danger"></span>
+                            </div>
+
+                            @*<div class="form-group">
+                                <label asp-for="Remarks" class="control-label"></label>
+                                <textarea asp-for="Remarks" class="form-control"></textarea>
+                                <span asp-validation-for="Remarks" class="text-danger"></span>
+                            </div>*@
+
+                            <div class="form-group">
+                                <input type="submit" value="Create" class="btn btn-primary" />
+                                <a asp-action="Index" class="btn btn-success">Back to List</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-success">
+                        <p>
+                            @ViewBag.Message
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+</section>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+    	$(document).ready(function () {
+        	$("#CustomerId").change(function () {
+            	$("#PetId").empty();
+            	$.ajax({
+                	type: 'POST',
+                	url: '@Url.Action("GetPetsAsync")',
+                	dataType: 'json',
+                	data: { customerId: $("#CustomerId").val() },
+                	success: function (pets) {
+                        $("#PetId").append('<option value="0">(Select a pet mmo...)</option>');
+                        pets.map(pet =>
+                            $("#PetId").append('<option value="'
+                            	+ pet.id + '">'
+                            	+ pet.name + '</option>'));
+                	},
+                	error: function (ex) {
+                    	alert('Failed to retrieve pets. ohhhhh' + ex.statusText);
+                	}
+            	});
+            	return false;
+        	})
+    	});
+    </script>
+}

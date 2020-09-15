@@ -21,39 +21,52 @@ namespace VetClinicACorreia.Web.Controllers
     
     public class DoctorsController : Controller
     {
+        private readonly DataContext _context;
         private readonly IDoctorRepository _doctorRepository;
         private readonly IUserHelper _userHelper;
         private readonly IImageHelper _imageHelper;
         private readonly IConverterHelper _converterHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly ISpecialityRepository _specialityRepository;
 
         public DoctorsController(
+            DataContext context,
             IDoctorRepository doctorRepository,
             IUserHelper userHelper,
             IImageHelper imageHelper,
             IConverterHelper converterHelper, 
-            IMailHelper mailHelper)
+            IMailHelper mailHelper, 
+            ISpecialityRepository specialityRepository)
         {
-            
+            _context = context;
             _doctorRepository = doctorRepository;
             _userHelper = userHelper;
             _imageHelper = imageHelper;
             _converterHelper = converterHelper;
             _mailHelper = mailHelper;
+            _specialityRepository = specialityRepository;
         }
 
         // GET: Doctors
         public IActionResult Index()
         {
-            return View(_doctorRepository.GetAll().OrderBy(p => p.FullName));
+            return View(_doctorRepository.GetAll().Include(d => d.Speciality).OrderBy(d => d.FullName));
+            
         }
 
         // GET: Doctors/Create
         [Authorize]
         public IActionResult Create()
         {
-            return View();
+            var model = new DoctorViewModel
+            {
+                Specialities = GetComboSpecialities()
+            };
+            return this.View(model);
         }
+
+
+
 
         // POST: Doctors/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -77,21 +90,11 @@ namespace VetClinicACorreia.Web.Controllers
                 await _doctorRepository.CreateAsync(doctor);
                 return RedirectToAction(nameof(Index));
             }
+            
+            model.Specialities = GetComboSpecialities();
             return View(model);
+            
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         // GET: Doctors/Details/5
         [Authorize]
@@ -99,19 +102,18 @@ namespace VetClinicACorreia.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("DoctorNotFound");
             }
 
             var doctor = await _doctorRepository.GetByIdAsync(id.Value);
             if (doctor == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("DoctorNotFound");
             }
+            var view = _converterHelper.ToDoctorViewModel(doctor);
 
-            return View(doctor);
+            return View(view);
         }
-
-        
 
         // GET: Doctors/Edit/5
         [Authorize]
@@ -119,19 +121,21 @@ namespace VetClinicACorreia.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("DoctorNotFound");
             }
 
             var doctor = await _doctorRepository.GetByIdAsync(id.Value);
             if (doctor == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("DoctorNotFound");
             }
 
             var view = _converterHelper.ToDoctorViewModel(doctor);
 
             return View(view);
         }
+
+
 
         // POST: Doctors/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -153,7 +157,7 @@ namespace VetClinicACorreia.Web.Controllers
 
                     var doctor = _converterHelper.ToDoctor(model, path, false);
 
-                    doctor.User = await _userHelper.GetUserByEmailAsync("correiandreiamr@gmail.com");
+                    doctor.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _doctorRepository.UpdateAsync(doctor);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -172,25 +176,8 @@ namespace VetClinicACorreia.Web.Controllers
             return View(model);
         }
 
-        //// GET: Doctors/Delete/5
-        //[Authorize]
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
 
-        //    var doctor = await _doctorRepository.GetByIdAsync(id.Value);
-        //    if (doctor == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-
-        //    return View(doctor);
-        //}
-
+        // GET: Doctors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -201,6 +188,32 @@ namespace VetClinicACorreia.Web.Controllers
             await _doctorRepository.DeleteDoctorAsync(id.Value);
             return this.RedirectToAction("Index");
         }
+
+        public IEnumerable<SelectListItem> GetComboSpecialities()
+        {
+            var list = _context.Specialities.Select(sp => new SelectListItem
+            {
+                Text = sp.Name,
+                Value = $"{sp.Id}"
+            })
+                .OrderBy(sp => sp.Text)
+                .ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Select a speciality...]",
+                Value = "0"
+            });
+
+            return list;
+        }
+
+
+
+
+
+
+
 
 
         //// POST: Products/Delete/5

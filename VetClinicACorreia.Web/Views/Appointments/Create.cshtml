@@ -1,137 +1,107 @@
-﻿@model IEnumerable<VetClinicACorreia.Web.Data.Entities.Appointment>
+﻿@model VetClinicACorreia.Web.Models.AppointmentViewModel
 
-@{
-    ViewData["Title"] = "Create";
-}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" />
-</head>
-<body>
-    <h2>Create</h2>
+@{ ViewData["Title"] = "Create"; }
 
-    <p>
-        <a asp-action="AddAppointment" class="btn btn-success">Add Appointment</a>
-        <a asp-action="ConfirmAppointment" class="btn btn-primary" id="btnConfirm">Confirm Appointment</a>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CustomerId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DoctorId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AppointmentDate)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CustomerId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DoctorId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AppointmentDate)
-                    </td>
-                    <td id="@item.Id">
-                        <a asp-action="Increase" asp-route-id="@item.Id" class="btn btn-warning"><i class="fa fa-plus"></i></a>
-                        <a asp-action="Decrease" asp-route-id="@item.Id" class="btn btn-info"><i class="fa fa-minus"></i></a>
-                        <a asp-action="DeleteItem" asp-route-id="@item.Id" class="btn btn-danger" id="btnDeleteItem">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <section>
+        <div style="margin:auto; width:800px; height:300px">
+            <br />
+            <br />
+            <br />
 
-    <div id="confirmDialog" class="modal fade">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
-                    <h4 class="modal-title">Confirm</h4>
+            <h4>New Appointment</h4>
+            <hr />
+            <form asp-action="Create" enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @*<input type="hidden" asp-for="Id" />*@
+                <div class="card-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label asp-for="CustomerId" class="control-label"></label>
+                                    <select asp-for="CustomerId" asp-items="Model.Customers" class="form-control"></select>
+                                    <span asp-validation-for="CustomerId" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="PetId" class="control-label"></label>
+                                    <select asp-for="PetId" asp-items="Model.Pets" class="form-control"></select>
+                                    <span asp-validation-for="PetId" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="DoctorId" class="control-label"></label>
+                                    <select asp-for="DoctorId" asp-items="Model.Doctors" class="form-control"></select>
+                                    <span asp-validation-for="DoctorId" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="AppointmentDate" class="control-label"></label>
+                                    <input asp-for="AppointmentDate" class="form-control" type="date" />
+                                    <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label asp-for="AppointmentHour" class="control-label"></label>
+                                    <input asp-for="AppointmentHour" class="form-control" type="text" />
+                                    <span asp-validation-for="AppointmentHour" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Remarks" class="control-label"></label>
+                                    <textarea asp-for="Remarks" class="form-control"></textarea>
+                                    <span asp-validation-for="Remarks" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                    <a asp-action="Index" class="btn btn-success">Back to List</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-success">
+                            <p>
+                                @ViewBag.Message
+                            </p>
+                        </div>
+
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <p>Do you want to confirm the order?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="btnYesConfirm">Yes</button>
-                    <button type="button" class="btn btn-success" id="btnNoConfirm">No</button>
-                </div>
-            </div>
+            </form>
         </div>
-    </div>
-
-    <div id="deleteDialog" class="modal fade">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
-                    <h4 class="modal-title">Delete</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Do you want to delete the product from order?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
-                    <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
-
-
+        
+    </section>
 @section Scripts {
-
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script type="text/javascript">
-        $(document).ready(function () {
-            var id = 0;
-            $("#btnConfirm").click(function () {
-                $("#confirmDialog").modal('show');
-                return false;
-            });
-            $("#btnNoConfirm").click(function () {
-                $("#confirmDialog").modal('hide');
-                return false;
-            });
-            $("#btnYesConfirm").click(function () {
-                window.location.href = '/Appointments/ConfirmAppointment';
-            });
-            /*Evento click em todos os <a> com o id = btnDeleteItem*/
-            $('a[id*=btnDeleteItem]').click(function () {
-                debugger;
-                //console.log($(this).parent()[0]);
-                id = $(this).parent()[0].id;
-                $("#deleteDialog").modal('show');
-                return false;
-            });
-            $("#btnNoDelete").click(function () {
-                $("#deleteDialog").modal('hide');
-                return false;
-            });
-            $("#btnYesDelete").click(function () {
-                window.location.href = '/Appointments/DeleteItem/' + id;
-            });
-        });
+    	$(document).ready(function () {
+        	$("#CustomerId").change(function () {
+            	$("#PetId").empty();
+            	$.ajax({
+                	type: 'POST',
+                	url: '@Url.Action("GetPetsAsync")',
+                	dataType: 'json',
+                	data: { customerId: $("#CustomerId").val() },
+                	success: function (pets) {
+                        $("#PetId").append('<option value="0">(Select a pet mmo...)</option>');
+                        pets.map(pet =>
+                            $("#PetId").append('<option value="'
+                            	+ pet.id + '">'
+                            	+ pet.name + '</option>'));
+                	},
+                	error: function (ex) {
+                    	alert('Failed to retrieve pets. ohhhhh' + ex.statusText);
+                	}
+            	});
+            	return false;
+        	})
+    	});
     </script>
 }
+
+
+
+
+

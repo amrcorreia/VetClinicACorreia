@@ -45,6 +45,7 @@ namespace VetClinicACorreia.Web.Controllers
                 return new NotFoundViewResult("VetAssitantNotFound");
             }
 
+
             var VetAssitant = await _vetAssistantRepository.GetByIdAsync(id.Value);
             if (VetAssitant == null)
             {
@@ -53,6 +54,32 @@ namespace VetClinicACorreia.Web.Controllers
 
             return View(VetAssitant);
         }
+
+        // GET: Owners/Details/5
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    Customer owner = await _context.Customers
+        //        .Include(o => o.User)
+        //        .Include(o => o.Pets)
+        //        .ThenInclude(p => p.PetType)
+        //        .Include(o => o.Pets)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+
+        //    if (owner == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(owner);
+        //}
+
+
+
 
         // GET: VetAssitants/Create
         [Authorize(Roles = "Admin")]
@@ -66,12 +93,11 @@ namespace VetClinicACorreia.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RegisterNewUserViewModel model)
+        public async Task<IActionResult> Register(RegisterNewUserViewModel model)
         {
-            if (this.ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByEmailAsync(model.Username);
-
                 if (user == null)
                 {
                     //var city = await _countryRepository.GetCityAsync(model.CityId);
@@ -82,52 +108,66 @@ namespace VetClinicACorreia.Web.Controllers
                         LastName = model.LastName,
                         Email = model.Username,
                         UserName = model.Username,
+                        TIN = model.TIN,
                         PhoneNumber = model.PhoneNumber,
-                        TIN = model.TIN
-
                         //CityId = model.CityId,
-                        //City = city,
+                        //City = city
                     };
 
-                    var result = await this._userHelper.AddUserAsync(user, model.Password); //guarda o user
+                    var result = await _userHelper.AddUserAsync(user, model.Password);
                     if (result != IdentityResult.Success)
                     {
                         this.ModelState.AddModelError(string.Empty, "The user couldn't be created.");
                         return this.View(model);
                     }
 
-                    User userInDB = await _userHelper.GetUserByEmailAsync(user.UserName);
-                    await _userHelper.AddUserToRoleAsync(userInDB, "Customer");
-
-                    VetAssistant owner = new VetAssistant
-                    {
-                        //Agendas = new List<Agenda>(),
-                        //Pets = new List<Pet>(),
-                        User = userInDB
-                    };
-
-                    await _vetAssistantRepository.CreateAsync(owner);
-
                     var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                    var tokenLink = this.Url.Action("ConfirmEmail", "Account", new
+
+
+                    var tokenLink = this.Url.Action("ConfirmEmailVetAssistant", "Account", new
                     {
                         userid = user.Id,
                         token = myToken
                     }, protocol: HttpContext.Request.Scheme);
 
-                    _mailHelper.SendMail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+                    _mailHelper.SendMail(model.Username, "YourVet - Email confirmation", $"<h1>Veterinary Assistant Email Confirmation</h1>" +
+                        $"<br/>" +
+                        $"Welcome to YouVet, you password is 123456. Please change you password as soon as possible." +
                         $"To allow the user, " +
-                        $"plase click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
+                        $"please click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
                     this.ViewBag.Message = "The instructions to allow your user has been sent to email.";
-
+                    
                     return this.View(model);
                 }
 
-                this.ModelState.AddModelError(string.Empty, "The username is already registered.");
+                this.ModelState.AddModelError(string.Empty, "The user already exists.");
             }
 
-            return this.View(model);
+            return View(model);
         }
+
+        public async Task<IActionResult> ConfirmEmailVetAssistant(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return this.NotFound();
+            }
+
+            var user = await _userHelper.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return this.NotFound();
+            }
+
+            var result = await _userHelper.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                return this.NotFound();
+            }
+
+            return View();
+        }
+
 
         // GET: Products/Edit/5
         [Authorize(Roles = "Admin")]
@@ -213,8 +253,8 @@ namespace VetClinicACorreia.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vetAssistant = await _vetAssistantRepository.GetByIdAsync(id);
-            await _vetAssistantRepository.DeleteAsync(vetAssistant);
+            //var vetAssistant = await _vetAssistantRepository.GetByIdAsync(id);
+            //await _vetAssistantRepository.DeleteAsync(vetAssistant);
             return RedirectToAction(nameof(Index));
         }
 

@@ -9,27 +9,58 @@
         <br />
         <br />
 
-        <h4>Customer details</h4>
+        <h4>Doctor details</h4>
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <hr />
         <dl class="dl-horizontal">
+            <dd>
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src=" @Url.Content(Model.ImageUrl)" alt="Image" style="width:100px;height:150px;max-height100%;height:auto" />
+                }
+                else if (Model.Id == 1)
+                {
+                    <img src="~/images/Doctors/doctor1.jpg" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
+                }
+                else if (Model.Id == 2)
+                {
+                    <img src="~/images/Doctors/doctor2.jpg" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
+                }
+                else
+                {
+                    <img src="~/images/Doctors/doctor3.jpg" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
+                }
+            </dd>
+            <br />
             <dt>
-                @Html.DisplayNameFor(model => model.User.FullName)
+                @Html.DisplayNameFor(model => model.FullName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.FullName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ProfissionalLicence)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ProfissionalLicence)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Mobile)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Mobile)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Speciality)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Speciality.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.User)
             </dt>
             <dd>
                 @Html.DisplayFor(model => model.User.FullName)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.User.Email)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.User.Email)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.User.PhoneNumber)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.User.PhoneNumber)
             </dd>
         </dl>
 
@@ -40,47 +71,8 @@
         <br />
         
     </div>
-    <div id="deleteDialog" class="modal fade">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
-                    <h4 class="modal-title">Delete</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Do you want to delete the doctor?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
-                    <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 </section>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var id = 0;
-            $('a[id*=btnDelete]').click(function () {
-                debugger;
-                id = $(this).parent()[0].id;
-                $("#deleteDialog").modal('show');
-                return false;
-            });
-            $("#btnNoDelete").click(function () {
-                $("#deleteDialog").modal('hide');
-                return false;
-            });
-            $("#btnYesDelete").click(function () {
-                window.location.href = '/Doctors/Delete/' + id;
-            });
-        });
-    </script>
-}
 
 
 

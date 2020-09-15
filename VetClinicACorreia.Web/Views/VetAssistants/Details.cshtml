@@ -1,1 +1,47 @@
-﻿
+﻿@model VetClinicACorreia.Web.Data.Entities.VetAssistant
+
+@{
+    ViewData["Title"] = "Details";
+}
+<section>
+    <div style="margin:auto; width:800px; height:300px">
+        <br />
+        <br />
+        <br />
+
+        <h4>Veterinay Assistant details</h4>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <hr />
+        <dl class="dl-horizontal">
+
+            <dt>
+                @Html.DisplayNameFor(model => model.User.UserName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.User.UserName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.User.Email)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.User.Email)
+            </dd>
+            @*<dt>
+                @Html.DisplayNameFor(model => model.TIN)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.TIN)
+            </dd>*@
+
+
+        </dl>
+
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Doctor</a>
+            <a asp-action="Index" class="btn btn-success">Back to List</a>
+        </div>
+        <br />
+
+    </div>
+
+</section>

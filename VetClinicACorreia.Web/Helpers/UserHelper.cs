@@ -87,10 +87,14 @@ namespace VetClinicACorreia.Web.Helpers
         {
             return await _userManager.FindByIdAsync(userId);
         }
+        public async Task<bool> IsAdminInRoleAsync(User user, string roleName)
+        {
+            return await _userManager.IsInRoleAsync(user, "Admin");
+        }
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)
         {
-            return await _userManager.IsInRoleAsync(user, "Admin");
+            return await _userManager.IsInRoleAsync(user, "VetAssistant");
         }
 
         public async Task<SignInResult> LoginAsync(LoginViewModel model)

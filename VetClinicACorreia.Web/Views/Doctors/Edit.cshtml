@@ -1,4 +1,4 @@
-﻿@model VetClinicACorreia.Web.Models.ChangeUserViewModel
+﻿@model VetClinicACorreia.Web.Models.DoctorViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -17,10 +17,12 @@
             <div class="card-body">
                 <div class="form-group">
                     <div class="row">
+
                         <div class="col-sm-6">
+                            <!-- text input -->
                             <div class="form-group">
                                 <label asp-for="FirstName" class="control-label"></label>
-                                <input asp-for="FirstName" class="form-control" placeholder="Enter First Name" type="text" />
+                                <input asp-for="FirstName" class="form-control" placeholder="Enter First Name" />
                                 <span asp-validation-for="FirstName" class="text-danger"></span>
                             </div>
                         </div>
@@ -33,17 +35,88 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <div class="form-group">
-                                <label asp-for="PhoneNumber" class="control-label"></label>
-                                <input asp-for="PhoneNumber" class="form-control" placeholder="Enter TIN" type="number" />
-                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
+                            <!-- text input -->
                             <div class="form-group">
                                 <label asp-for="Username" class="control-label"></label>
                                 <input asp-for="Username" class="form-control" placeholder="Enter Email" type="email" />
                                 <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label asp-for="Password" class="control-label"></label>
+                                <input asp-for="Password" class="form-control" placeholder="Enter Password" type="password" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label asp-for="ProfissionalLicence" class="control-label"></label>
+                                <input asp-for="ProfissionalLicence" class="form-control" placeholder="Enter Profissional Licence" type="number" />
+                                <span asp-validation-for="ProfissionalLicence" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label asp-for="Confirm" class="control-label"></label>
+                                <input asp-for="Confirm" class="form-control" placeholder="Confirm Password" type="password" />
+                                <span asp-validation-for="Confirm" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label asp-for="ImageFile" class="control-label"></label>
+                                <input asp-for="ImageFile" class="form-control" type="file" />
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label asp-for="TIN" class="control-label"></label>
+                                <input asp-for="TIN" class="form-control" type="number" />
+                                <span asp-validation-for="TIN" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label asp-for="Mobile" class="control-label"></label>
+                                <input asp-for="Mobile" class="form-control" type="number" />
+                                <span asp-validation-for="Mobile" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <br />
+                                    <label>
+                                        <input asp-for="IsAvailable" /> @Html.DisplayNameFor(model => model.IsAvailable)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label asp-for="SpecialityId" class="control-label"></label>
+                                <select asp-for="SpecialityId" asp-items="Model.Specialities" class="form-control"></select>
+                                <span asp-validation-for="SpecialityId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label asp-for="Remarks" class="control-label"></label>
+                                <input asp-for="Remarks" class="form-control" placeholder="Enter Remarks" />
+                                <span asp-validation-for="Remarks" class="text-danger"></span>
                             </div>
                         </div>
 

@@ -9,14 +9,16 @@ using VetClinicACorreia.Web.Models;
 
 namespace VetClinicACorreia.Web.Data.Repositories
 {
-    public class SpecialityRepository
+    public class SpecialityRepository : GenericRepository<Speciality>, ISpecialityRepository
     {
-        //private readonly DataContext _context;
+        private readonly DataContext _context;
 
-        //public SpecialityRepository(DataContext context) : base(context)
-        //{
-        //    _context = context;
-        //}
+        public SpecialityRepository(DataContext context
+            ) : base(context)
+        {
+            _context = context;
+        }
+                
 
         //public async Task AddSpecialityAsync(SpecialityViewModel model)
         //{

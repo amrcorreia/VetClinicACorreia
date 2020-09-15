@@ -22,21 +22,21 @@ namespace VetClinicACorreia.Web.Models
         //[MaxLength(20, ErrorMessage = "The field {0} only can contain {1} characters.")]
         //public string PhoneNumber { get; set; }
 
-        [Display(Name = "City")]
-        [Range(1, int.MaxValue, ErrorMessage = "You must select a city")]
+        //[Display(Name = "City")]
+        //[Range(1, int.MaxValue, ErrorMessage = "You must select a city")]
 
-        public int CityId { get; set; }
-
-
-        public IEnumerable<SelectListItem> Cities { get; set; }
+        //public int CityId { get; set; }
 
 
-        [Display(Name = "Country")]
-        [Range(1, int.MaxValue, ErrorMessage = "You must select a country")]
-        public int CountryId { get; set; }
+        //public IEnumerable<SelectListItem> Cities { get; set; }
 
 
-        public IEnumerable<SelectListItem> Countries { get; set; }
+        //[Display(Name = "Country")]
+        //[Range(1, int.MaxValue, ErrorMessage = "You must select a country")]
+        //public int CountryId { get; set; }
+
+
+        //public IEnumerable<SelectListItem> Countries { get; set; }
 
 
         //[Required]
@@ -54,12 +54,12 @@ namespace VetClinicACorreia.Web.Models
 
 
 
-        [Display(Name = "Speciality")]
-        [Range(1, int.MaxValue, ErrorMessage = "You must select a speciality")]
-        public int SpecialityId { get; set; }
+    //    [Display(Name = "Speciality")]
+    //    [Range(1, int.MaxValue, ErrorMessage = "You must select a speciality")]
+    //    public int SpecialityId { get; set; }
 
 
 
-        public IEnumerable<SelectListItem> Specialities { get; set; }
+    //    public IEnumerable<SelectListItem> Specialities { get; set; }
     }
 }

@@ -10,7 +10,6 @@ namespace VetClinicACorreia.Web.Data.Entities
     {
         public int Id { get; set; }
 
-
         //[MaxLength(50, ErrorMessage = "The field {0} only can contains {1} characters lenght")]
         //[Required]
         //public string Name { get; set; }
@@ -34,14 +33,15 @@ namespace VetClinicACorreia.Web.Data.Entities
         public string ImageUrl { get; set; }
 
 
-        //public Speciality Speciality { get; set; }
+        public Speciality Speciality { get; set; }
 
 
         [MaxLength(9, ErrorMessage = "The field {0} only can contains {1} characters lenght")]
         [MinLength(9, ErrorMessage = "The field {0} have to contains {1} characters lenght")]
         public string TIN { get; set; }
 
-
+        [RegularExpression(@"\d{9}",
+         ErrorMessage = "Must insert the {0} correct.")]
         public string Mobile { get; set; }
 
 
@@ -66,7 +66,7 @@ namespace VetClinicACorreia.Web.Data.Entities
         public User User { get; set; }
 
 
-        [Display(Name = "Full name")]
+        [Display(Name = "Name")]
         public string FullName { get { return $"{this.FirstName} {this.LastName}"; } }
 
 

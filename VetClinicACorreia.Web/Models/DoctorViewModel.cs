@@ -13,12 +13,12 @@ namespace VetClinicACorreia.Web.Models
         [Display(Name = "Image")]
         public IFormFile ImageFile { get; set; }
 
-        //[Required(ErrorMessage = "The field {0} is mandatory.")]
-        //[Display(Name = "Speciality")]
-        //[Range(1, int.MaxValue, ErrorMessage = "You must select a speciality.")]
-        //public int SpecialityId { get; set; }
+        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        [Display(Name = "Speciality")]
+        [Range(1, int.MaxValue, ErrorMessage = "You must select a speciality.")]
+        public int SpecialityId { get; set; }
 
-        //public IEnumerable<SelectListItem> Specialities { get; set; }
+        public IEnumerable<SelectListItem> Specialities { get; set; }
 
 
         [Required]

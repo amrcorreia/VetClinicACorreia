@@ -15,5 +15,9 @@ namespace VetClinicACorreia.Web.Helpers
         IEnumerable<SelectListItem> GetComboCustomers();
 
         IEnumerable<SelectListItem> GetComboPets(int customerId);
+
+        IEnumerable<SelectListItem> GetComboDoctors();
+
+        IEnumerable<SelectListItem> GetComboSchedules();
     }
 }

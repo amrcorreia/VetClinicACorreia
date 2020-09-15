@@ -17,21 +17,23 @@ namespace VetClinicACorreia.Web.Data.Entities
         [MaxLength(50, ErrorMessage = "The field {0} only can contain {1} characters.")]
         public string LastName { get; set; }
 
+
         [MaxLength(9, ErrorMessage = "The field {0} only can contains {1} characters lenght")]
         [MinLength(9, ErrorMessage = "The field {0} have to contains {1} characters lenght")]
 
+
         public string TIN { get; set; }
+
+
+        [Display(Name = "Full name")]
+        public string FullName { get { return $"{this.FirstName} {this.LastName}"; } }
+
 
         //public int CityId { get; set; }
 
 
         //public City City { get; set; }
 
-
-        [Display(Name = "Full name")]
-        public string FullName { get { return $"{this.FirstName} {this.LastName}"; } }
-
-        //public string City { get; set; }
 
         //public int SpecialityId { get; set; }
 

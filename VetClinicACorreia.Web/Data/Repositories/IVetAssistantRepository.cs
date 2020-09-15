@@ -11,6 +11,6 @@ namespace VetClinicACorreia.Web.Data.Repositories
     {
         IQueryable GetAllWithUsers();
 
-        //IEnumerable<SelectListItem> GetComboProducts();
+        Task<IQueryable<VetAssistant>> GetVetAssitantsAsync(string userName);
     }
 }

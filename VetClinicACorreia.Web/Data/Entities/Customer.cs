@@ -10,6 +10,8 @@ namespace VetClinicACorreia.Web.Data.Entities
     {
         public int Id { get; set; }
 
+        public string FullName { get; set; }
+                
 
         //[MaxLength(50, ErrorMessage = "The field {0} only can contains {1} characters lenght")]
         //[Required]

@@ -20,5 +20,9 @@ namespace VetClinicACorreia.Web.Helpers
         Pet ToPet(PetViewModel model, string path, bool isNew);
 
         PetViewModel ToPetViewModel(Pet model);
+
+        App ToAppointment(AppViewModel model, bool isNew);
+
+        AppViewModel ToAppointmentViewModel(App model);
     }
 }

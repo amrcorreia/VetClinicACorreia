@@ -15,7 +15,7 @@ namespace VetClinicACorreia.Web.Data.Repositories
 		//IQueryable GetSpecialities(); //dou-lhe um id e ele vai dar-me a epecialidade a que corresponde
 
 		//Task<Speciality> GetSpecialitiesAsync(int id); 
-		
+
 		//Task AddSpecialityAsync(SpecialityViewModel model); //adicionar cidades novas
 
 

@@ -4,10 +4,9 @@
     ViewData["Title"] = "Index";
 }
 
-@*<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />*@
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 <section>
     <div style="margin:auto; width:1400px; height:300px">
-        <br />
         <br />
         <br />
         <p>
@@ -27,9 +26,9 @@
                                     <th>
                                         @Html.DisplayNameFor(model => model.FullName)
                                     </th>
-                                    @*<th>
-                                            @Html.DisplayNameFor(model => model.Speciality)
-                                        </th>*@
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Speciality)
+                                    </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.ImageUrl)
                                     </th>
@@ -60,17 +59,17 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.FullName)
-                                        </td>
-                                        @*<td>
-                                                @Html.DisplayFor(modelItem => item.Speciality)
-                                            </td>*@
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FullName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Speciality.Name)
+                                    </td>
                                     <td>
                                         @if (!string.IsNullOrEmpty(item.ImageUrl))
                                         {
-                                            <img src=" @Url.Content(item.ImageUrl)" alt="Image" style="width:100px;height:150px;max-height:100%;height:auto" />}
+                                            <img src=" @Url.Content(item.ImageUrl)" alt="Image" class="rounded-circle" style="width:100px;height:150px;max-height:100%;height:auto" />}
 
                                         else if (item.Id == 1)
                                         {
@@ -85,32 +84,32 @@
                                             <img src="~/images/Doctors/doctor3.jpg" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
                                         }
                                     </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.TIN)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Mobile)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.IsAvailable)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Mobile)
-                                        </td>
-                                        @*<td>
-                                                @Html.DisplayFor(modelItem => item.WorkingSchedule)
-                                            </td>*@
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TIN)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Mobile)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.IsAvailable)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Mobile)
+                                    </td>
+                                    @*<td>
+            @Html.DisplayFor(modelItem => item.Speciality)
+        </td>*@
 
-                                        <td>
-                                            
-                                            @Html.DisplayFor(modelItem => item.Remarks)
-                                        </td>
-                                        <td id="@item.Id">
-                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i></a>
-                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="fas fa-list-ol"></i></a>
-                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
+                                    <td>
+
+                                        @Html.DisplayFor(modelItem => item.Remarks)
+                                    </td>
+                                    <td id="@item.Id">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i></a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="fas fa-list-ol"></i></a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
                                 }
                             </tbody>
                         </table>

@@ -15,7 +15,7 @@ using VetClinicACorreia.Web.Models;
 
 namespace VetClinicACorreia.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class CustomersController : Controller
     {
         private readonly DataContext _context;
@@ -75,9 +75,83 @@ namespace VetClinicACorreia.Web.Controllers
             return View();
         }
 
+
+        //TODO como estava.....
         // POST: Customers/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(RegisterNewUserViewModel model)
+        //{
+        //    if (this.ModelState.IsValid)
+        //    {
+        //        var user = await _userHelper.GetUserByEmailAsync(model.Username);
+
+        //        if (user == null)
+        //        {
+        //            //var city = await _countryRepository.GetCityAsync(model.CityId);
+
+        //            user = new User
+        //            {
+        //                FirstName = model.FirstName,
+        //                LastName = model.LastName,
+        //                Email = model.Username,
+        //                UserName = model.Username,
+        //                PhoneNumber = model.PhoneNumber,
+        //                TIN = model.TIN
+
+        //                //CityId = model.CityId,
+        //                //City = city,
+        //            };
+
+        //            var result = await this._userHelper.AddUserAsync(user, model.Password); //guarda o user
+        //            if (result != IdentityResult.Success)
+        //            {
+        //                this.ModelState.AddModelError(string.Empty, "The user couldn't be created.");
+        //                return this.View(model);
+        //            }
+
+        //            User userInDB = await _userHelper.GetUserByEmailAsync(user.UserName);
+        //            await _userHelper.AddUserToRoleAsync(userInDB, "Customer");
+
+        //            Customer owner = new Customer
+        //            {
+        //                //Appointments = new List<Appointmet>(),
+        //                Pets = new List<Pet>(),
+        //                User = userInDB                     
+        //            };
+
+        //            _context.Customers.Add(owner);
+        //            await _context.SaveChangesAsync();
+
+        //            var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+        //            var tokenLink = this.Url.Action("ConfirmEmail", "Account", new
+        //            {
+        //                userid = user.Id,
+        //                token = myToken
+        //            }, protocol: HttpContext.Request.Scheme);
+
+        //            _mailHelper.SendMail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+        //                $"To allow the user, " +
+        //                $"plase click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
+        //            this.ViewBag.Message = "The instructions to allow your user has been sent to email.";
+
+        //            return this.View(model);
+        //        }
+
+        //        this.ModelState.AddModelError(string.Empty, "The username is already registered.");
+        //    }
+
+        //return this.View(model);
+
+
+
+
+        //Aqui é o fim de como estava
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RegisterNewUserViewModel model)
@@ -85,10 +159,10 @@ namespace VetClinicACorreia.Web.Controllers
             if (this.ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByEmailAsync(model.Username);
+                var customer = _context.Customers.FindAsync();
 
                 if (user == null)
                 {
-                    //var city = await _countryRepository.GetCityAsync(model.CityId);
 
                     user = new User
                     {
@@ -98,9 +172,6 @@ namespace VetClinicACorreia.Web.Controllers
                         UserName = model.Username,
                         PhoneNumber = model.PhoneNumber,
                         TIN = model.TIN
-                        
-                        //CityId = model.CityId,
-                        //City = city,
                     };
 
                     var result = await this._userHelper.AddUserAsync(user, model.Password); //guarda o user
@@ -115,8 +186,9 @@ namespace VetClinicACorreia.Web.Controllers
 
                     Customer owner = new Customer
                     {
-                        //Agendas = new List<Agenda>(),
+                        //Appointments = new List<Appointmet>(),
                         Pets = new List<Pet>(),
+                        FullName = user.FullName,
                         User = userInDB
                     };
 
@@ -141,7 +213,12 @@ namespace VetClinicACorreia.Web.Controllers
                 this.ModelState.AddModelError(string.Empty, "The username is already registered.");
             }
 
-            return this.View(model);
+            return View(model);
+            }
+
+
+
+
 
             //if (ModelState.IsValid)
             //{
@@ -202,20 +279,20 @@ namespace VetClinicACorreia.Web.Controllers
             //                return View(model);
             ////            }
             //        }
-                
+
             //    }
 
             //        this.ModelState.AddModelError(string.Empty, "The username is already registered.");
             // }
 
             //return View(model);
-        }
+            //}
 
 
 
 
-        // GET: Owners/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+            // GET: Owners/Edit/5
+            public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {

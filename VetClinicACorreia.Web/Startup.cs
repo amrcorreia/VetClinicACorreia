@@ -13,6 +13,7 @@ using VetClinicACorreia.Web.Data.Entities;
 using VetClinicACorreia.Web.Data.Repositories;
 using VetClinicACorreia.Web.Helpers;
 
+
 namespace VetClinicACorreia.Web
 {                           
     public class Startup
@@ -66,13 +67,19 @@ namespace VetClinicACorreia.Web
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IImageHelper, ImageHelper>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddScoped<ICombosHelper, CombosHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
+            services.AddScoped<IAppointmentHelper, AppointmentHelper>();
             services.AddScoped<IDoctorRepository, DoctorRepository>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IVetAssistantRepository, VetAssistantRepository>();
-            //services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
-            //services.AddScoped<ISpecialityRepository, SpecialityRepository>();
+            services.AddScoped<ISpecialityRepository, SpecialityRepository>();
+            services.AddScoped<IAppRepository, AppRepository>();
+            services.AddScoped<IScheduleRepository, ScheduleRepository>();
+
+
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -90,6 +97,7 @@ namespace VetClinicACorreia.Web
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

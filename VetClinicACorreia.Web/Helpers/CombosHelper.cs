@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VetClinicACorreia.Web.Data;
 using VetClinicACorreia.Web.Data.Entities;
+using VetClinicACorreia.Web.Data.Repositories;
 using VetClinicACorreia.Web.Models;
 
 namespace VetClinicACorreia.Web.Helpers
@@ -12,21 +13,24 @@ namespace VetClinicACorreia.Web.Helpers
     public class CombosHelper :ICombosHelper
     {
         private readonly DataContext _context;
+        private readonly IDoctorRepository _doctorRepository;
 
-        public CombosHelper(DataContext context)
+        public CombosHelper(DataContext context,
+            IDoctorRepository doctorRepository)
         {
             _context = context;
+            _doctorRepository = doctorRepository;
         }
 
         public IEnumerable<SelectListItem> GetComboCustomers()
         {
             var list = _context.Customers
-                .Select(o => new SelectListItem
+                .Select(c => new SelectListItem
                 {
-                    Text = o.User.FullName,
-                    Value = $"{o.Id}"
+                    Text = c.User.FullName,
+                    Value = $"{c.Id}"
                 })
-                .OrderBy(o => o.Text)
+                .OrderBy(c => c.Text)
                 .ToList();
 
             list.Insert(0, new SelectListItem
@@ -77,14 +81,42 @@ namespace VetClinicACorreia.Web.Helpers
             return list;
         }
 
-        //public Doctor ToDoctor(DoctorViewModel model, string path, bool isNew)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public IEnumerable<SelectListItem> GetComboDoctors()
+        {
+            var list = _context.Doctors.Select(pt => new SelectListItem
+            {
+                Text = pt.FullName,
+                Value = $"{pt.Id}"
+            })
+                .OrderBy(pt => pt.Text)
+                .ToList();
 
-        //public DoctorViewModel ToDoctorViewModel(Doctor model)
-        //{
-        //    throw new NotImplementedException();
-        //}
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Select a doctor...]",
+                Value = "0"
+            });
+
+            return list;
+        }
+
+        public IEnumerable<SelectListItem> GetComboSchedules()
+        {
+            var list = _context.Schedules.Select(pt => new SelectListItem
+            {
+                Text = pt.Name,
+                Value = $"{pt.Id}"
+            })
+                .OrderBy(pt => pt.Text)
+                .ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Select a schedule...]",
+                Value = "0"
+            });
+
+            return list;
+        }
     }
 }

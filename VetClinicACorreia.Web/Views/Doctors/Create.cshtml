@@ -65,32 +65,15 @@
                                     <span asp-validation-for="Confirm" class="text-danger"></span>
                                 </div>
                             </div>
-                            @if (Model.ImageUrl == "image")
-                            {
-                                <div class="col-sm-6">
-                                    <!-- text input -->
-                                    <div class="form-group">
-                                        <label asp-for="ImageFile" class="control-label"></label>
-                                        <img src="~/images/Doctors/doctor1.jpg"
-                                             class="rounded-circle"
-                                             height="40" width="40"
-                                             asp-append-version="true" />
-                                        <span asp-validation-for="ImageFile" class="text-danger"></span>
-                                    </div>
-                                </div>
 
-                            }
-                            else
-                            {
-                                <div class="col-sm-6">
-                                    <!-- text input -->
-                                    <div class="form-group">
-                                        <label asp-for="ImageFile" class="control-label"></label>
-                                        <input asp-for="ImageFile" class="form-control" type="file" />
-                                        <span asp-validation-for="ImageFile" class="text-danger"></span>
-                                    </div>
+                            <div class="col-sm-6">
+                                <!-- text input -->
+                                <div class="form-group">
+                                    <label asp-for="ImageFile" class="control-label"></label>
+                                    <input asp-for="ImageFile" class="form-control" type="file" />
+                                    <span asp-validation-for="ImageFile" class="text-danger"></span>
                                 </div>
-                            }
+                            </div>
 
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -116,6 +99,15 @@
                                             <input asp-for="IsAvailable" /> @Html.DisplayNameFor(model => model.IsAvailable)
                                         </label>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <!-- text input -->
+                                <div class="form-group">
+                                    <label asp-for="SpecialityId" class="control-label"></label>
+                                    <select asp-for="SpecialityId" asp-items="Model.Specialities" class="form-control"></select>
+                                    <span asp-validation-for="SpecialityId" class="text-danger"></span>
                                 </div>
                             </div>
 

@@ -22,7 +22,8 @@ namespace VetClinicACorreia.Web.Data
         private User _vetAssistant2;
         private User _vetAssistant3;
 
-        public SeedDb(DataContext context, IUserHelper userHelper)
+        public SeedDb(DataContext context,
+            IUserHelper userHelper)
         {
             _context = context;
             _userHelper = userHelper;
@@ -37,29 +38,21 @@ namespace VetClinicACorreia.Web.Data
             await _context.Database.EnsureCreatedAsync();
 
             await CheckRoles();
+            await CheckDoctorsAsync();
+            _vetAssistant1 = await CheckUserAsync("Miguel", "Veloso", "jgalamba@yopmail.com", string.Empty, "VetAssistant");
+            _vetAssistant2 = await CheckUserAsync("JJ", "Benfas", "fdgdfg@yopmail.com", string.Empty, "VetAssistant");
+            _vetAssistant3 = await CheckUserAsync("Pedro", "Lamy", "bbbbb@yopmail.com", string.Empty, "VetAssistant");
             _customer1 = await CheckUserAsync("Susana", "Pimentel", "slopes@yopmail.com", string.Empty, "Customer");
             _customer2 = await CheckUserAsync("Rodrigo", "Matias", "rmatias@yopmail.com", string.Empty, "Customer");
             _customer3 = await CheckUserAsync("Cristina", "Soares", "cristinas@yopmail.com", string.Empty, "Customer");
-            _vetAssistant1 = await CheckUserAsync("Miguel", "Veloso", "jgalamba@yopmail.com", string.Empty, "Doctor");
-            _vetAssistant2 = await CheckUserAsync("JJ", "Benfas", "fdgdfg@yopmail.com", string.Empty, "Doctor");
-            _vetAssistant3 = await CheckUserAsync("Pedro", "Lamy", "bbbbb@yopmail.com", string.Empty, "Doctor");
             await CheckPetTypesAsync();
             await CheckCustomerAsync();
             await CheckVetAssitantsAsync();
             await CheckPetsAsync();
+            await CheckScheduleAsync();
             await CheckAppointmentsAsync();
+            await CheckSpecialitiesAsync();
 
-            //if (!_context.Specialities.Any())
-            //{
-            //    _context.Specialities.Add(new Speciality { Name = "Dermatology" });
-            //    _context.Specialities.Add(new Speciality { Name = "Ophthalmologists" });
-            //    _context.Specialities.Add(new Speciality { Name = "Radiology" });
-            //    _context.Specialities.Add(new Speciality { Name = "Toxicology" });
-            //    _context.Specialities.Add(new Speciality { Name = "Nutrition" });
-            //    _context.Specialities.Add(new Speciality { Name = "Behaviorists" });
-            //    _context.Specialities.Add(new Speciality { Name = "Anesthesia and Analgesia" });
-            //    await _context.SaveChangesAsync();
-            //}
 
             //if (!_context.Countries.Any())
             //{
@@ -92,6 +85,8 @@ namespace VetClinicACorreia.Web.Data
             //    await _context.SaveChangesAsync();
             //}
 
+            
+
             var user = await _userHelper.GetUserByEmailAsync("correiandreiamr@gmail.com");
             if (user == null)
             {
@@ -102,13 +97,14 @@ namespace VetClinicACorreia.Web.Data
                     Email = "correiandreiamr@gmail.com",
                     UserName = "correiandreiamr@gmail.com",
                     PhoneNumber = "123654789",
+                    TIN = "123456789",
+                    
                     //CityId = _context.Countries.FirstOrDefault().Cities.FirstOrDefault().Id,
-                    //City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault(),
-                    //SpecialityId = _context.Specialities.FirstOrDefault().Id
+                    //City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault()
                 };
 
                 var result = await _userHelper.AddUserAsync(user, "123456789");
-                
+
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create the user in seeder.");
@@ -123,15 +119,15 @@ namespace VetClinicACorreia.Web.Data
                 {
                     await _userHelper.AddUserToRoleAsync(user, "Admin");
                 }
-            }
 
-            if (!_context.Doctors.Any())
-            {
-                //var speciality = _context.Specialities.FirstOrDefault();
-                this.AddDoctor("António", "Barbosa", user);
-                this.AddDoctor("Carolina", "Lopes", user);
-                this.AddDoctor("Castro", "de Andrade", user);
-                await _context.SaveChangesAsync();
+                if (!_context.Apps.Any())
+                {
+                    var doctor = _context.Doctors.FirstOrDefault();
+                    var customer = _context.Customers.FirstOrDefault();
+                    var pet = _context.Pets.FirstOrDefault();
+                    this.AddApp(doctor, customer, pet, user);
+                    await _context.SaveChangesAsync();
+                }
             }
         }
 
@@ -155,10 +151,9 @@ namespace VetClinicACorreia.Web.Data
                     LastName = lastName,
                     Email = email,
                     UserName = email,
-                    PhoneNumber = phone,
+                    PhoneNumber = phone                    
                     //CityId = _context.Countries.FirstOrDefault().Cities.FirstOrDefault().Id,
-                    //City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault(),
-                    //SpecialityId = _context.Specialities.FirstOrDefault().Id
+                    //City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault()
                 };
 
                 await _userHelper.AddUserAsync(user, "123456");
@@ -169,6 +164,33 @@ namespace VetClinicACorreia.Web.Data
             }
 
             return user;
+        } 
+
+        private async Task CheckDoctorsAsync()
+        {
+            if (!_context.Doctors.Any())
+            {
+                var user = _context.Users.FirstOrDefault();
+                var speciality = _context.Specialities.FirstOrDefault();
+                this.AddDoctor("António", "Barbosa", user, speciality);
+                this.AddDoctor("Carolina", "Lopes", user, speciality);
+                this.AddDoctor("Castro", "de Andrade", user, speciality);
+                await _context.SaveChangesAsync();
+            }
+         
+        }
+
+
+
+        private async Task CheckVetAssitantsAsync()
+        {
+            if (!_context.VetAssistants.Any())
+            {
+                _context.VetAssistants.Add(new VetAssistant { User = _vetAssistant1 });
+                _context.VetAssistants.Add(new VetAssistant { User = _vetAssistant2 });
+                _context.VetAssistants.Add(new VetAssistant { User = _vetAssistant3 });
+                await _context.SaveChangesAsync();
+            }
         }
 
         private async Task CheckCustomerAsync()
@@ -181,17 +203,7 @@ namespace VetClinicACorreia.Web.Data
                 await _context.SaveChangesAsync();
             }
         }
-
-        private async Task CheckVetAssitantsAsync()
-        {
-            if (!_context.VetAssistants.Any())
-            {
-                _context.VetAssistants.Add(new VetAssistant { User = _vetAssistant1 });
-                _context.VetAssistants.Add(new VetAssistant { User = _vetAssistant2 });
-                _context.VetAssistants.Add(new VetAssistant { User = _vetAssistant3 });
-                await _context.SaveChangesAsync();
-            }
-        }
+               
 
         private async Task CheckPetsAsync()
         {
@@ -207,28 +219,34 @@ namespace VetClinicACorreia.Web.Data
 
         private async Task CheckAppointmentsAsync()
         {
-            if (!_context.Appointments.Any())
+            if (!_context.Apps.Any())
             {
+                //var userAdmin = _context.Users.Where(u => u.UserName == "correiandreiamr@gmail.com");
+
+
                 var customer = _context.Customers.FirstOrDefault();
                 var pet = _context.Pets.FirstOrDefault();
-                //var doctor = _context.Doctors.FirstOrDefault();
                 var user = _context.Users.FirstOrDefault();
-                //AddAppointment(customer, pet, /*doctor,*/ user);
-                //AddAppointment(customer, pet, /*doctor,*/ user);
+                var doctor = _context.Doctors.FirstOrDefault();
+                var schedule = _context.Schedules.FirstOrDefault();
+                AddAppointment(customer, pet, doctor, user, schedule);
                 await _context.SaveChangesAsync();
             }
         }
 
-        private void AddAppointment(Customer customer, Pet pet, Doctor doctor, User user)
+        private void AddAppointment(Customer customer, Pet pet, Doctor doctor, User user, Schedule schedule)
         {
-            _context.Appointments.Add(new Appointment
+            
+            _context.Apps.Add(new App
             {
-                AppointmentDate = DateTime.Now.AddDays(+2),
-                DoctorId = doctor,
+                AppDate = DateTime.Now.AddDays(+2),
+                Schedule = schedule,
                 User = user,
-                CustomerId = customer,
-                PetId = pet,
-                Description = "Welcome to YourVet!!"
+                Doctor = doctor,
+                Customer = customer,
+                Pet = customer.Pets.FirstOrDefault()
+                //Remarks = "Welcome to YourVet!!"
+                
             });
         }
 
@@ -245,6 +263,45 @@ namespace VetClinicACorreia.Web.Data
             });
         }
 
+        private async Task CheckSpecialitiesAsync()
+        {
+            if (!_context.Specialities.Any())
+            {
+                _context.Specialities.Add(new Speciality { Name = "Ophthalmologists" });
+                _context.Specialities.Add(new Speciality { Name = "Radiology" });
+                _context.Specialities.Add(new Speciality { Name = "Toxicology" });
+                _context.Specialities.Add(new Speciality { Name = "Nutrition" });
+                _context.Specialities.Add(new Speciality { Name = "Behaviorists" });
+                _context.Specialities.Add(new Speciality { Name = "Anesthesia and Analgesia" });
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private async Task CheckScheduleAsync()
+        {
+            if (!_context.Schedules.Any())
+            {
+                _context.Schedules.Add(new Schedule { Name = "10:00" });
+                _context.Schedules.Add(new Schedule { Name = "10:30" });
+                _context.Schedules.Add(new Schedule { Name = "11:00" });
+                _context.Schedules.Add(new Schedule { Name = "11:30" });
+                _context.Schedules.Add(new Schedule { Name = "12:00" });
+                _context.Schedules.Add(new Schedule { Name = "12:30" });
+                _context.Schedules.Add(new Schedule { Name = "13:00" });
+                _context.Schedules.Add(new Schedule { Name = "13:30" });
+                _context.Schedules.Add(new Schedule { Name = "14:00" });
+                _context.Schedules.Add(new Schedule { Name = "14:30" });
+                _context.Schedules.Add(new Schedule { Name = "15:00" });
+                _context.Schedules.Add(new Schedule { Name = "15:30" });
+                _context.Schedules.Add(new Schedule { Name = "16:00" });
+                _context.Schedules.Add(new Schedule { Name = "16:30" });
+                _context.Schedules.Add(new Schedule { Name = "17:00" });
+                _context.Schedules.Add(new Schedule { Name = "17:30" });
+                _context.Schedules.Add(new Schedule { Name = "18:00" });
+                _context.Schedules.Add(new Schedule { Name = "18:30" });
+                await _context.SaveChangesAsync();
+            }
+        }
 
         private async Task CheckPetTypesAsync()
         {
@@ -260,7 +317,7 @@ namespace VetClinicACorreia.Web.Data
             }
         }
 
-        private void AddDoctor(string name, string lastname, User user)
+        private void AddDoctor(string name, string lastname, User user, Speciality speciality)
         {
             _context.Doctors.Add(new Doctor
             {
@@ -268,8 +325,7 @@ namespace VetClinicACorreia.Web.Data
                 LastName = lastname,
                 ProfissionalLicence = "Lalala",
                 ImageUrl = null,
-                //SpecialityId = _context.Specialities.FirstOrDefault().Id,
-                //Speciality = _context.Specialities.FirstOrDefault(),
+                Speciality = speciality,
                 TIN = _random.Next(10000000).ToString(),
                 Mobile = _random.Next(10000000).ToString(),
                 //Email = "xpto@yourvet.com",
@@ -278,6 +334,20 @@ namespace VetClinicACorreia.Web.Data
                 //DoctorsOffice = "1",
                 Remarks = "Welcome to App YourVet",
                 User = user
+            });
+        }
+
+
+        private void AddApp(Doctor doctor, Customer customer, Pet pet, User user)
+        {
+            _context.Apps.Add(new App
+            {
+                Doctor = doctor,
+                Customer = customer,                
+                Pet = customer.Pets.FirstOrDefault(),
+                User = user,
+                AppDate = DateTime.Now.AddHours(+2)
+                
             });
         }
 

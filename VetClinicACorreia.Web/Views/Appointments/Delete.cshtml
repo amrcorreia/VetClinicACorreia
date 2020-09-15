@@ -11,12 +11,12 @@
     <h4>Appointment</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
+        @*<dt>
             @Html.DisplayNameFor(model => model.Description)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Description)
-        </dd>
+        </dd>*@
         <dt>
             @Html.DisplayNameFor(model => model.AppointmentDate)
         </dt>
@@ -24,10 +24,10 @@
             @Html.DisplayFor(model => model.AppointmentDate)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.AppointmentObservations)
+            @Html.DisplayNameFor(model => model.Remarks)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.AppointmentObservations)
+            @Html.DisplayFor(model => model.Remarks)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.AppointmentHour)
