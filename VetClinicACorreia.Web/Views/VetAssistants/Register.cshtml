@@ -1,7 +1,7 @@
 ﻿@model VetClinicACorreia.Web.Models.RegisterNewUserViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Register";
 }
 <section>
     <div style="margin:auto; width:800px; height:300px">
@@ -11,7 +11,7 @@
 
         <h4>New Vet Assistant</h4>
         <hr />
-        <form asp-action="Create" enctype="multipart/form-data">
+        <form asp-action="Register" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="card-body">
                 <div class="form-group">

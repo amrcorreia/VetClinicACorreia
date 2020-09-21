@@ -8,20 +8,20 @@ using VetClinicACorreia.Web.Models;
 
 namespace VetClinicACorreia.Web.Data.Repositories
 {
-    public interface IAppointmentRepository : IGenericRepository<Appointment>
+    public interface IAppointmentRepository
     {
-        Task<IQueryable<Appointment>> GetAppointmentsAsync(string userName);
+        //Task<IQueryable<Appointment>> GetAppointmentsAsync(string userName);
 
-        Task<IQueryable<Appointment>> GetAppointmentsTempAsync(string userName);
-        IEnumerable<SelectListItem> GetComboCustomers();
+        //Task<IQueryable<Appointment>> GetAppointmentsTempAsync(string userName);
+        //IEnumerable<SelectListItem> GetComboCustomers();
 
-        IEnumerable<SelectListItem> GetComboPets(int customerId);
+        //IEnumerable<SelectListItem> GetComboPets(int customerId);
 
-        Task<Customer> GetCustomerWithPetsAsync(int id);
+        //Task<Customer> GetCustomerWithPetsAsync(int id);
 
-        IQueryable GetCustomerWithPets();
-        IEnumerable<SelectListItem> GetComboDoctors();
+        //IQueryable GetCustomerWithPets();
+        //IEnumerable<SelectListItem> GetComboDoctors();
 
-        Task AddAppointmentAsync(AppointmentViewModel model, string userName);
+        //Task AddAppointmentAsync(AppointmentViewModel model, string userName);
     }
 }

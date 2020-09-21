@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -56,23 +57,13 @@ namespace VetClinicACorreia.Web.Controllers
                 Doctors = _combosHelper.GetComboDoctors(),
                 Customers = _combosHelper.GetComboCustomers(),
                 Pets = _combosHelper.GetComboPets(0),
-                //Schedules = _combosHelper.GetComboSchedules()
-
-        };
+                Schedules = _combosHelper.GetComboSchedules()
+            };
 
             return View(model);
-            //var model = await _appointmentRepository.GetAppointmentsAsync(this.User.Identity.Name);
-
-            //var model = new AppsViewModel
-            //{
-            //    //User = _appointmentRepository.GetAppointmentsAsync(this.User.Identity.Name),
-            //    Doctors = _appointmentRepository.GetComboDoctors(),
-            //    Customers = _appointmentRepository.GetComboCustomers(),
-            //    Pets = _appointmentRepository.GetComboPets(0)
-            //};
-            //return this.View(model);
         }
 
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AppViewModel model)
@@ -89,11 +80,9 @@ namespace VetClinicACorreia.Web.Controllers
             model.Doctors = _combosHelper.GetComboDoctors();
             model.Customers = _combosHelper.GetComboCustomers();
             model.Pets = _combosHelper.GetComboPets(model.CustomerId);
-            //model.Schedules = _combosHelper.GetComboSchedules();
+            model.Schedules = _combosHelper.GetComboSchedules();
             return View(model);
         }
-
-
 
         // GET: Apps/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -106,7 +95,62 @@ namespace VetClinicACorreia.Web.Controllers
             await _appRepository.DeleteAppAsync(id.Value);
             return this.RedirectToAction("Index");
         }
+
+        // GET: Appointment/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            var actualUser = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
+            if (id == null)
+            {
+                return NotFound("AppointmentNotFound");
+            }
+
+            var appointment = await _context.Apps
+                .Include(o => o.Doctor)
+                .Include(o => o.Customer)
+                .ThenInclude(o => o.User)
+                .Include(o => o.Pet)
+                .Include(o => o.Schedule)
+                .FirstOrDefaultAsync(o => o.Id == id.Value);
+            if (appointment == null)
+            {
+                return NotFound("AppointmentNotFound");
+            }
+
+            var view = _converterHelper.ToAppointmentViewModel(appointment);
+
+            return View(view);
+        }
+
+        // POST: Appointments/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(AppViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var appointment = _converterHelper.ToAppointment(model, false);
+
+                if (appointment == null)
+                {
+                    return NotFound();
+                }
                 
+                appointment.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
+                _context.Apps.Update(appointment);
+                //await _appRepository.UpdateAsync(appointment);
+                return RedirectToAction(nameof(Index));
+            }
+            model.Doctors = _combosHelper.GetComboDoctors();
+            model.Customers = _combosHelper.GetComboCustomers();
+            model.Pets = _combosHelper.GetComboPets(model.CustomerId);
+            model.Schedules = _combosHelper.GetComboSchedules();
+            return this.View(model);
+        }
 
         // GET: Appointment/Details/5
         public async Task<IActionResult> Details(int? id)

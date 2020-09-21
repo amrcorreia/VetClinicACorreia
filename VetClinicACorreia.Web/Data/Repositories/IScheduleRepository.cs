@@ -7,5 +7,6 @@ namespace VetClinicACorreia.Web.Data.Repositories
 {
     public interface IScheduleRepository
     {
+
     }
 }

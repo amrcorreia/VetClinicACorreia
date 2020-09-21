@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VetClinicACorreia.Web.Data;
 using VetClinicACorreia.Web.Data.Entities;
 using VetClinicACorreia.Web.Data.Repositories;
 using VetClinicACorreia.Web.Helpers;
@@ -13,28 +14,35 @@ using VetClinicACorreia.Web.Models;
 
 namespace VetClinicACorreia.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class VetAssistantsController : Controller
     {
         private readonly IVetAssistantRepository _vetAssistantRepository;
         private readonly IUserHelper _userHelper;
         private readonly IConverterHelper _converterHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly DataContext _context;
 
         public VetAssistantsController(IVetAssistantRepository vetAssistantRepository,
             IUserHelper userHelper,
             IConverterHelper converterHelper,
-            IMailHelper mailHelper)
+            IMailHelper mailHelper,
+            DataContext context)
         {
             _vetAssistantRepository = vetAssistantRepository;
             _userHelper = userHelper;
             _converterHelper = converterHelper;
             _mailHelper = mailHelper;
+            _context = context;
         }
 
         // GET: VetAssitants
         public IActionResult Index()
         {
-            return View(_vetAssistantRepository.GetAllWithUsers());
+            var vetAssistants = _vetAssistantRepository.GetAll()
+                .Include(d => d.User)
+                .OrderBy(d => d.Id);
+            return View(vetAssistants);
         }
 
         // GET: VetAssitants/Details/5
@@ -42,53 +50,28 @@ namespace VetClinicACorreia.Web.Controllers
         {
             if (id == null)
             {
-                return new NotFoundViewResult("VetAssitantNotFound");
+                return new NotFoundViewResult("VetAssistentNotFound");
             }
 
-
-            var VetAssitant = await _vetAssistantRepository.GetByIdAsync(id.Value);
-            if (VetAssitant == null)
+            //var vetAssistant = await _vetAssistantRepository.GetByIdAsync(id.Value);
+            var vetAssistant = await _vetAssistantRepository.GetVetAssistantByIdAsync(id.Value);
+            if (vetAssistant == null)
             {
-                return new NotFoundViewResult("VetAssitantNotFound");
+                return new NotFoundViewResult("VetAssistentNotFound");
             }
 
-            return View(VetAssitant);
+            return View(vetAssistant);
+           
         }
-
-        // GET: Owners/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    Customer owner = await _context.Customers
-        //        .Include(o => o.User)
-        //        .Include(o => o.Pets)
-        //        .ThenInclude(p => p.PetType)
-        //        .Include(o => o.Pets)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-
-        //    if (owner == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(owner);
-        //}
-
-
-
 
         // GET: VetAssitants/Create
         [Authorize(Roles = "Admin")]
-        public IActionResult Create()
+        public IActionResult Register()
         {
             return View();
         }
 
-        // POST: Products/Create
+        // POST: VetAssistants/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -120,6 +103,18 @@ namespace VetClinicACorreia.Web.Controllers
                         this.ModelState.AddModelError(string.Empty, "The user couldn't be created.");
                         return this.View(model);
                     }
+
+                    User userInDB = await _userHelper.GetUserByEmailAsync(user.UserName);
+                    await _userHelper.AddUserToRoleAsync(userInDB, "VetAssistant");
+
+                    VetAssistant vetAssistant = new VetAssistant
+                    {
+                        
+                        User = userInDB
+                    };
+
+                    _context.VetAssistants.Add(vetAssistant);
+                    await _context.SaveChangesAsync();
 
                     var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
 
@@ -178,10 +173,10 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            //var vetAssistant = await _vetAssistantRepository.GetByIdAsync(id.Value);
-            var vetAssistant = await _vetAssistantRepository.GetAll()
-                .Include(o => o.User)
-                .FirstOrDefaultAsync(o => o.Id == id.Value);
+            var vetAssistant = await _vetAssistantRepository.GetVetAssistantByIdAsync(id.Value);
+            //var vetAssistant = await _vetAssistantRepository.GetAll()
+                //.Include(o => o.User)
+                //.FirstOrDefaultAsync(o => o.Id == id.Value);
             if (vetAssistant == null)
             {
                 return NotFound();
@@ -194,8 +189,7 @@ namespace VetClinicACorreia.Web.Controllers
                 LastName = vetAssistant.User.LastName,
                 PhoneNumber = vetAssistant.User.PhoneNumber,
                 Username = vetAssistant.User.Email,
-                //TIN = vetAssistant.User.TIN
-
+                TIN = vetAssistant.User.TIN
             };
 
             return View(model);
@@ -210,11 +204,7 @@ namespace VetClinicACorreia.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                //var owner = await _context.Customers
-                //    .Include(o => o.User)
-                //    .FirstOrDefaultAsync(o => o.Id == model.Id);
-                //var vetAssistant = _vetAssistantRepository.GetAll().Where(o => o.Id == model.Id);
-                var vetAssistant = await _vetAssistantRepository.GetAll()
+                var vetAssistant = await _context.VetAssistants
                     .Include(o => o.User)
                     .FirstOrDefaultAsync(o => o.Id == model.Id);
 
@@ -223,40 +213,37 @@ namespace VetClinicACorreia.Web.Controllers
                 vetAssistant.User.LastName = model.LastName;
                 vetAssistant.User.PhoneNumber = model.PhoneNumber;
                 vetAssistant.User.Email = model.Username;
+                vetAssistant.User.TIN = model.TIN;
 
                 await _userHelper.UpdateUserAsync(vetAssistant.User);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));                
             }
 
-            return View(model);
+            return this.View(model);
         }
 
-        // GET: Products/Delete/5
-        [Authorize(Roles = "Admin")]
+       
+
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    //var vetAssistant = await _vetAssistantRepository.GetByIdAsync(id);
+        //    //await _vetAssistantRepository.DeleteAsync(vetAssistant);
+        //    return RedirectToAction(nameof(Index));
+        //}
+
+        // GET: Doctors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return new NotFoundViewResult("VetAssitantNotFound");
+                return NotFound();
             }
-
-            var product = await _vetAssistantRepository.GetByIdAsync(id.Value);
-            if (product == null)
-            {
-                return new NotFoundViewResult("VetAssitantNotFound");
-            }
-
-            return View(product);
+            await _vetAssistantRepository.DeleteVetAssistantsync(id.Value);
+            return this.RedirectToAction("Index");
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            //var vetAssistant = await _vetAssistantRepository.GetByIdAsync(id);
-            //await _vetAssistantRepository.DeleteAsync(vetAssistant);
-            return RedirectToAction(nameof(Index));
-        }
 
         public IActionResult VetAssitantNotFound()
         {

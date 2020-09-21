@@ -26,12 +26,13 @@
                 {
                     <img src="~/images/Doctors/doctor2.jpg" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
                 }
-                else
+                else if (Model.Id == 3)
                 {
-                    <img src="~/images/Doctors/doctor3.jpg" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
+                    <img src="~/images/Doctors/noImage.png" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
                 }
             </dd>
             <br />
+            
             <dt>
                 @Html.DisplayNameFor(model => model.FullName)
             </dt>
@@ -50,17 +51,29 @@
             <dd>
                 @Html.DisplayFor(model => model.Mobile)
             </dd>
-            <dt>
+            @*<dt>
                 @Html.DisplayNameFor(model => model.Speciality)
             </dt>
             <dd>
                 @Html.DisplayFor(model => model.Speciality.Name)
-            </dd>
+            </dd>*@
             <dt>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayNameFor(model => model.TIN)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.User.FullName)
+                @Html.DisplayFor(model => model.TIN)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.IsAvailable)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.IsAvailable)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Remarks)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Remarks)
             </dd>
         </dl>
 

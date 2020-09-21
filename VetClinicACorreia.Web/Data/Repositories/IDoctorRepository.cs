@@ -13,8 +13,7 @@ namespace VetClinicACorreia.Web.Data.Repositories
 
         Task DeleteDoctorAsync(int id);
 
-        IEnumerable<SelectListItem> GetComboDoctors();
-
         Task<IQueryable<Doctor>> GetDoctorsAsync(string userName);
+        
     }
 }

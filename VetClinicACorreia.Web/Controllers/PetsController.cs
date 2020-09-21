@@ -19,11 +19,14 @@ namespace VetClinicACorreia.Web.Controllers
     {
         
         private readonly DataContext _dataContext;
+        private readonly ICombosHelper _combosHelper;
 
         public PetsController(
-            DataContext dataContext)
+            DataContext dataContext,
+            ICombosHelper combosHelper)
         {
             _dataContext = dataContext;
+            _combosHelper = combosHelper;
         }
 
         public IActionResult Index()
@@ -77,7 +80,7 @@ namespace VetClinicACorreia.Web.Controllers
                 Name = pet.Name,
                 CustomerId = pet.Customer.Id,
                 PetTypeId = pet.PetType.Id,
-                PetTypes = GetComboPetTypes(),
+                PetTypes = _combosHelper.GetComboPetTypes(),
                 Race = pet.Race,
                 Remarks = pet.Remarks
             };
@@ -148,25 +151,6 @@ namespace VetClinicACorreia.Web.Controllers
             _dataContext.Pets.Remove(pet);
             await _dataContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        public IEnumerable<SelectListItem> GetComboPetTypes()
-        {
-            var list = _dataContext.PetTypes.Select(pt => new SelectListItem
-            {
-                Text = pt.Name,
-                Value = $"{pt.Id}"
-            })
-                .OrderBy(pt => pt.Text)
-                .ToList();
-
-            list.Insert(0, new SelectListItem
-            {
-                Text = "[Select a pet type...]",
-                Value = "0"
-            });
-
-            return list;
         }
 
     }

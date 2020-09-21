@@ -19,14 +19,11 @@ namespace VetClinicACorreia.Web.Data
         
         public DbSet<PetType> PetTypes { get; set; }
 
-        public DbSet<Appointment> Appointments { get; set; }
-
-        public DbSet<AppointmentDetails> AppointmentsDetails { get; set; }
-                
-        public DbSet<AppointmentDetailTemp> AppointmentDetailsTemp { get; set; }
-
         //TODO - teste appointments
         public DbSet<App> Apps { get; set; }
+
+        public DbSet<AppointmentData> AppointmentsData { get; set; }
+        
 
         //public DbSet<AppDetail> AppDetails { get; set; }
 

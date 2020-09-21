@@ -14,10 +14,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
+    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="18.2.0.58" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\Doctors\" />
     <Folder Include="wwwroot\images\Pets\" />
   </ItemGroup>
 

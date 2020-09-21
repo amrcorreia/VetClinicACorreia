@@ -1,73 +1,108 @@
 ﻿@model VetClinicACorreia.Web.Models.AppViewModel
 
-@{ ViewData["Title"] = "Create"; }
+@{ ViewData["Title"] = "Edit"; }
+
+
+
+
+
+
+
 
 <section>
     <div style="margin:auto; width:800px; height:300px">
         <br />
         <br />
         <br />
-
-        <h4>New Appointment</h4>
+        <h4>Edit Appointment</h4>
         <hr />
-        <form asp-action="Create" enctype="multipart/form-data" method="post">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<input type="hidden" asp-for="Id" />*@
+            <input type="hidden" asp-for="Id" />
             <div class="card-body">
                 <div class="form-group">
                     <div class="row">
-                        <div class="col-md-6">
 
+                        <div class="col-sm-6">
+                            <!-- text input -->
                             <div class="form-group">
                                 <label asp-for="CustomerId" class="control-label"></label>
                                 <select asp-for="CustomerId" asp-items="Model.Customers" class="form-control"></select>
                                 <span asp-validation-for="CustomerId" class="text-danger"></span>
                             </div>
-
+                        </div>
+                        <div class="col-sm-6">
                             <div class="form-group">
-                                <label asp-for="PetId" class="control-label"></label>
-                                <select asp-for="PetId" asp-items="Model.Pets" class="form-control"></select>
-                                <span asp-validation-for="PetId" class="text-danger"></span>
+                                <label asp-for="Pet.Name" class="control-label"></label>
+                                <select asp-for="Pet.Name" asp-items="Model.Pets" class="form-control"></select>
+                                <span asp-validation-for="Pet.Name" class="text-danger"></span>
                             </div>
+                        </div>
 
+                        <div class="col-sm-6">
+                            @*text input*@
                             <div class="form-group">
-                                <label asp-for="DoctorId" class="control-label"></label>
-                                <select asp-for="DoctorId" asp-items="Model.Doctors" class="form-control"></select>
-                                <span asp-validation-for="DoctorId" class="text-danger"></span>
+                                <label asp-for="User.UserName" class="control-label"></label>
+                                <input asp-for="User.UserName" asp-items="Model.Doctors" class="form-control" readonly="readonly" />
+                                <span asp-validation-for="User.UserName" class="text-danger"></span>
                             </div>
-
+                        </div>
+                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label asp-for="AppDate" class="control-label"></label>
                                 <input asp-for="AppDate" class="form-control" type="date" />
                                 <span asp-validation-for="AppDate" class="text-danger"></span>
                             </div>
+                        </div>
 
+                        <div class="col-sm-6">
+                            <!-- text input -->
                             <div class="form-group">
-                                <label asp-for="ScheduleId" class="control-label"></label>
+                                <label asp-for="DoctorId" class="control-label"></label>
+                                <select asp-for="DoctorId" asp-items="Model.Doctors" class="form-control"></select>
+                                <span asp-validation-for="DoctorId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                @*<label asp-for="AppDate" class="control-label"></label>
+                                <input asp-for="AppDate" class="form-control" type="date" />
+                                <span asp-validation-for="AppDate" class="text-danger"></span>*@
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label asp-for="Schedule" class="control-label"></label>
                                 <select asp-for="ScheduleId" asp-items="Model.Schedules" class="form-control"></select>
                                 <span asp-validation-for="ScheduleId" class="text-danger"></span>
                             </div>
-
-                            <div class="form-group">
-                                <input type="submit" value="Create" class="btn btn-primary" />
-                                <a asp-action="Index" class="btn btn-success">Back to List</a>
-                            </div>
                         </div>
-                    </div>
-                    <div class="text-success">
-                        <p>
-                            @ViewBag.Message
-                        </p>
-                    </div>
 
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Save" class="btn btn-success" />
+                        </div>
+                        <div class="form-group">
+                            <br />
+                            <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </form>
+        <div class="text-success">
+            <p>
+                @ViewBag.Message
+            </p>
+        </div>
     </div>
-
 </section>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
     <script type="text/javascript">
     	$(document).ready(function () {
         	$("#CustomerId").change(function () {

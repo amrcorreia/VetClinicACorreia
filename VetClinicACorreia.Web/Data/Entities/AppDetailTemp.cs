@@ -10,11 +10,11 @@ namespace VetClinicACorreia.Web.Data.Entities
     {
         public int Id { get; set; }
 
-        public Doctor Doctor { get; set; }
+        //public Doctor Doctor { get; set; }
 
-        public Customer Customer { get; set; }
+        //public Customer Customer { get; set; }
 
-        public Pet Pet { get; set; }
+        //public Pet Pet { get; set; }
 
         //public Schedule Schedule { get; set; }
 

@@ -44,200 +44,178 @@ namespace VetClinicACorreia.Web.Controllers
         }
 
 
-        // GET: Appointments
-        public async Task<IActionResult> Index()
-        {
-            var model = await _appointmentRepository.GetAppointmentsAsync(this.User.Identity.Name);
-            return View(model);
-        }
-
-
-        public async Task <IActionResult> Create()
-        {
-            //var actualUser = await _appointmentRepository.GetAppointmentsAsync(this.User.Identity.Name);
-
-            var model = new AppointmentViewModel
-            {
-                //User = _appointmentRepository.GetAppointmentsAsync(this.User.Identity.Name),
-                Doctors = _appointmentRepository.GetComboDoctors(),
-                Customers = _appointmentRepository.GetComboCustomers(),
-                Pets = _appointmentRepository.GetComboPets(0)
-            };
-            return this.View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AppointmentViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var appointment = await _appointmentRepository.GetByIdAsync(model.Id);
-                if (appointment != null)
-                {
-                    appointment = new Appointment
-                    {
-                        Customer = model.Customer,
-                        Pet = model.Pet,
-                        Doctor = model.Doctor,
-                        AppointmentDate = model.AppointmentDate,
-                        AppointmentHour = model.AppointmentHour,
-                        Remarks = model.Remarks
-                    };
-
-                    //TODO Create appointment
-                    ////appointment.IsAvailable = false;
-                    //appointment.Customer = await _context.Customers.FindAsync(model.CustomerId);
-                    //appointment.Pet = await _context.Pets.FindAsync(model.PetId);
-                    //appointment.Doctor = await _doctorRepository.GetByIdAsync(model.DoctorId);
-                    //appointment.AppointmentDate = model.AppointmentDate;
-                    //appointment.AppointmentHour = model.AppointmentHour;
-                    //appointment.Remarks = model.Remarks;
-                    await _appointmentRepository.CreateAsync(appointment);
-                    //await _appointmentRepository.AddAppointmentAsync(model, this.User.Identity.Name);
-
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-
-            model.Customers = _combosHelper.GetComboCustomers();
-            model.Pets = _combosHelper.GetComboPets(model.CustomerId);
-            model.Doctors = _doctorRepository.GetComboDoctors();
-
-            return View(model);
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> Create1(AppointmentViewModel model)
-        {
-            if (this.ModelState.IsValid)
-            {
-                await _appointmentRepository.AddAppointmentAsync(model, this.User.Identity.Name);
-                return this.RedirectToAction("Index");
-            }
-
-            return this.View(model);
-        }
-
-        //public async Task AddAppointmentAsync(AppointmentViewModel model)
+        //// GET: Appointments
+        //public async Task<IActionResult> Index()
         //{
-        //    var appointment = this.GetComboPetsWhithCustomer(0);
-        //    if (appointment == null)
-        //    {
-        //        return;
-        //    }
-
-        //    appointment.Appointments.Add(new Appointment 
-        //    { 
-        //        Customer = model.Customer,
-        //        Doctor = model.Doctor,
-        //        Pet = model.Pet,
-        //        AppointmentDate = model.AppointmentDate,
-        //        AppointmentHour = model.AppointmentHour,
-        //        Remarks = model.Remarks
-
-        //    });
-        //    _context.Appointments.Update(appointment);
-        //    await _context.SaveChangesAsync();
-
+        //    var model = await _appointmentRepository.GetAppointmentsAsync(this.User.Identity.Name);
+        //    return View(model);
         //}
 
 
+        //public async Task <IActionResult> Create()
+        //{
+        //    //var actualUser = await _appointmentRepository.GetAppointmentsAsync(this.User.Identity.Name);
 
-        public async Task<IActionResult> Edit(int? id)
-        {
-            var appointment = await _appointmentRepository.GetByIdAsync(id.Value);
-            var model = new AppointmentViewModel();
+        //    var model = new AppointmentViewModel
+        //    {
+        //        //User = _appointmentRepository.GetAppointmentsAsync(this.User.Identity.Name),
+        //        Doctors = _appointmentRepository.GetComboDoctors(),
+        //        Customers = _appointmentRepository.GetComboCustomers(),
+        //        Pets = _appointmentRepository.GetComboPets(0)
+        //    };
+        //    return this.View(model);
+        //}
 
-            if (appointment != null)
-            {
-                model.AppointmentDate = appointment.AppointmentDate;
-                model.AppointmentHour = appointment.AppointmentHour;
-                //model.Doctor = 
-                model.User = appointment.User;
-                //model.Customer = 
-                //Pet = 
-                model.Remarks = appointment.Remarks;
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(AppointmentViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var appointment = await _appointmentRepository.GetByIdAsync(model.Id);
+        //        if (appointment != null)
+        //        {
+        //            appointment = new Appointment
+        //            {
+        //                Customer = model.Customer,
+        //                Pet = model.Pet,
+        //                Doctor = model.Doctor,
+        //                AppointmentDate = model.AppointmentDate,
+        //                AppointmentHour = model.AppointmentHour,
+        //                Remarks = model.Remarks
+        //            };
 
-                var doctor = await _doctorRepository.GetByIdAsync(model.DoctorId);
-                if (doctor != null)
-                {
-                    model.DoctorId = doctor.Id;
-                    model.Doctors = _appointmentRepository.GetComboDoctors();
-                }
+        //            //TODO Create appointment
+        //            ////appointment.IsAvailable = false;
+        //            //appointment.Customer = await _context.Customers.FindAsync(model.CustomerId);
+        //            //appointment.Pet = await _context.Pets.FindAsync(model.PetId);
+        //            //appointment.Doctor = await _doctorRepository.GetByIdAsync(model.DoctorId);
+        //            //appointment.AppointmentDate = model.AppointmentDate;
+        //            //appointment.AppointmentHour = model.AppointmentHour;
+        //            //appointment.Remarks = model.Remarks;
+        //            await _appointmentRepository.CreateAsync(appointment);
+        //            //await _appointmentRepository.AddAppointmentAsync(model, this.User.Identity.Name);
 
-                var pet = await _context.Pets.FindAsync(model.PetId);
-                if (pet != null)
-                {
-                    var customer = await _context.Customers
-                .Include(o => o.User)
-                .FirstOrDefaultAsync(o => o.Id == id.Value);
-                    if (customer != null)
-                    {
-                        model.CustomerId = customer.Id;
-                        model.Pets = _appointmentRepository.GetComboPets(customer.Id);
-                        model.Customers = _appointmentRepository.GetComboCustomers();
-                        model.PetId = appointment.Id;
-                    }
-                }
-            }
+        //            return RedirectToAction(nameof(Index));
+        //        }
+        //    }
 
-            model.Pets = _appointmentRepository.GetComboPets(model.CustomerId);
-            model.Customers = _appointmentRepository.GetComboCustomers();
-            return this.View(model);
-        }
+        //    model.Customers = _combosHelper.GetComboCustomers();
+        //    model.Pets = _combosHelper.GetComboPets(model.CustomerId);
+        //    model.Doctors = _combosHelper.GetComboDoctors();
+
+        //    return View(model);
+        //}
+
+
+        //[HttpPost]
+        //public async Task<IActionResult> Create1(AppointmentViewModel model)
+        //{
+        //    if (this.ModelState.IsValid)
+        //    {
+        //        await _appointmentRepository.AddAppointmentAsync(model, this.User.Identity.Name);
+        //        return this.RedirectToAction("Index");
+        //    }
+
+        //    return this.View(model);
+        //}
+
+        ////public async Task AddAppointmentAsync(AppointmentViewModel model)
+        ////{
+        ////    var appointment = this.GetComboPetsWhithCustomer(0);
+        ////    if (appointment == null)
+        ////    {
+        ////        return;
+        ////    }
+
+        ////    appointment.Appointments.Add(new Appointment 
+        ////    { 
+        ////        Customer = model.Customer,
+        ////        Doctor = model.Doctor,
+        ////        Pet = model.Pet,
+        ////        AppointmentDate = model.AppointmentDate,
+        ////        AppointmentHour = model.AppointmentHour,
+        ////        Remarks = model.Remarks
+
+        ////    });
+        ////    _context.Appointments.Update(appointment);
+        ////    await _context.SaveChangesAsync();
+
+        ////}
+
+
+
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    var appointment = await _appointmentRepository.GetByIdAsync(id.Value);
+        //    var model = new AppointmentViewModel();
+
+        //    if (appointment != null)
+        //    {
+        //        model.AppointmentDate = appointment.AppointmentDate;
+        //        model.AppointmentHour = appointment.AppointmentHour;
+        //        //model.Doctor = 
+        //        model.User = appointment.User;
+        //        //model.Customer = 
+        //        //Pet = 
+        //        model.Remarks = appointment.Remarks;
+
+        //        var doctor = await _doctorRepository.GetByIdAsync(model.DoctorId);
+        //        if (doctor != null)
+        //        {
+        //            model.DoctorId = doctor.Id;
+        //            model.Doctors = _appointmentRepository.GetComboDoctors();
+        //        }
+
+        //        var pet = await _context.Pets.FindAsync(model.PetId);
+        //        if (pet != null)
+        //        {
+        //            var customer = await _context.Customers
+        //        .Include(o => o.User)
+        //        .FirstOrDefaultAsync(o => o.Id == id.Value);
+        //            if (customer != null)
+        //            {
+        //                model.CustomerId = customer.Id;
+        //                model.Pets = _appointmentRepository.GetComboPets(customer.Id);
+        //                model.Customers = _appointmentRepository.GetComboCustomers();
+        //                model.PetId = appointment.Id;
+        //            }
+        //        }
+        //    }
+
+        //    model.Pets = _appointmentRepository.GetComboPets(model.CustomerId);
+        //    model.Customers = _appointmentRepository.GetComboCustomers();
+        //    return this.View(model);
+        //}
 
 
 
         
 
-        public IEnumerable<SelectListItem> GetComboPetsWhithCustomer(int customerId)
-        {
-            var customer = _context.Customers.Find(customerId);
-            var list = new List<SelectListItem>();
-            if (customer != null)
-            {
-                list = customer.Pets.Select(c => new SelectListItem
-                {
-                    Text = c.Name,
-                    Value = c.Id.ToString()
-                }).OrderBy(l => l.Text).ToList();
-            }
+        //public IEnumerable<SelectListItem> GetComboPetsWhithCustomer(int customerId)
+        //{
+        //    var customer = _context.Customers.Find(customerId);
+        //    var list = new List<SelectListItem>();
+        //    if (customer != null)
+        //    {
+        //        list = customer.Pets.Select(c => new SelectListItem
+        //        {
+        //            Text = c.Name,
+        //            Value = c.Id.ToString()
+        //        }).OrderBy(l => l.Text).ToList();
+        //    }
 
-            list.Insert(0, new SelectListItem
-            {
-                Text = "(Select a pet...)",
-                Value = "0"
-            });
+        //    list.Insert(0, new SelectListItem
+        //    {
+        //        Text = "(Select a pet...)",
+        //        Value = "0"
+        //    });
 
-            return list;
+        //    return list;
 
-        }
+        //}
 
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var appointment = await _appointmentRepository.GetByIdAsync(id.Value);
-
-            if (appointment == null)
-            {
-                return NotFound();
-            }
-
-            return View(appointment);
-        }
-
-
-
-
-
-
-        //public async Task<IActionResult> Create(int? id)
+        //public async Task<IActionResult> Details(int? id)
         //{
         //    if (id == null)
         //    {
@@ -246,34 +224,56 @@ namespace VetClinicACorreia.Web.Controllers
 
         //    var appointment = await _appointmentRepository.GetByIdAsync(id.Value);
 
-
-        //    //var appointment = await _context.Appointments
-        //    //    .FirstOrDefaultAsync(o => o.Id == id.Value);
         //    if (appointment == null)
         //    {
         //        return NotFound();
         //    }
 
-        //    var view = new AppointmentViewModel
-        //    {
-        //        Id = appointment.Id,
-        //        Customers = _combosHelper.GetComboCustomers(),
-        //        Pets = _combosHelper.GetComboPets(0)
-        //    };
-
-        //    return View(view);
+        //    return View(appointment);
         //}
 
 
 
-        public async Task<JsonResult> GetPetsAsync(int customerId)
-        {
-            var pets = await _context.Pets
-                .Where(p => p.Customer.Id == customerId)
-                .OrderBy(p => p.Name)
-                .ToListAsync();
-            return Json(pets);
-        }
+
+
+
+        ////public async Task<IActionResult> Create(int? id)
+        ////{
+        ////    if (id == null)
+        ////    {
+        ////        return NotFound();
+        ////    }
+
+        ////    var appointment = await _appointmentRepository.GetByIdAsync(id.Value);
+
+
+        ////    //var appointment = await _context.Appointments
+        ////    //    .FirstOrDefaultAsync(o => o.Id == id.Value);
+        ////    if (appointment == null)
+        ////    {
+        ////        return NotFound();
+        ////    }
+
+        ////    var view = new AppointmentViewModel
+        ////    {
+        ////        Id = appointment.Id,
+        ////        Customers = _combosHelper.GetComboCustomers(),
+        ////        Pets = _combosHelper.GetComboPets(0)
+        ////    };
+
+        ////    return View(view);
+        ////}
+
+
+
+        //public async Task<JsonResult> GetPetsAsync(int customerId)
+        //{
+        //    var pets = await _context.Pets
+        //        .Where(p => p.Customer.Id == customerId)
+        //        .OrderBy(p => p.Name)
+        //        .ToListAsync();
+        //    return Json(pets);
+        //}
 
 
 

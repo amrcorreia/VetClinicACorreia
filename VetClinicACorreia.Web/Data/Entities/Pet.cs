@@ -10,7 +10,7 @@ namespace VetClinicACorreia.Web.Data.Entities
     {
         public int Id { get; set; }
 
-        [Display(Name = "Name")]
+        [Display(Name = "Pet Name")]
         [MaxLength(50, ErrorMessage = "The {0} field can not have more than {1} characters.")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         public string Name { get; set; }
@@ -27,19 +27,11 @@ namespace VetClinicACorreia.Web.Data.Entities
 
         [Display(Name = "Born")]
         //[Required(ErrorMessage = "The field {0} is mandatory.")]
-        //[DataType(DataType.DateTime)]
+        [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime Born { get; set; }
 
         public string Remarks { get; set; }
-
-        //public ICollection<History> Histories { get; set; }
-
-        //public ICollection<Agenda> Agendas { get; set; }
-
-        //public string ImageFullPath => string.IsNullOrEmpty(ImageUrl)
-        //    ? null
-        //    : $"https://sevannveterinary.azurewebsites.net{ImageUrl.Substring(1)}";
 
         [Display(Name = "Born")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
@@ -47,14 +39,7 @@ namespace VetClinicACorreia.Web.Data.Entities
 
 
 
-        //public int Id { get; set; }
-
-
-        //[MaxLength(50, ErrorMessage = "The field {0} only can contains {1} characters lenght")]
-        //[Required(ErrorMessage = "The field {0} is mandatory.")]
-        //[Display(Name = "Pet Name")]
-        //public string Name { get; set; }
-
+       
 
         //public string Chip { get; set; }
 

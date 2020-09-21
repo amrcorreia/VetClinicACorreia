@@ -13,18 +13,19 @@ namespace VetClinicACorreia.Web.Helpers
     public class CombosHelper :ICombosHelper
     {
         private readonly DataContext _context;
-        private readonly IDoctorRepository _doctorRepository;
 
-        public CombosHelper(DataContext context,
-            IDoctorRepository doctorRepository)
+        public CombosHelper(DataContext context)        
         {
             _context = context;
-            _doctorRepository = doctorRepository;
         }
 
+        /// <summary>
+        /// Get Customers List
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<SelectListItem> GetComboCustomers()
         {
-            var list = _context.Customers
+            List<SelectListItem> list = _context.Customers
                 .Select(c => new SelectListItem
                 {
                     Text = c.User.FullName,
@@ -42,9 +43,14 @@ namespace VetClinicACorreia.Web.Helpers
             return list;
         }
 
+        /// <summary>
+        /// Get Pets List
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
         public IEnumerable<SelectListItem> GetComboPets(int customerId)
         {
-            var list = _context.Pets.Where(p => p.Customer.Id == customerId)
+            List<SelectListItem> list = _context.Pets.Where(p => p.Customer.Id == customerId)
                 .Select(p => new SelectListItem
                 {
                     Text = p.Name,
@@ -62,9 +68,13 @@ namespace VetClinicACorreia.Web.Helpers
             return list;
         }
 
+        /// <summary>
+        /// Get Pet Types List
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<SelectListItem> GetComboPetTypes()
         {
-            var list = _context.PetTypes.Select(pt => new SelectListItem
+            List<SelectListItem> list = _context.PetTypes.Select(pt => new SelectListItem
             {
                 Text = pt.Name,
                 Value = $"{pt.Id}"
@@ -81,9 +91,13 @@ namespace VetClinicACorreia.Web.Helpers
             return list;
         }
 
+        /// <summary>
+        /// Get Doctors List
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<SelectListItem> GetComboDoctors()
         {
-            var list = _context.Doctors.Select(pt => new SelectListItem
+            List<SelectListItem> list = _context.Doctors.Select(pt => new SelectListItem
             {
                 Text = pt.FullName,
                 Value = $"{pt.Id}"
@@ -100,9 +114,37 @@ namespace VetClinicACorreia.Web.Helpers
             return list;
         }
 
+        /// <summary>
+        /// Get Doctor Specialities List
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<SelectListItem> GetComboSpecialities()
+        {
+            List<SelectListItem> list = _context.Specialities.Select(sp => new SelectListItem
+            {
+                Text = sp.Name,
+                Value = $"{sp.Id}"
+            })
+                .OrderBy(sp => sp.Text)
+                .ToList();
+
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Select a category...]",
+                Value = "0"
+            });
+
+            return list;            
+        }
+
+        /// <summary>
+        /// Get Appointment Schedules List
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<SelectListItem> GetComboSchedules()
         {
-            var list = _context.Schedules.Select(pt => new SelectListItem
+            List<SelectListItem> list = _context.Schedules.Select(pt => new SelectListItem
             {
                 Text = pt.Name,
                 Value = $"{pt.Id}"

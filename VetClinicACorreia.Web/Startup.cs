@@ -73,7 +73,6 @@ namespace VetClinicACorreia.Web
             services.AddScoped<IDoctorRepository, DoctorRepository>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IVetAssistantRepository, VetAssistantRepository>();
-            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ISpecialityRepository, SpecialityRepository>();
             services.AddScoped<IAppRepository, AppRepository>();

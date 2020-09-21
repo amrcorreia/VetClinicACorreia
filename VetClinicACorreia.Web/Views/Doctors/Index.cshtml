@@ -9,6 +9,7 @@
     <div style="margin:auto; width:1400px; height:300px">
         <br />
         <br />
+        <br />
         <p>
             <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus"></i> Doctor</a>
         </p>
@@ -42,16 +43,10 @@
                                         @Html.DisplayNameFor(model => model.IsAvailable)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Mobile)
-                                    </th>
-                                    @*<th>
-                                            @Html.DisplayNameFor(model => model.WorkingSchedule)
-                                        </th>*@
-                                    @*<th>
-                                            @Html.DisplayNameFor(model => model.DoctorsOffice)
-                                        </th>*@
-                                    <th>
                                         @Html.DisplayNameFor(model => model.Remarks)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.User)
                                     </th>
                                     <th></th>
                                 </tr>
@@ -81,7 +76,7 @@
                                         }
                                         else
                                         {
-                                            <img src="~/images/Doctors/doctor3.jpg" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
+                                            <img src="~/images/Doctors/noImage.png" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
                                         }
                                     </td>
                                     <td>
@@ -94,15 +89,10 @@
                                         @Html.DisplayFor(modelItem => item.IsAvailable)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Mobile)
-                                    </td>
-                                    @*<td>
-            @Html.DisplayFor(modelItem => item.Speciality)
-        </td>*@
-
-                                    <td>
-
                                         @Html.DisplayFor(modelItem => item.Remarks)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.User)
                                     </td>
                                     <td id="@item.Id">
                                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i></a>
@@ -165,28 +155,3 @@
 }
 
 
-
-@*@section Scripts {
-
-        <script type="text/javascript">
-            $(document).ready(function () {
-                var id = 0;
-
-                /*Evento click em todos os <a> com o id = btnDelete*/
-                $('a[id*=btnDelete]').click(function () {
-                    debugger;
-                    //console.log($(this).parent()[0]);
-                    id = $(this).parent()[0].id;
-                    $("#deleteDialog").modal('show');
-                    return false;
-                });
-                $("#btnNoDelete").click(function () {
-                    $("#deleteDialog").modal('hide');
-                    return false;
-                });
-                $("#btnYesDelete").click(function () {
-                    window.location.href = '/Doctors/Delete/' + id;
-                });
-            });
-        </script>
-    }*@

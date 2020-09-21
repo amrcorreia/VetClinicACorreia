@@ -24,9 +24,27 @@ namespace VetClinicACorreia.Web.Data.Repositories
             _userHelper = userHelper;
         }
 
+        public async Task DeleteVetAssistantsync(int id)
+        {
+            var vetAssistant = await _context.VetAssistants.FindAsync(id);
+            if (vetAssistant == null)
+            {
+                return;
+            }
+
+            _context.VetAssistants.Remove(vetAssistant);
+            await _context.SaveChangesAsync();
+        }
+
         public IQueryable GetAllWithUsers()
         {
             return _context.VetAssistants.Include(p => p.User).OrderBy(p => p.Id);
+        }
+
+        public async Task<VetAssistant> GetVetAssistantsync(int id)
+        {
+            return await _context.VetAssistants.FindAsync(id);
+                //.Include(p => p.User).OrderBy(p => p.Id);
         }
 
         public async Task<IQueryable<VetAssistant>> GetVetAssitantsAsync(string userName)
@@ -47,6 +65,14 @@ namespace VetClinicACorreia.Web.Data.Repositories
             return _context.VetAssistants
                 .Where(o => o.User == user)
                 .OrderByDescending(o => o.User.FullName);
+        }
+
+        public async Task<VetAssistant> GetVetAssistantByIdAsync(int id)
+        {
+            return await _context.Set<VetAssistant>()
+                .AsNoTracking()
+                .Include(e => e.User)
+                .FirstOrDefaultAsync(e => e.Id == id);
         }
     }
 }

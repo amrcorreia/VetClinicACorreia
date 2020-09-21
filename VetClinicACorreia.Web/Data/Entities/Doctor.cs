@@ -21,8 +21,8 @@ namespace VetClinicACorreia.Web.Data.Entities
         [MaxLength(50, ErrorMessage = "The field {0} only can contain {1} characters.")]
         public string LastName { get; set; }
 
-        [MaxLength(9, ErrorMessage = "The field {0} only can contains {1} characters lenght")]
-        [MinLength(9, ErrorMessage = "The field {0} have to contains {1} characters lenght")]
+        [MaxLength(4, ErrorMessage = "The field {0} only can contains {1} characters lenght")]
+        [MinLength(4, ErrorMessage = "The field {0} have to contains {1} characters lenght")]
 
 
         [Display(Name = "Profissional Licence")]
@@ -64,6 +64,9 @@ namespace VetClinicACorreia.Web.Data.Entities
 
 
         public User User { get; set; }
+
+
+        public ICollection<App> Apps { get; set; }
 
 
         [Display(Name = "Name")]

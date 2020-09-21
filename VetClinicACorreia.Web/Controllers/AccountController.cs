@@ -116,6 +116,19 @@ namespace VetClinicACorreia.Web.Controllers
 
                     if (model.Password == "VetAssistant")
                     {
+                        User userInDB = await _userHelper.GetUserByEmailAsync(user.UserName);
+                        await _userHelper.AddUserToRoleAsync(userInDB, "VetAssistant");
+
+                        VetAssistant vetAssistant = new VetAssistant
+                        {
+
+                            User = userInDB
+                        };
+
+                        _context.VetAssistants.Add(vetAssistant);
+                        await _context.SaveChangesAsync();
+
+
                         var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
 
                     

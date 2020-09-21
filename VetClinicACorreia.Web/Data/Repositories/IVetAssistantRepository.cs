@@ -12,5 +12,10 @@ namespace VetClinicACorreia.Web.Data.Repositories
         IQueryable GetAllWithUsers();
 
         Task<IQueryable<VetAssistant>> GetVetAssitantsAsync(string userName);
+
+        Task DeleteVetAssistantsync(int id);
+
+        Task<VetAssistant> GetVetAssistantByIdAsync(int id);
+
     }
 }

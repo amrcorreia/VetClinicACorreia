@@ -8,7 +8,7 @@ namespace VetClinicACorreia.Web.Models
 {
     public class ScheduleViewModel
     {
-        public int SpecialityId { get; set; }
+        public int ScheduleId { get; set; }
 
         [Required]
         [Display(Name = "Schedule")]

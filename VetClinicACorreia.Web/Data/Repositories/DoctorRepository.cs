@@ -41,22 +41,6 @@ namespace VetClinicACorreia.Web.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<SelectListItem> GetComboDoctors()
-        {
-            var list = _context.Doctors.Select(p => new SelectListItem
-            {
-                Text = p.FullName,
-                Value = p.Id.ToString()
-            }).ToList();
-
-            list.Insert(0, new SelectListItem
-            {
-                Text = "(Select a doctor...)",
-                Value = "0"
-            });
-
-            return list;
-        }
 
         public async Task<Doctor> GetDoctorAsync(int id)
         {
@@ -75,11 +59,14 @@ namespace VetClinicACorreia.Web.Data.Repositories
             {
                 return _context.Doctors
                     .Include(o => o.User)
+                    .Include(o => o.Speciality)
                     .OrderByDescending(o => o.FullName);
             }
             return _context.Doctors
+                .Include(o => o.Speciality)
                 .Where(o => o.User == user)
                 .OrderByDescending(o => o.FullName);
         }
+
     }
 }

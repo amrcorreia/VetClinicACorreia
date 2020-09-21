@@ -43,7 +43,7 @@ namespace VetClinicACorreia.Web.Models
         [Range(1, int.MaxValue, ErrorMessage = "You must select a schedule.")]
         public int ScheduleId { get; set; }
 
-        public IEnumerable<Schedule> Schedules { get; set; }
+        public IEnumerable<SelectListItem> Schedules { get; set; }
 
     }
 }

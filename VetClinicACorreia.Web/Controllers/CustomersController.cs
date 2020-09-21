@@ -23,19 +23,25 @@ namespace VetClinicACorreia.Web.Controllers
         private readonly IConverterHelper _converterHelper;
         private readonly IImageHelper _imageHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly ICombosHelper _combosHelper;
+        private readonly IAppRepository _appRepository;
 
         public CustomersController(
             DataContext context,
             IUserHelper userHelper,
             IConverterHelper converterHelper,
             IImageHelper imageHelper,
-            IMailHelper mailHelper)
+            IMailHelper mailHelper,
+            ICombosHelper combosHelper,
+            IAppRepository appRepository)
         {
             _context = context;
             _userHelper = userHelper;
             _converterHelper = converterHelper;
             _imageHelper = imageHelper;
             _mailHelper = mailHelper;
+            _combosHelper = combosHelper;
+            _appRepository = appRepository;
         }
 
         // GET: Customers
@@ -46,7 +52,7 @@ namespace VetClinicACorreia.Web.Controllers
                 .Include(o => o.Pets));
         }
 
-        // GET: Owners/Details/5
+        // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -54,115 +60,45 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            Customer owner = await _context.Customers
+            Customer customer = await _context.Customers
                 .Include(o => o.User)
                 .Include(o => o.Pets)
                 .ThenInclude(p => p.PetType)
                 .Include(o => o.Pets)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (owner == null)
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            return View(owner);
+            return View(customer);
         }
 
-        // GET: Owners/Create
-        public IActionResult Create()
+        // GET: Customers/Create
+        public IActionResult Register()
         {
-            return View();
+            var model = new RegisterNewUserViewModel
+            {
+                //Countries = _countryRepository.GetComboCountries(),
+                //Cities = _countryRepository.GetComboCities(0)
+            };
+            return this.View(model);
         }
 
-
-        //TODO como estava.....
         // POST: Customers/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create(RegisterNewUserViewModel model)
-        //{
-        //    if (this.ModelState.IsValid)
-        //    {
-        //        var user = await _userHelper.GetUserByEmailAsync(model.Username);
-
-        //        if (user == null)
-        //        {
-        //            //var city = await _countryRepository.GetCityAsync(model.CityId);
-
-        //            user = new User
-        //            {
-        //                FirstName = model.FirstName,
-        //                LastName = model.LastName,
-        //                Email = model.Username,
-        //                UserName = model.Username,
-        //                PhoneNumber = model.PhoneNumber,
-        //                TIN = model.TIN
-
-        //                //CityId = model.CityId,
-        //                //City = city,
-        //            };
-
-        //            var result = await this._userHelper.AddUserAsync(user, model.Password); //guarda o user
-        //            if (result != IdentityResult.Success)
-        //            {
-        //                this.ModelState.AddModelError(string.Empty, "The user couldn't be created.");
-        //                return this.View(model);
-        //            }
-
-        //            User userInDB = await _userHelper.GetUserByEmailAsync(user.UserName);
-        //            await _userHelper.AddUserToRoleAsync(userInDB, "Customer");
-
-        //            Customer owner = new Customer
-        //            {
-        //                //Appointments = new List<Appointmet>(),
-        //                Pets = new List<Pet>(),
-        //                User = userInDB                     
-        //            };
-
-        //            _context.Customers.Add(owner);
-        //            await _context.SaveChangesAsync();
-
-        //            var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-        //            var tokenLink = this.Url.Action("ConfirmEmail", "Account", new
-        //            {
-        //                userid = user.Id,
-        //                token = myToken
-        //            }, protocol: HttpContext.Request.Scheme);
-
-        //            _mailHelper.SendMail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
-        //                $"To allow the user, " +
-        //                $"plase click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
-        //            this.ViewBag.Message = "The instructions to allow your user has been sent to email.";
-
-        //            return this.View(model);
-        //        }
-
-        //        this.ModelState.AddModelError(string.Empty, "The username is already registered.");
-        //    }
-
-        //return this.View(model);
-
-
-
-
-        //Aqui é o fim de como estava
-
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RegisterNewUserViewModel model)
+        public async Task<IActionResult> Register(RegisterNewUserViewModel model)
         {
-            if (this.ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserByEmailAsync(model.Username);
-                var customer = _context.Customers.FindAsync();
-
                 if (user == null)
                 {
+                    //var city = await _countryRepository.GetCityAsync(model.CityId);
 
                     user = new User
                     {
@@ -170,11 +106,13 @@ namespace VetClinicACorreia.Web.Controllers
                         LastName = model.LastName,
                         Email = model.Username,
                         UserName = model.Username,
+                        TIN = model.TIN,
                         PhoneNumber = model.PhoneNumber,
-                        TIN = model.TIN
+                        //CityId = model.CityId,
+                        //City = city
                     };
 
-                    var result = await this._userHelper.AddUserAsync(user, model.Password); //guarda o user
+                    var result = await _userHelper.AddUserAsync(user, model.Password);
                     if (result != IdentityResult.Success)
                     {
                         this.ModelState.AddModelError(string.Empty, "The user couldn't be created.");
@@ -196,103 +134,33 @@ namespace VetClinicACorreia.Web.Controllers
                     await _context.SaveChangesAsync();
 
                     var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+
                     var tokenLink = this.Url.Action("ConfirmEmail", "Account", new
                     {
                         userid = user.Id,
                         token = myToken
                     }, protocol: HttpContext.Request.Scheme);
 
-                    _mailHelper.SendMail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+                    _mailHelper.SendMail(model.Username, "YourVet - Email confirmation", $"<h1>Customer Email Confirmation</h1>" +
+                        $"<br/>" +
+                        $"Welcome to YouVet!!" +
                         $"To allow the user, " +
-                        $"plase click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
+                        $"please click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
                     this.ViewBag.Message = "The instructions to allow your user has been sent to email.";
 
-                    return this.View(model);
+                    //return this.View(model);
                 }
 
-                this.ModelState.AddModelError(string.Empty, "The username is already registered.");
+                this.ModelState.AddModelError(string.Empty, "The user already exists.");
             }
 
             return View(model);
-            }
+        }
 
+        
 
-
-
-
-            //if (ModelState.IsValid)
-            //{
-            //    var user = await _userHelper.GetUserByEmailAsync(model.Username);
-
-            //    if (user == null)
-            //    {
-
-            //        user = new User
-            //        {
-            //            FirstName = model.FirstName,
-            //            LastName = model.LastName,
-            //            Email = model.Username,
-            //            UserName = model.Username,
-            //            PhoneNumber = model.PhoneNumber
-            //        };
-
-            //        var response = await _userHelper.AddUserAsync(user, model.Password);
-
-            //        if (response.Succeeded)
-            //        {
-            //            User userInDB = await _userHelper.GetUserByEmailAsync(user.UserName);
-            //            await _userHelper.AddUserToRoleAsync(userInDB, "Customer");
-
-            //            Customer owner = new Customer
-            //            {
-            //                //Agendas = new List<Agenda>(),
-            //                Pets = new List<Pet>(),
-            //                User = userInDB
-            //            };
-
-            //            _context.Customers.Add(owner);
-
-            //            try
-            //            {
-            //                await _context.SaveChangesAsync();
-
-            //                //var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-            //                //var tokenLink = Url.Action("ConfirmEmail", "Account", new
-            //                //{
-            //                //    userid = user.Id,
-            //                //    token = myToken
-            //                //}, protocol: HttpContext.Request.Scheme);
-
-            //                //_mailHelper.SendMail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
-            //                //    $"To allow the user, " +
-            //                //    $"plase click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
-
-            //                //TODO: Activate send email (security)
-            //                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-            //                await _userHelper.ConfirmEmailAsync(user, token);
-
-            //                return RedirectToAction(nameof(Index));
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                ModelState.AddModelError(string.Empty, ex.ToString());
-            //                return View(model);
-            ////            }
-            //        }
-
-            //    }
-
-            //        this.ModelState.AddModelError(string.Empty, "The username is already registered.");
-            // }
-
-            //return View(model);
-            //}
-
-
-
-
-            // GET: Owners/Edit/5
-            public async Task<IActionResult> Edit(int? id)
+        // GET: Customers/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -316,7 +184,6 @@ namespace VetClinicACorreia.Web.Controllers
                 Username = owner.User.Email,
                 TIN = owner.User.TIN
                 
-                
             };
 
             return View(model);
@@ -337,6 +204,7 @@ namespace VetClinicACorreia.Web.Controllers
                 owner.User.LastName = model.LastName;
                 owner.User.PhoneNumber = model.PhoneNumber;
                 owner.User.Email = model.Username;
+                owner.User.TIN = model.TIN;
 
                 await _userHelper.UpdateUserAsync(owner.User);
                 return RedirectToAction(nameof(Index));
@@ -346,7 +214,7 @@ namespace VetClinicACorreia.Web.Controllers
         }
 
 
-        // GET: Owners/Delete/5
+        // GET: Customers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -365,8 +233,7 @@ namespace VetClinicACorreia.Web.Controllers
 
             if (owner.Pets.Count > 0)
             {
-                ModelState.AddModelError(string.Empty, "The owner can not be deleted because it has related records");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(CustomerWithPet));
             }
 
             // Delete the user ASP and model user
@@ -405,7 +272,7 @@ namespace VetClinicACorreia.Web.Controllers
             {
                 Born = DateTime.Today,
                 CustomerId = owner.Id,
-                PetTypes = GetComboPetTypes()
+                PetTypes = _combosHelper.GetComboPetTypes()
             };
 
             return View(model);
@@ -432,12 +299,12 @@ namespace VetClinicACorreia.Web.Controllers
                 //return RedirectToAction($"Details/{model.OwnerId}");
             }
 
-            model.PetTypes = GetComboPetTypes();
+            model.PetTypes = _combosHelper.GetComboPetTypes();
             return View(model);
         }
 
         /// <summary>
-        /// EditPet
+        /// Edit Pet
         /// </summary>
         /// <param name="id">Pet Id</param>
         /// <returns></returns>
@@ -481,7 +348,7 @@ namespace VetClinicACorreia.Web.Controllers
                 return RedirectToAction("Details", null, new { @id = model.CustomerId });
             }
 
-            model.PetTypes = GetComboPetTypes();
+            model.PetTypes = _combosHelper.GetComboPetTypes();
             return View(model);
         }
 
@@ -504,145 +371,41 @@ namespace VetClinicACorreia.Web.Controllers
             return View(pet);
         }
 
-        public IEnumerable<SelectListItem> GetComboPetTypes()
+        // GET: Customers/Create
+        public IActionResult CustomerWithPet()
         {
-            var list = _context.PetTypes.Select(pt => new SelectListItem
-            {
-                Text = pt.Name,
-                Value = $"{pt.Id}"
-            })
-                .OrderBy(pt => pt.Text)
-                .ToList();
-
-            list.Insert(0, new SelectListItem
-            {
-                Text = "[Select a pet type...]",
-                Value = "0"
-            });
-
-            return list;
+            return View();
         }
 
-        //public async Task<IActionResult> AddHistory(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Pets/Delete/5
+        public async Task<IActionResult> DeletePet(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var pet = await _context.Pets
+                .Include(p => p.Customer)
+                .FirstOrDefaultAsync(p => p.Id == id.Value);
+               
+            if (pet == null)
+            {
+                return NotFound();
+            }
 
-        //    Pet pet = await _context.Pets.FindAsync(id.Value);
-        //    if (pet == null)
-        //    {
-        //        return NotFound();
-        //    }
+            
+            //var appointment = _appRepository.GetAll()
+            //    .Include(a => a.Pet)
+            //    .ThenInclude(p => p.Id)
+            //    .Where(a => a.Pet.Id == id.Value);
+            //if (appointment.Include(a => a.Pet).ThenInclude(a => a.Id).Equals(id))
+            //{
+            //    return RedirectToAction($"{nameof(Details)}/{pet.Customer.Id}");
+            //}
 
-        //    HistoryViewModel model = new HistoryViewModel
-        //    {
-        //        Date = DateTime.Now,
-        //        PetId = pet.Id,
-        //        ServiceTypes = _combosHelper.GetComboServiceTypes(),
-        //    };
-
-        //    return View(model);
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> AddHistory(HistoryViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        History history = await _converterHelper.ToHistoryAsync(model, true);
-        //        _dataContext.Histories.Add(history);
-        //        await _dataContext.SaveChangesAsync();
-
-        //        return RedirectToAction($"{nameof(DetailsPet)}/{model.PetId}");
-        //    }
-
-        //    model.ServiceTypes = _combosHelper.GetComboServiceTypes();
-        //    return View(model);
-        //}
-
-        //public async Task<IActionResult> EditHistory(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    History history = await _dataContext.Histories
-        //        .Include(h => h.Pet)
-        //        .Include(h => h.ServiceType)
-        //        .FirstOrDefaultAsync(p => p.Id == id.Value);
-        //    if (history == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(_converterHelper.ToHistoryViewModel(history));
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> EditHistory(HistoryViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        History history = await _converterHelper.ToHistoryAsync(model, false);
-        //        _dataContext.Histories.Update(history);
-        //        await _dataContext.SaveChangesAsync();
-        //        return RedirectToAction($"{nameof(DetailsPet)}/{model.PetId}");
-        //    }
-
-        //    model.ServiceTypes = _combosHelper.GetComboServiceTypes();
-        //    return View(model);
-        //}
-
-        //public async Task<IActionResult> DeleteHistory(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var history = await _dataContext.Histories
-        //        .Include(h => h.Pet)
-        //        .FirstOrDefaultAsync(h => h.Id == id.Value);
-        //    if (history == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _dataContext.Histories.Remove(history);
-        //    await _dataContext.SaveChangesAsync();
-        //    return RedirectToAction($"{nameof(Details)}/{history.Pet.Id}");
-        //}
-
-        //public async Task<IActionResult> DeletePet(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var pet = await _dataContext.Pets
-        //        .Include(p => p.Owner)
-        //        .Include(p => p.Histories)
-        //        .FirstOrDefaultAsync(p => p.Id == id.Value);
-        //    if (pet == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (pet.Histories.Count > 0)
-        //    {
-        //        ModelState.AddModelError(string.Empty, "Pet can not be deleted because it has related records");
-        //        return RedirectToAction($"{nameof(Details)}/{pet.Owner.Id}");
-        //    }
-
-        //    _dataContext.Pets.Remove(pet);
-        //    await _dataContext.SaveChangesAsync();
-
-        //    return RedirectToAction($"{nameof(Details)}/{pet.Owner.Id}");
-        //}
-
+            _context.Pets.Remove(pet);
+            await _context.SaveChangesAsync();
+            return RedirectToAction($"{nameof(Details)}/{pet.Customer.Id}");
+        }
     }
 }

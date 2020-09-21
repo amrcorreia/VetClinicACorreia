@@ -27,7 +27,7 @@ namespace VetClinicACorreia.Web.Helpers
         
         public Doctor ToDoctor(DoctorViewModel model, string path, bool isNew)
         {
-            Speciality speciality = _context.Specialities.Find(model.SpecialityId);
+            //Speciality speciality = _context.Specialities.Find(model.SpecialityId);
 
             return new Doctor
             {
@@ -36,13 +36,10 @@ namespace VetClinicACorreia.Web.Helpers
                 IsAvailable = model.IsAvailable,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                Speciality = speciality,
+                Speciality = _context.Specialities.Find(model.SpecialityId),
                 ProfissionalLicence = model.ProfissionalLicence,
                 TIN = model.TIN,
                 Mobile = model.Mobile,
-                //Email = model.Email,
-                //WorkingSchedule = model.WorkingSchedule,
-                //DoctorsOffice = model.DoctorsOffice,
                 Remarks = model.Remarks,
                 User = model.User
             };
@@ -57,16 +54,13 @@ namespace VetClinicACorreia.Web.Helpers
                 ImageUrl = model.ImageUrl,
                 IsAvailable = model.IsAvailable,
                 FirstName = model.FirstName,
-                LastName = model.LastName,
+                LastName = model.LastName,     
+                Specialities = _combosHelper.GetComboSpecialities(),
                 //Speciality = model.Speciality,
                 //SpecialityId = model.Speciality.Id,
-                Specialities = GetComboSpecialities(),
                 ProfissionalLicence = model.ProfissionalLicence,
                 TIN = model.TIN,
                 Mobile = model.Mobile,
-                //Email = model.Email,
-                //WorkingSchedule = model.WorkingSchedule,
-                //DoctorsOffice = model.DoctorsOffice,
                 Remarks = model.Remarks,
                 User = model.User
             };
@@ -113,13 +107,11 @@ namespace VetClinicACorreia.Web.Helpers
                 Id = isNew ? 0 : model.Id,
                 ImageUrl = path,
                 Name = model.Name,
-                //Sterilized = model.Sterilized,
-                //Chip = model.Chip,
-                //ChipDate = model.ChipDate,
-                //BirthDate = model.BirthDate,
                 Remarks = model.Remarks,
                 PetType = petType,
-                Customer = customer
+                Customer = customer,
+                Race = model.Race,
+                Born = model.Born,
             };
             return pet;
         }
@@ -131,55 +123,16 @@ namespace VetClinicACorreia.Web.Helpers
                 Id = model.Id,
                 ImageUrl = model.ImageUrl,
                 Name = model.Name,
-                //Sterilized = model.Sterilized,
-                //Chip = model.Chip,
-                //ChipDate = model.ChipDate,
-                //BirthDate = model.BirthDate,
                 Remarks = model.Remarks,
                 Customer = model.Customer,
                 PetType = model.PetType,
                 CustomerId = model.Customer.Id,
                 PetTypeId = model.PetType.Id,
-                PetTypes = GetComboPetTypes()
+                PetTypes = _combosHelper.GetComboPetTypes(),
+                Race = model.Race,
+                Born = model.Born,
+
             };
-        }
-
-        public IEnumerable<SelectListItem> GetComboPetTypes()
-        {
-            var list = _context.PetTypes.Select(pt => new SelectListItem
-            {
-                Text = pt.Name,
-                Value = $"{pt.Id}"
-            })
-                .OrderBy(pt => pt.Text)
-                .ToList();
-
-            list.Insert(0, new SelectListItem
-            {
-                Text = "[Select a pet type...]",
-                Value = "0"
-            });
-
-            return list;
-        }
-
-        public IEnumerable<SelectListItem> GetComboSpecialities()
-        {
-            var list = _context.Specialities.Select(pt => new SelectListItem
-            {
-                Text = pt.Name,
-                Value = $"{pt.Id}"
-            })
-                .OrderBy(pt => pt.Text)
-                .ToList();
-
-            list.Insert(0, new SelectListItem
-            {
-                Text = "[Select a speciality...]",
-                Value = "0"
-            });
-
-            return list;
         }
 
         public App ToAppointment(AppViewModel model, bool isNew)
@@ -201,37 +154,26 @@ namespace VetClinicACorreia.Web.Helpers
             };
         }
 
-        public AppViewModel ToAppointmentViewModel(App model)
+        public AppViewModel ToAppointmentViewModel(App appointment)
         {
             return new AppViewModel
             {
-                Id = model.Id,
+                Id = appointment.Id,
+                
+                AppDate = appointment.AppDate,
+                User = appointment.User,
+                Doctor = appointment.Doctor,
+                DoctorId = appointment.Doctor.Id,
                 Doctors = _combosHelper.GetComboDoctors(),
-                AppDate = model.AppDate,
-                Customer = (Customer)_combosHelper.GetComboCustomers(),
-                User = model.User,
-                Pet = (Pet)_combosHelper.GetComboPets(0),
-                Schedule = (Schedule)GetComboSchedules()
+                Pet = appointment.Pet,
+                PetId = appointment.Pet.Id,
+                Customer = appointment.Customer,
+                CustomerId = appointment.Customer.Id,
+                ScheduleId = appointment.Schedule.Id,
+                Schedules = _combosHelper.GetComboSchedules(),
+                Customers = _combosHelper.GetComboCustomers(),
+                Pets = _combosHelper.GetComboPets(0),
             };
-        }
-
-        public IEnumerable<SelectListItem> GetComboSchedules()
-        {
-            var list = _context.Schedules.Select(pt => new SelectListItem
-            {
-                Text = pt.Name,
-                Value = $"{pt.Id}"
-            })
-                .OrderBy(pt => pt.Text)
-                .ToList();
-
-            list.Insert(0, new SelectListItem
-            {
-                Text = "[Select a schedule...]",
-                Value = "0"
-            });
-
-            return list;
         }
     }
 }

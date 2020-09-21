@@ -31,12 +31,20 @@
             <dd>
                 @Html.DisplayFor(model => model.User.PhoneNumber)
             </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.User.TIN)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.User.TIN)
+            </dd>
         </dl>
 
         <div>
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Customer</a>
-            <a asp-action="AddPet" asp-route-id="@Model.Id" class="btn btn-info">Add Pet</a>
-            <a asp-action="Index" class="btn btn-success">Back to List</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i> Customer</a>
+            <a asp-action="AddPet" asp-route-id="@Model.Id" class="btn btn-outline-info"><i class="fa fa-plus"></i> Pet</a>
+            <a asp-action="Index" class="btn btn-outline-success"><i class="fa fa-arrow-left"></i> Back</a>
+
+
         </div>
         <br />
         <h4>Pets</h4>
@@ -56,11 +64,11 @@
                             @Html.DisplayNameFor(model => model.Pets.FirstOrDefault().ImageUrl)
                         </th>
                         @*<th>
-                            @Html.DisplayNameFor(model => model.Pets.FirstOrDefault().Chip)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Pets.FirstOrDefault().ChipDate)
-                        </th>*@
+                                @Html.DisplayNameFor(model => model.Pets.FirstOrDefault().Chip)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Pets.FirstOrDefault().ChipDate)
+                            </th>*@
                         <th></th>
                     </tr>
                 </thead>
@@ -74,18 +82,19 @@
                             <td>
                                 @if (!string.IsNullOrEmpty(item.ImageUrl))
                                 {
-                                    <img src="@Url.Content(item.ImageUrl)" alt="Image" style="width:200px;height:200px;max-width: 100%; height: auto;" />}
+                                    <img src="@Url.Content(item.ImageUrl)" alt="Image" class="rounded-circle" asp-append-version="true" style="width:150px;height:200px;max-height:100%;height:auto;" />}
                             </td>
                             @*<td>
-                                @Html.DisplayFor(modelItem => item.Chip)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ChipDate)
-                            </td>*@
-                            <td id="@item.Id">
-                                <a asp-action="EditPet" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
-                                <a asp-action="DeletePet" asp-route-id="@item.Id" class="btn btn-danger" id="btnDelete">Delete</a>
-                            </td>
+                                    @Html.DisplayFor(modelItem => item.Chip)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ChipDate)
+                                </td>*@
+                        <td id="@item.Id">
+                            <a asp-action="EditPet" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i></a>
+                            <a asp-action="DetailsPet" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="fas fa-list-ol"></i></a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
+                        </td>
                         </tr>
                     }
                 </tbody>
@@ -97,7 +106,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
-                    <h4 class="modal-title">Delete</h4>
+                    <h4 class="modal-title"></h4>
                 </div>
                 <div class="modal-body">
                     <p>Do you want to delete the pet?</p>
@@ -110,7 +119,6 @@
         </div>
     </div>
 </section>
-
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -129,7 +137,7 @@
                 return false;
             });
             $("#btnYesDelete").click(function () {
-                window.location.href = '/Customers/Details/DeletePet/' + id;
+                window.location.href = '/Customers/DeletePet/' + id;
             });
         });
     </script>
