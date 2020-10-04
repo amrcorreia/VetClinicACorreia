@@ -22,9 +22,5 @@ namespace VetClinicACorreia.Web.Controllers.API
             _doctorRepository = doctorRepository;
         }
 
-        //public IActionResult GetDoctors()
-        //{
-        //    return Ok(_doctorRepository.GetAllWithUsers());
-        //}
     }
 }

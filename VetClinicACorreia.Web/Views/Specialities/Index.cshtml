@@ -4,15 +4,15 @@
     ViewData["Title"] = "Index";
 }
 <section>
-    <div style="margin:auto; width:800px; height:300px">
+    <div style="margin:auto; width:600px; height:300px">
         <br />
         <br />
         <br />
 
-        <h2>Specialities</h2>
+        <h4>Specialities</h4>
         <hr />
         <p>
-            <a asp-action="Create" class="btn btn-primary">New Speciality</a>
+            <a asp-action="Create" class="btn btn-outline-info"><i class="fa fa-plus"></i> Speciality</a>
         </p>
         <table class="table">
             <thead>
@@ -31,9 +31,9 @@
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
                         <td id="@item.Id">
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger" id="btnDelete">Delete</a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i></a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="fas fa-list-ol"></i></a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" id="btnDelete"><i class="fas fa-trash" ></i></a>
                         </td>
                     </tr>
                 }

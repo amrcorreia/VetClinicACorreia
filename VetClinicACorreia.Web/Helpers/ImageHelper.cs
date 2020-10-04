@@ -9,6 +9,12 @@ namespace VetClinicACorreia.Web.Helpers
 {
     public class ImageHelper : IImageHelper
     {
+        /// <summary>
+        /// upload image to defined folder
+        /// </summary>
+        /// <param name="imageFile"></param>
+        /// <param name="folder"></param>
+        /// <returns></returns>
         public async Task<string> UploadImageAsync(IFormFile imageFile, string folder)
         {
             var guid = Guid.NewGuid().ToString();

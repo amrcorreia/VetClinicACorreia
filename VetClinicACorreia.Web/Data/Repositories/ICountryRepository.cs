@@ -10,31 +10,65 @@ namespace VetClinicACorreia.Web.Data.Repositories
 {
     public interface ICountryRepository : IGenericRepository<Country>
     {
-		//IQueryable GetCountriesWithCities(); //que me dê os paisses e cidades todos
+		/// <summary>
+		/// get all Countries and cities
+		/// </summary>
+		/// <returns></returns>
+		IQueryable GetCountriesWithCities();
 
+		/// <summary>
+		/// get country by id
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		Task<Country> GetCountryWithCitiesAsync(int id);
 
-		//Task<Country> GetCountryWithCitiesAsync(int id); //dou-lhe um id e ele vai dar-me o pais a que corresponde
+		/// <summary>
+		/// get city by id
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		Task<City> GetCityAsync(int id);
 
+		/// <summary>
+		/// add new city
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		Task AddCityAsync(CityViewModel model);
 
-		//Task<City> GetCityAsync(int id); //atrave´s dpo is dá-me a cidade
+		/// <summary>
+		/// update city
+		/// </summary>
+		/// <param name="city"></param>
+		/// <returns></returns>
+		Task<int> UpdateCityAsync(City city);
 
+		/// <summary>
+		/// delete city
+		/// </summary>
+		/// <param name="city"></param>
+		/// <returns></returns>
+		Task<int> DeleteCityAsync(City city);
 
-		//Task AddCityAsync(CityViewModel model); //adicionar cidades novas
+		/// <summary>
+		/// populate countries combobox
+		/// </summary>
+		/// <returns></returns>
+		IEnumerable<SelectListItem> GetComboCountries();
 
+		/// <summary>
+		/// populate cities combobox by country
+		/// </summary>
+		/// <param name="conuntryId"></param>
+		/// <returns></returns>
+		IEnumerable<SelectListItem> GetComboCities(int conuntryId);
 
-		//Task<int> UpdateCityAsync(City city);
-
-
-		//Task<int> DeleteCityAsync(City city);
-
-
-		//IEnumerable<SelectListItem> GetComboCountries(); //vai preencher combo paises
-
-
-		//IEnumerable<SelectListItem> GetComboCities(int conuntryId); //vai preencher combo cidades
-
-
-		//Task<Country> GetCountryAsync(City city); //vai preencher combo ...ver
-
+		/// <summary>
+		/// Get country with cities
+		/// </summary>
+		/// <param name="city"></param>
+		/// <returns></returns>
+		Task<Country> GetCountryAsync(City city);
 	}
 }

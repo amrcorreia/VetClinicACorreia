@@ -3,144 +3,186 @@
 @{
     ViewData["Title"] = "Create";
 }
+
+
     <section>
-        <div style="margin:auto; width:800px; height:300px">
-            <br />
-            <br />
-            <br />
+        <ejs-tooltip id="details" position="RightCenter" target=".e-info">
+            <e-content-template>
+                <div style="margin:auto; width:800px; height:300px">
+                    <br />
+                    <br />
+                    <br />
 
-            <h4>New Doctor</h4>
-            <hr />
-            <form asp-action="Create" enctype="multipart/form-data">
+                    <h4>New Doctor</h4>
+                    <hr />
+                    <form asp-action="Create" enctype="multipart/form-data">
 
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="row">
 
-                            <div class="col-sm-6">
-                                <!-- text input -->
-                                <div class="form-group">
-                                    <label asp-for="FirstName" class="control-label"></label>
-                                    <input asp-for="FirstName" class="form-control" placeholder="Enter First Name" />
-                                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label asp-for="LastName" class="control-label"></label>
-                                    <input asp-for="LastName" class="form-control" placeholder="Enter Last Name" type="text" />
-                                    <span asp-validation-for="LastName" class="text-danger"></span>
-                                </div>
-                            </div>
+                                    <div class="col-sm-6">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <ejs-tooltip id="tooltip" height="40px" width="150px" content="Insert first name.">
+                                                <e-content-template>
+                                                    <label asp-for="FirstName" class="control-label"></label>
+                                                    <input asp-for="FirstName" class="form-control" />
+                                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                                </e-content-template>
+                                            </ejs-tooltip>
 
-                            <div class="col-sm-6">
-                                <!-- text input -->
-                                <div class="form-group">
-                                    <label asp-for="Username" class="control-label"></label>
-                                    <input asp-for="Username" class="form-control" placeholder="Enter Email" type="email" />
-                                    <span asp-validation-for="Username" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label asp-for="Password" class="control-label"></label>
-                                    <input asp-for="Password" class="form-control" placeholder="Enter Password" type="password" />
-                                    <span asp-validation-for="Password" class="text-danger"></span>
-                                </div>
-                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <ejs-tooltip id="tooltip1" height="40px" width="150px" content="Insert last name.">
+                                                <e-content-template>
+                                                    <label asp-for="LastName" class="control-label"></label>
+                                                    <input asp-for="LastName" class="form-control" type="text" />
+                                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                                </e-content-template>
+                                            </ejs-tooltip>
+                                        </div>
+                                    </div>
 
-                            <div class="col-sm-6">
-                                <!-- text input -->
-                                <div class="form-group">
-                                    <label asp-for="ProfissionalLicence" class="control-label"></label>
-                                    <input asp-for="ProfissionalLicence" class="form-control" placeholder="Enter Profissional Licence" type="number" />
-                                    <span asp-validation-for="ProfissionalLicence" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label asp-for="Confirm" class="control-label"></label>
-                                    <input asp-for="Confirm" class="form-control" placeholder="Confirm Password" type="password" />
-                                    <span asp-validation-for="Confirm" class="text-danger"></span>
-                                </div>
-                            </div>
+                                    <div class="col-sm-6">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <ejs-tooltip id="tooltip2" height="40px" width="150px" content="Insert professional licence.">
+                                                <e-content-template>
+                                                    <label asp-for="ProfissionalLicence" class="control-label"></label>
+                                                    <input asp-for="ProfissionalLicence" class="form-control" type="number" />
+                                                    <span asp-validation-for="ProfissionalLicence" class="text-danger"></span>
+                                                </e-content-template>
+                                            </ejs-tooltip>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <ejs-tooltip id="tooltip3" height="40px" width="150px" content="Select Speciality.">
+                                                <e-content-template>
+                                                    <label asp-for="SpecialityId" class="control-label"></label>
+                                                    <select asp-for="SpecialityId" asp-items="Model.Specialities" class="form-control"></select>
+                                                    <span asp-validation-for="SpecialityId" class="text-danger"></span>
+                                                </e-content-template>
+                                            </ejs-tooltip>
+                                        </div>
+                                    </div>
 
-                            <div class="col-sm-6">
-                                <!-- text input -->
-                                <div class="form-group">
-                                    <label asp-for="ImageFile" class="control-label"></label>
-                                    <input asp-for="ImageFile" class="form-control" type="file" />
-                                    <span asp-validation-for="ImageFile" class="text-danger"></span>
-                                </div>
-                            </div>
+                                    <div class="col-sm-6">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <ejs-tooltip id="tooltip4" height="40px" width="150px" content="Insert Image.">
+                                                <e-content-template>
+                                                    <label asp-for="ImageFile" class="control-label"></label>
+                                                    <input asp-for="ImageFile" class="form-control" type="file" />
+                                                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                                                </e-content-template>
+                                            </ejs-tooltip>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <ejs-tooltip id="tooltip5" height="40px" width="150px" content="Insert Tax Identification Number.">
+                                                <e-content-template>
+                                                    <label asp-for="TIN" class="control-label"></label>
+                                                    <input asp-for="TIN" class="form-control" type="number" />
+                                                    <span asp-validation-for="TIN" class="text-danger"></span>
+                                                </e-content-template>
+                                            </ejs-tooltip>
+                                        </div>
+                                    </div>
 
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label asp-for="TIN" class="control-label"></label>
-                                    <input asp-for="TIN" class="form-control" type="number" />
-                                    <span asp-validation-for="TIN" class="text-danger"></span>
-                                </div>
-                            </div>
+                                    <div class="col-sm-6">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <ejs-tooltip id="tooltip6" height="40px" width="150px" content="Insert mobile number.">
+                                                <e-content-template>
+                                                    <label asp-for="Mobile" class="control-label"></label>
+                                                    <input asp-for="Mobile" class="form-control" type="number" />
+                                                    <span asp-validation-for="Mobile" class="text-danger"></span>
+                                                </e-content-template>
+                                            </ejs-tooltip>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <ejs-tooltip id="tooltip7" height="40px" width="150px" content="Select if Doctor is available.">
+                                                <e-content-template>
+                                                    <div class="checkbox">
+                                                        <br />
+                                                        <label>
+                                                            <input asp-for="IsAvailable" /> @Html.DisplayNameFor(model => model.IsAvailable)
+                                                        </label>
+                                                    </div>
+                                                </e-content-template>
+                                            </ejs-tooltip>
+                                        </div>
+                                    </div>
 
-                            <div class="col-sm-6">
-                                <!-- text input -->
-                                <div class="form-group">
-                                    <label asp-for="Mobile" class="control-label"></label>
-                                    <input asp-for="Mobile" class="form-control" type="number" />
-                                    <span asp-validation-for="Mobile" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <div class="checkbox">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <ejs-tooltip id="tooltip8" height="40px" width="150px" content="Enter remarks.">
+                                                <e-content-template>
+                                                    <label asp-for="Remarks" class="control-label"></label>
+                                                    <input asp-for="Remarks" class="form-control" type="text" />
+                                                    <span asp-validation-for="Remarks" class="text-danger"></span>
+                                                </e-content-template>
+                                            </ejs-tooltip>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <div class="form-group">
                                         <br />
-                                        <label>
-                                            <input asp-for="IsAvailable" /> @Html.DisplayNameFor(model => model.IsAvailable)
-                                        </label>
+                                        <input type="submit" value="Create" class="btn btn-outline-warning">
+                                    </div>
+                                    <div class="form-group">
+                                        <br />
+                                        @*<a asp-action="Index" class="btn btn-primary">Back to List</a>*@
+                                        <input id="clear" class="btn btn-outline-danger" type="reset" value="Clean">
+                                        <a asp-action="Index" class="btn btn-outline-success"><i class="fa fa-arrow-left"></i> Back</a>
                                     </div>
                                 </div>
-                            </div>
+                                    <div class="text-success">
+                                        <p>
+                                            @ViewBag.Message
+                                        </p>
+                                    </div>
 
-                            <div class="col-sm-6">
-                                <!-- text input -->
-                                <div class="form-group">
-                                    <label asp-for="SpecialityId" class="control-label"></label>
-                                    <select asp-for="SpecialityId" asp-items="Model.Specialities" class="form-control"></select>
-                                    <span asp-validation-for="SpecialityId" class="text-danger"></span>
-                                </div>
-                            </div>
+</form>
 
-                            <div class="col-sm-12">
-                                <!-- text input -->
-                                <div class="form-group">
-                                    <label asp-for="Remarks" class="control-label"></label>
-                                    <input asp-for="Remarks" class="form-control" placeholder="Enter Remarks" />
-                                    <span asp-validation-for="Remarks" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <br />
-                                <input type="submit" value="Create" class="btn btn-success" />
-                            </div>
-                            <div class="form-group">
-                                <br />
-                                <a asp-action="Index" class="btn btn-primary">Back to List</a>
-                            </div>
-
-                        </div>
-                        <div class="text-success">
-                            <p>
-                                @ViewBag.Message
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
-            </form>
-        </div>
+              
+                
+        </e-content-template>
+        </ejs-tooltip>
     </section>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<style>
+    #container {
+        visibility: hidden;
+    }
+
+    #loader {
+        color: #008cff;
+        height: 40px;
+        left: 45%;
+        position: absolute;
+        top: 45%;
+        width: 30%;
+    }
+
+    #details table th, #details table td {
+        padding: 15px;
+        text-align: left;
+    }
+
+    #details .info {
+        font-weight: bold;
+    }
+</style>

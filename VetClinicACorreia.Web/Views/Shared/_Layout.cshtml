@@ -12,7 +12,6 @@
         <link rel="stylesheet" href="~/frontend/css/jquery-ui.css">
         <link rel="stylesheet" href="~/frontend/css/owl.carousel.min.css">
         <link rel="stylesheet" href="~/frontend/css/owl.theme.default.min.css">
-        <link rel="stylesheet" href="~/frontend/css/owl.theme.default.min.css">
         <link rel="stylesheet" href="~/lib/font-awesome/css/all.css">
 
         <link rel="stylesheet" href="~/frontend/css/jquery.fancybox.min.css">
@@ -23,7 +22,6 @@
 
         @*isto é do projecto CET46*@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" />
         <link rel="stylesheet" href="~/css/site.css" />
 
         <!-- Syncfusion Essential JS 2 Styles -->
@@ -40,7 +38,8 @@
         <link rel="stylesheet" href="~/frontend/css/jquery-ui.css">
         <link rel="stylesheet" href="~/frontend/css/owl.carousel.min.css">
         <link rel="stylesheet" href="~/frontend/css/owl.theme.default.min.css">
-        <link rel="stylesheet" href="~/frontend/css/owl.theme.default.min.css">
+        <link rel="stylesheet" href="~/lib/font-awesome/css/all.css">
+
         <link rel="stylesheet" href="~/frontend/css/jquery.fancybox.min.css">
         <link rel="stylesheet" href="~/frontend/css/bootstrap-datepicker.css">
         <link rel="stylesheet" href="~/frontend/fonts/flaticon/font/flaticon.css">
@@ -48,10 +47,13 @@
         <link rel="stylesheet" href="~/frontend/css/style.css">
 
         @*isto é do projecto CET46*@
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        @*isto é do projecto CET46*@
+        @*<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />*@
 
         <!-- Syncfusion Essential JS 2 Styles -->
         <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
@@ -103,14 +105,25 @@
                                             <li><a asp-area="" asp-controller="VetAssistants" asp-action="Index">Assistants</a></li>
                                         </ul>
                                     </li>
-                                    <li><a asp-area="" asp-controller="Customers" asp-action="Index" class="nav-link">Customers</a></li>
+                                    <li class="has-children">
+                                        <a href="#">Clients</a>
+                                        <ul class="dropdown">
+                                            <li><a asp-area="" asp-controller="Customers" asp-action="Index">Customers</a></li>
+                                            <li><a asp-area="" asp-controller="Pets" asp-action="Index">Pets</a></li>
+                                        </ul>
+                                    </li>
+
+                                    @*<li><a asp-area="" asp-controller="Customers" asp-action="Index" class="nav-link">Customers</a></li>
+                                    <li><a asp-area="" asp-controller="Pets" asp-action="Index" class="nav-link">Pets</a></li>*@
                                     <li><a asp-area="" asp-controller="Apps" asp-action="Index" class="nav-link">Appointments</a></li>
 
                                     <li class="has-children">
                                         <a href="#">Settings</a>
                                         <ul class="dropdown">
                                             <li><a asp-area="" asp-controller="Specialities" asp-action="Index">Specialities</a></li>
-                                            <li><a asp-area="" asp-controller="PetsType" asp-action="Index">Pet Types</a></li>
+                                            <li><a asp-area="" asp-controller="PetTypes" asp-action="Index">Pet Types</a></li>
+                                            <li><a asp-area="" asp-controller="Schedules" asp-action="Index">Schedules</a></li>
+                                            <li><a asp-area="" asp-controller="ServiceTypes" asp-action="Index">Service Types</a></li>
                                             <li><a asp-area="" asp-controller="Countries" asp-action="Index">Countries</a></li>
                                         </ul>
                                     </li>
@@ -165,7 +178,7 @@
                     </div>
                 </div>
             </header>}
-        else if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Doctor"))
+        else if (this.User.Identity.IsAuthenticated && this.User.IsInRole("VetAssistant"))
         {
             <header class="site-navbar js-sticky-header site-navbar-target" role="banner">
                 <div class="container">
@@ -179,7 +192,13 @@
                             <nav class="site-navigation position-relative text-right" role="navigation">
 
                                 <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
-                                    @*<li><a asp-area="" asp-controller="Pets" asp-action="Index" class="nav-link">Pets</a></li>*@
+                                    <li class="has-children">
+                                        <a href="#">Clients</a>
+                                        <ul class="dropdown">
+                                            <li><a asp-area="" asp-controller="Customers" asp-action="Index">Customers</a></li>
+                                            <li><a asp-area="" asp-controller="Pets" asp-action="Index">Pets</a></li>
+                                        </ul>
+                                    </li>
                                     <li><a asp-area="" asp-controller="Apps" asp-action="Index" class="nav-link">Appointments</a></li>
                                     @if (this.User.Identity.IsAuthenticated)
                                     {

@@ -160,5 +160,28 @@ namespace VetClinicACorreia.Web.Helpers
 
             return list;
         }
+
+        /// <summary>
+        /// Get Appointment Service Types List
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<SelectListItem> GetComboServiceTypes()
+        {
+            List<SelectListItem> list = _context.ServiceTypes.Select(pt => new SelectListItem
+            {
+                Text = pt.Name,
+                Value = $"{pt.Id}"
+            })
+                .OrderBy(pt => pt.Text)
+                .ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Select a service type...]",
+                Value = "0"
+            });
+
+            return list;
+        }
     }
 }

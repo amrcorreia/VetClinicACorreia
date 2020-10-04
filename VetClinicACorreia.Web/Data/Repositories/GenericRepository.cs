@@ -21,7 +21,7 @@ namespace VetClinicACorreia.Web.Data.Repositories
         public async Task CreateAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
-            await SaveAllAsync(); //método para gravar
+            await SaveAllAsync();
         }
 
         private async Task<bool> SaveAllAsync()

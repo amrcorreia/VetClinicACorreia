@@ -1,157 +1,27 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using VetClinicACorreia.Web.Data;
-using VetClinicACorreia.Web.Data.Entities;
-using VetClinicACorreia.Web.Helpers;
-using VetClinicACorreia.Web.Models;
+using VetClinicACorreia.Web.Data.Repositories;
 
 namespace VetClinicACorreia.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class PetsController : Controller
     {
-        
-        private readonly DataContext _dataContext;
-        private readonly ICombosHelper _combosHelper;
+        private readonly IPetRepository _petRepository;
 
-        public PetsController(
-            DataContext dataContext,
-            ICombosHelper combosHelper)
+        public PetsController(IPetRepository petRepository)
         {
-            _dataContext = dataContext;
-            _combosHelper = combosHelper;
+            _petRepository = petRepository;
         }
 
-        public IActionResult Index()
+        [Authorize(Roles = "Admin, VetAssistant, Customer")]
+        public async Task<IActionResult> Index()
         {
-            return View(_dataContext.Pets
-                .Include(p => p.Customer)
-                .ThenInclude(o => o.User)
-                .Include(p => p.PetType));
+            var model = await _petRepository.GetPetsAsync(this.User.Identity.Name);
+            return View(model);
         }
-
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var pet = await _dataContext.Pets
-                .Include(p => p.Customer)
-                .ThenInclude(o => o.User)
-                .FirstOrDefaultAsync(o => o.Id == id.Value);
-            if (pet == null)
-            {
-                return NotFound();
-            }
-
-            return View(pet);
-        }
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var pet = await _dataContext.Pets
-                .Include(p => p.Customer)
-                .Include(p => p.PetType)
-                .FirstOrDefaultAsync(p => p.Id == id.Value);
-            if (pet == null)
-            {
-                return NotFound();
-            }
-
-            var view = new PetViewModel
-            {
-                Born = pet.Born,
-                Id = pet.Id,
-                ImageUrl = pet.ImageUrl,
-                Name = pet.Name,
-                CustomerId = pet.Customer.Id,
-                PetTypeId = pet.PetType.Id,
-                PetTypes = _combosHelper.GetComboPetTypes(),
-                Race = pet.Race,
-                Remarks = pet.Remarks
-            };
-
-            return View(view);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(PetViewModel view)
-        {
-            if (ModelState.IsValid)
-            {
-                var path = view.ImageUrl;
-
-                if (view.ImageFile != null && view.ImageFile.Length > 0)
-                {
-                    var guid = Guid.NewGuid().ToString();
-                    var file = $"{guid}.jpg";
-
-                    path = Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot\\images\\Pets",
-                        file);
-
-                    using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        await view.ImageFile.CopyToAsync(stream);
-                    }
-
-                    path = $"~/images/Pets/{file}";
-                }
-
-                var pet = new Pet
-                {
-                    Born = view.Born,
-                    Id = view.Id,
-                    ImageUrl = path,
-                    Name = view.Name,
-                    Customer = await _dataContext.Customers.FindAsync(view.CustomerId),
-                    PetType = await _dataContext.PetTypes.FindAsync(view.PetTypeId),
-                    Race = view.Race,
-                    Remarks = view.Remarks
-                };
-
-                _dataContext.Pets.Update(pet);
-                await _dataContext.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(view);
-        }
-
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var pet = await _dataContext.Pets
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (pet == null)
-            {
-                return NotFound();
-            }
-
-            _dataContext.Pets.Remove(pet);
-            await _dataContext.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
     }
 }

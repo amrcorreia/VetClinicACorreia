@@ -15,27 +15,30 @@ using VetClinicACorreia.Web.Models;
 
 namespace VetClinicACorreia.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, VetAssistant")]
     public class CustomersController : Controller
     {
-        private readonly DataContext _context;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly IPetRepository _petRepository;
         private readonly IUserHelper _userHelper;
         private readonly IConverterHelper _converterHelper;
         private readonly IImageHelper _imageHelper;
         private readonly IMailHelper _mailHelper;
         private readonly ICombosHelper _combosHelper;
-        private readonly IAppRepository _appRepository;
+        private readonly IServiceTypeRepository _appRepository;
 
         public CustomersController(
-            DataContext context,
+            ICustomerRepository customerRepository,
+            IPetRepository petRepository,
             IUserHelper userHelper,
             IConverterHelper converterHelper,
             IImageHelper imageHelper,
             IMailHelper mailHelper,
             ICombosHelper combosHelper,
-            IAppRepository appRepository)
+            IServiceTypeRepository appRepository)
         {
-            _context = context;
+            _customerRepository = customerRepository;
+            _petRepository = petRepository;
             _userHelper = userHelper;
             _converterHelper = converterHelper;
             _imageHelper = imageHelper;
@@ -47,33 +50,30 @@ namespace VetClinicACorreia.Web.Controllers
         // GET: Customers
         public IActionResult Index()
         {
-            return View(_context.Customers
-                .Include(o => o.User)
-                .Include(o => o.Pets));
+            var customers = _customerRepository.GetAll()
+                .Include(d => d.User)
+                .Include(d => d.Pets);
+            return View(customers);
         }
+        
 
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CustomerNotFound");
             }
 
-            Customer customer = await _context.Customers
-                .Include(o => o.User)
-                .Include(o => o.Pets)
-                .ThenInclude(p => p.PetType)
-                .Include(o => o.Pets)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var customer = await _customerRepository.GetCustomerAsync(id.Value);
             if (customer == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CustomerNotFound");
             }
 
             return View(customer);
         }
+
 
         // GET: Customers/Create
         public IActionResult Register()
@@ -85,6 +85,7 @@ namespace VetClinicACorreia.Web.Controllers
             };
             return this.View(model);
         }
+
 
         // POST: Customers/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -122,7 +123,7 @@ namespace VetClinicACorreia.Web.Controllers
                     User userInDB = await _userHelper.GetUserByEmailAsync(user.UserName);
                     await _userHelper.AddUserToRoleAsync(userInDB, "Customer");
 
-                    Customer owner = new Customer
+                    Customer customer = new Customer
                     {
                         //Appointments = new List<Appointmet>(),
                         Pets = new List<Pet>(),
@@ -130,8 +131,7 @@ namespace VetClinicACorreia.Web.Controllers
                         User = userInDB
                     };
 
-                    _context.Customers.Add(owner);
-                    await _context.SaveChangesAsync();
+                    await _customerRepository.CreateAsync(customer);
 
                     var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
 
@@ -148,7 +148,7 @@ namespace VetClinicACorreia.Web.Controllers
                         $"please click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
                     this.ViewBag.Message = "The instructions to allow your user has been sent to email.";
 
-                    //return this.View(model);
+                    return this.View(model);
                 }
 
                 this.ModelState.AddModelError(string.Empty, "The user already exists.");
@@ -167,22 +167,20 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            var owner = await _context.Customers
-                .Include(o => o.User)
-                .FirstOrDefaultAsync(o => o.Id == id.Value);
-            if (owner == null)
+            var customer = await _customerRepository.GetCustomerAsync(id.Value);
+            if (customer == null)
             {
                 return NotFound();
             }
 
             ChangeUserViewModel model = new ChangeUserViewModel
             {
-                FirstName = owner.User.FirstName,
-                Id = owner.Id,
-                LastName = owner.User.LastName,
-                PhoneNumber = owner.User.PhoneNumber,
-                Username = owner.User.Email,
-                TIN = owner.User.TIN
+                FirstName = customer.User.FirstName,
+                Id = customer.Id,
+                LastName = customer.User.LastName,
+                PhoneNumber = customer.User.PhoneNumber,
+                Username = customer.User.Email,
+                TIN = customer.User.TIN
                 
             };
 
@@ -195,18 +193,17 @@ namespace VetClinicACorreia.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var owner = await _context.Customers
-                    .Include(o => o.User)
-                    .FirstOrDefaultAsync(o => o.Id == model.Id);
+                var customer = await _customerRepository.GetCustomerAsync(model.Id);
+                    //.Include(o => o.User)
+                    //.FirstOrDefaultAsync(o => o.Id == model.Id);
 
-                
-                owner.User.FirstName = model.FirstName;
-                owner.User.LastName = model.LastName;
-                owner.User.PhoneNumber = model.PhoneNumber;
-                owner.User.Email = model.Username;
-                owner.User.TIN = model.TIN;
+                customer.User.FirstName = model.FirstName;
+                customer.User.LastName = model.LastName;
+                customer.User.PhoneNumber = model.PhoneNumber;
+                customer.User.Email = model.Username;
+                customer.User.TIN = model.TIN;
 
-                await _userHelper.UpdateUserAsync(owner.User);
+                await _userHelper.UpdateUserAsync(customer.User);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -219,42 +216,45 @@ namespace VetClinicACorreia.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CustomerNotFound");
             }
-
-            Customer owner = await _context.Customers
-                .Include(o => o.Pets)
-                .Include(o => o.User)
-                .FirstOrDefaultAsync(o => o.Id == id);
-            if (owner == null)
+            
+            try
             {
-                return NotFound();
-            }
+                var customer = await _customerRepository.GetCustomerAsync(id.Value);
+                if (customer == null)
+                {
+                    return NotFound();
+                }
+                if (customer.Pets.Count > 0)
+                {
+                    return RedirectToAction(nameof(CustomerWithPet));
+                }
 
-            if (owner.Pets.Count > 0)
+                // Delete the user ASP and model user
+                await _userHelper.DeleteUserAsync(customer.User.Email);
+                await _customerRepository.DeleteCustomerAsync(id.Value);
+            }
+            //catch (DbUpdateException dbUpdateException)
+            //{
+            //    if (dbUpdateException.InnerException.Message.Contains("REFERENCE"))
+            //    {
+            //        ModelState.AddModelError(string.Empty, "This record have appointments.");
+            //    }
+            //    else
+            //    {
+            //        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+            //    }
+            //}
+            catch (Exception exception)
             {
-                return RedirectToAction(nameof(CustomerWithPet));
+                ModelState.AddModelError(string.Empty, exception.Message);
             }
-
-            // Delete the user ASP and model user
-            await _userHelper.DeleteUserAsync(owner.User.Email);
-
-            _context.Customers.Remove(owner);
-            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OwnerExists(int id)
-        {
-            return _context.Customers.Any(e => e.Id == id);
-        }
-
-        /// <summary>
-        /// AddPet
-        /// </summary>
-        /// <param name="id">Owner Id</param>
-        /// <returns></returns>
+        // GET: Pets/Create
         public async Task<IActionResult> AddPet(int? id)
         {
             if (id == null)
@@ -262,8 +262,9 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            Customer owner = await _context.Customers.FindAsync(id.Value);
-            if (owner == null)
+            var customer = await _customerRepository.GetCustomerAsync(id.Value);
+
+            if (customer == null)
             {
                 return NotFound();
             }
@@ -271,13 +272,17 @@ namespace VetClinicACorreia.Web.Controllers
             PetViewModel model = new PetViewModel
             {
                 Born = DateTime.Today,
-                CustomerId = owner.Id,
+                CustomerId = customer.Id,
                 PetTypes = _combosHelper.GetComboPetTypes()
             };
 
             return View(model);
         }
 
+
+        // POST: Pets/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         public async Task<IActionResult> AddPet(PetViewModel model)
         {
@@ -292,22 +297,18 @@ namespace VetClinicACorreia.Web.Controllers
                 }
 
                 var pet = _converterHelper.ToPet(model, path, true);
-                _context.Pets.Add(pet);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Details", null, new { @id = model.CustomerId });
-                //return RedirectToAction($"Details/{model.OwnerId}");
+                if (ModelState.IsValid)
+                {
+                    await _petRepository.CreateAsync(pet);
+                    return RedirectToAction("Details", null, new { @id = model.CustomerId });
+                }
             }
-
             model.PetTypes = _combosHelper.GetComboPetTypes();
             return View(model);
         }
 
-        /// <summary>
-        /// Edit Pet
-        /// </summary>
-        /// <param name="id">Pet Id</param>
-        /// <returns></returns>
+
+        // GET: Pets/Edit/5
         public async Task<IActionResult> EditPet(int? id)
         {
             if (id == null)
@@ -315,10 +316,11 @@ namespace VetClinicACorreia.Web.Controllers
                 return NotFound();
             }
 
-            Pet pet = await _context.Pets
-                .Include(p => p.Customer)
-                .Include(p => p.PetType)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            var pet = await _petRepository.GetPetAsync(id.Value);
+            //Pet pet = await _context.Pets
+            //    .Include(p => p.Customer)
+            //    .Include(p => p.PetType)
+            //    .FirstOrDefaultAsync(p => p.Id == id);
 
             if (pet == null)
             {
@@ -329,6 +331,7 @@ namespace VetClinicACorreia.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPet(PetViewModel model)
         {
             if (ModelState.IsValid)
@@ -342,27 +345,30 @@ namespace VetClinicACorreia.Web.Controllers
                 }
 
                 Pet pet = _converterHelper.ToPet(model, path, false);
-                _context.Pets.Update(pet);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Details", null, new { @id = model.CustomerId });
+                if (ModelState.IsValid)
+                {
+                    await _petRepository.UpdateAsync(pet);
+                    return RedirectToAction("Details", null, new { @id = model.CustomerId });
+                }
             }
 
             model.PetTypes = _combosHelper.GetComboPetTypes();
             return View(model);
         }
 
-        public async Task<IActionResult> DetailsPet(int? id)
+
+        public async Task<IActionResult> PetDetails(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Pet pet = await _context.Pets
-                .Include(p => p.Customer)
-                .ThenInclude(o => o.User)
-                .FirstOrDefaultAsync(o => o.Id == id.Value);
+            var pet = await _petRepository.GetPetAsync(id.Value);
+            //Pet pet = await _context.Pets
+            //    .Include(p => p.Customer)
+            //    .ThenInclude(o => o.User)
+            //    .FirstOrDefaultAsync(o => o.Id == id.Value);
             if (pet == null)
             {
                 return NotFound();
@@ -371,7 +377,7 @@ namespace VetClinicACorreia.Web.Controllers
             return View(pet);
         }
 
-        // GET: Customers/Create
+        // GET: Customers with Pets
         public IActionResult CustomerWithPet()
         {
             return View();
@@ -384,28 +390,33 @@ namespace VetClinicACorreia.Web.Controllers
             {
                 return NotFound();
             }
-            var pet = await _context.Pets
-                .Include(p => p.Customer)
-                .FirstOrDefaultAsync(p => p.Id == id.Value);
-               
-            if (pet == null)
+            var pet = await _petRepository.GetPetAsync(id.Value);
+            try
             {
-                return NotFound();
+                await _petRepository.DeletePetAsync(id.Value);
             }
-
-            
-            //var appointment = _appRepository.GetAll()
-            //    .Include(a => a.Pet)
-            //    .ThenInclude(p => p.Id)
-            //    .Where(a => a.Pet.Id == id.Value);
-            //if (appointment.Include(a => a.Pet).ThenInclude(a => a.Id).Equals(id))
+            //catch (DbUpdateException dbUpdateException)
             //{
-            //    return RedirectToAction($"{nameof(Details)}/{pet.Customer.Id}");
+            //    if (dbUpdateException.InnerException.Message.Contains("REFERENCE"))
+            //    {
+            //        ModelState.AddModelError(string.Empty, "This record have appointments.");
+            //    }
+            //    else
+            //    {
+            //        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+            //    }
             //}
-
-            _context.Pets.Remove(pet);
-            await _context.SaveChangesAsync();
+            catch (Exception exception)
+            {
+                ModelState.AddModelError(string.Empty, exception.Message);
+            }
             return RedirectToAction($"{nameof(Details)}/{pet.Customer.Id}");
         }
+
+        public IActionResult FastDetails()
+        {
+            return View();
+        }
+
     }
 }

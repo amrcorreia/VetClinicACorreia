@@ -18,20 +18,26 @@ namespace VetClinicACorreia.Web.Models
         [Range(1, int.MaxValue, ErrorMessage = "You must select a speciality.")]
         public int SpecialityId { get; set; }
 
+        
+        [Display(Name = "Speciality")]
+        [MaxLength(50, ErrorMessage = "The field {0} only can contain {1} characters.")]
+        public string Name { get; set; }
+
+
         public IEnumerable<SelectListItem> Specialities { get; set; }
 
 
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        public string Username { get; set; }
+        //[Required]
+        //[DataType(DataType.EmailAddress)]
+        //public string Username { get; set; }
 
 
-        [Required]
-        public string Password { get; set; }
+        //[Required]
+        //public string Password { get; set; }
 
 
-        [Required]
-        [Compare("Password")]
-        public string Confirm { get; set; }
+        //[Required]
+        //[Compare("Password")]
+        //public string Confirm { get; set; }
     }
 }

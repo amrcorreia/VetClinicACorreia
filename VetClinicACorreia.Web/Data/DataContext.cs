@@ -19,30 +19,26 @@ namespace VetClinicACorreia.Web.Data
         
         public DbSet<PetType> PetTypes { get; set; }
 
-        //TODO - teste appointments
         public DbSet<App> Apps { get; set; }
 
-        public DbSet<AppointmentData> AppointmentsData { get; set; }
-        
-
-        //public DbSet<AppDetail> AppDetails { get; set; }
-
-        //public DbSet<AppDetailTemp> AppDetailTemps { get; set; }
+        public DbSet<ServiceType> ServiceTypes { get; set; }
 
         public DbSet<Schedule> Schedules { get; set; }
 
-        //public DbSet<Country> Countries { get; set; }
+        public DbSet<Country> Countries { get; set; }
 
-        //public DbSet<City> Cities { get; set; }
+        public DbSet<City> Cities { get; set; }
+
 
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //habilitar a cascade delete rule - que por defeito está desabilitada
+            //enable cascade delete rule -> by default it is disabled
             var cascadeFKs = modelBuilder.Model
                 .GetEntityTypes()
                 .SelectMany(t => t.GetForeignKeys())
@@ -52,8 +48,34 @@ namespace VetClinicACorreia.Web.Data
             {
                 fk.DeleteBehavior = DeleteBehavior.Restrict;
             }
-
+                        
             base.OnModelCreating(modelBuilder);
+
+            //apartir daqui
+            modelBuilder.Entity<Speciality>()
+            .HasIndex(t => t.Name)
+            .IsUnique();
+
+            modelBuilder.Entity<PetType>()
+            .HasIndex(t => t.Name)
+            .IsUnique();
+
+            modelBuilder.Entity<Schedule>()
+            .HasIndex(t => t.Name)
+            .IsUnique();
+
+            modelBuilder.Entity<ServiceType>()
+            .HasIndex(t => t.Name)
+            .IsUnique();
+
+            modelBuilder.Entity<Country>()
+            .HasIndex(t => t.Name)
+            .IsUnique();
+
+            modelBuilder.Entity<City>()
+            .HasIndex(t => t.Name)
+            .IsUnique();
+
         }
     }
 }

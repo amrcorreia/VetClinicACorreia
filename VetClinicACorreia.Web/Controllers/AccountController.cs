@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -17,25 +18,29 @@ using VetClinicACorreia.Web.Models;
 
 namespace VetClinicACorreia.Web.Controllers
 {
+   
     public class AccountController : Controller
     {
         private readonly IUserHelper _userHelper;
         private readonly IConfiguration _configuration;
         private readonly ICountryRepository _countryRepository;
         private readonly IMailHelper _mailHelper;
-        private readonly DataContext _context;
+        private readonly IVetAssistantRepository _vetAssistantRepository;
+        private readonly ICustomerRepository _customerRepository;
 
         public AccountController(IUserHelper userHelper,
             IConfiguration configuration,
             ICountryRepository countryRepository,
             IMailHelper mailHelper,
-            DataContext dataContext)
+            IVetAssistantRepository vetAssistantRepository,
+            ICustomerRepository customerRepository)
         {
             _userHelper = userHelper;
             _configuration = configuration;
             _countryRepository = countryRepository;
             _mailHelper = mailHelper;
-            _context = dataContext;
+            _vetAssistantRepository = vetAssistantRepository;
+            _customerRepository = customerRepository;
         }
 
 
@@ -124,9 +129,9 @@ namespace VetClinicACorreia.Web.Controllers
 
                             User = userInDB
                         };
-
-                        _context.VetAssistants.Add(vetAssistant);
-                        await _context.SaveChangesAsync();
+                        await _vetAssistantRepository.CreateAsync(vetAssistant);
+                        //_context.VetAssistants.Add(vetAssistant);
+                        //await _context.SaveChangesAsync();
 
 
                         var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
@@ -140,7 +145,7 @@ namespace VetClinicACorreia.Web.Controllers
 
                         _mailHelper.SendMail(model.Username, "YourVet - Email confirmation", $"<h1>Veterinary Assistant Email Confirmation</h1>" +
                             $"<br/>" +
-                            $"Welcome to YouVet, you password is 123456. Please change you password as soon as possible." +
+                            $"Welcome to YouVet, you password is VetAssistant. Please change you password as soon as possible." +
                             $"To allow the user, " +
                             $"please click in this link:</br></br><a href = \"{tokenLink}\">Confirm Email</a>");
                         this.ViewBag.Message = "The instructions to allow your user has been sent to email.";
@@ -150,15 +155,14 @@ namespace VetClinicACorreia.Web.Controllers
                         User userInDB = await _userHelper.GetUserByEmailAsync(user.UserName);
                         await _userHelper.AddUserToRoleAsync(userInDB, "Customer");
 
-                        Customer owner = new Customer
+                        Customer customer = new Customer
                         {
-                            //Appointments = new List<Appointmet>(),
                             Pets = new List<Pet>(),
                             User = userInDB
                         };
-
-                        _context.Customers.Add(owner);
-                        await _context.SaveChangesAsync();
+                        await _customerRepository.CreateAsync(customer);
+                        //_context.Customers.Add(owner);
+                        //await _context.SaveChangesAsync();
 
                         var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
 

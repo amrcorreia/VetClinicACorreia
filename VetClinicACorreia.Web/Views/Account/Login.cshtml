@@ -23,12 +23,11 @@
     <title>YourVet. | Login</title>
 
 </head>
-<body class="hold-transition login-page">
-    
-    <div class="login-box" style="margin:auto; width:300px; height:130px">
-        <div class="login-logo">
-        </div>
-
+<body> 
+    <div class="hold-transition login-page">
+    @*<div class="login-logo">
+    </div>*@
+    <div class="login-box" style="width:350px; height:130px">
         <div class="card">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
@@ -55,7 +54,7 @@
                     </div>
                     <div class="row">
                         <div class="col-8">
-                            <div class="icheck-primary" style="margin-left:25px">
+                            <div class="icheck-primary" style="margin-left:0px">
                                 <input asp-for="RememberMe" type="checkbox" class="form-check-input" id="remember" />
                                 <label asp-for="RememberMe" class="form-check-label" for="remember">Remember Me</label>
                             </div>
@@ -66,18 +65,7 @@
                         <input type="submit" value="Sign In" class="btn btn-primary btn-block" />
                     </div>
                 </form>
-
-
-                <div class="social-auth-links text-center mb-3">
-                    @*<p>- OR -</p>
-                        <a href="#" class="btn btn-block btn-primary">
-                            <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
-                        </a>
-                        <a href="#" class="btn btn-block btn-danger">
-                            <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
-                        </a>*@
-                </div>
-                @*/.social-auth-links*@
+                
                 <p class="mb-1">
                     <a asp-action="RecoverPassword">I forgot my password</a>
                 </p>
@@ -88,6 +76,7 @@
             @*/.login-card-body*@
         </div>
     </div>
+        </div>
     <!-- /.login-box -->
     <!-- jQuery -->
     <script src="../../plugins/jquery/jquery.min.js"></script>

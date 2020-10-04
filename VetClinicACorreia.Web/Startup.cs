@@ -35,9 +35,9 @@ namespace VetClinicACorreia.Web
                cfg.User.RequireUniqueEmail = true;
                cfg.Password.RequireDigit = false;
                cfg.Password.RequiredUniqueChars = 0;
-               cfg.Password.RequireLowercase = false;
-               cfg.Password.RequireNonAlphanumeric = false;
-               cfg.Password.RequireUppercase = false;
+               cfg.Password.RequireLowercase = true;
+               cfg.Password.RequireNonAlphanumeric = true;
+               cfg.Password.RequireUppercase = true;
                cfg.Password.RequiredLength = 6;
            })
            .AddDefaultTokenProviders()
@@ -77,6 +77,9 @@ namespace VetClinicACorreia.Web
             services.AddScoped<ISpecialityRepository, SpecialityRepository>();
             services.AddScoped<IAppRepository, AppRepository>();
             services.AddScoped<IScheduleRepository, ScheduleRepository>();
+            services.AddScoped<IPetRepository, PetRepository>();
+            services.AddScoped<IPetTypeRepository, PetTypeRepository>();
+            services.AddScoped<IServiceTypeRepository, ServiceTypeRepository>();
 
 
 

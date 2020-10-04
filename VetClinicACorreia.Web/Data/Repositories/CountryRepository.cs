@@ -17,124 +17,156 @@ namespace VetClinicACorreia.Web.Data.Repositories
             _context = context;
         }
 
-        //Adiciona uma cidade ao país- recebe um model
-        //public async Task AddCityAsync(CityViewModel model)
-        //{
-        //    var country = await this.GetCountryWithCitiesAsync(model.CountryId);
-        //    if (country == null)
-        //    {
-        //        return;
-        //    }
+        /// <summary>
+        /// Add city to Country
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task AddCityAsync(CityViewModel model)
+        {
+            var country = await this.GetCountryWithCitiesAsync(model.CountryId);
+            if (country == null)
+            {
+                return;
+            }
 
-        //    country.Cities.Add(new City { Name = model.Name });
-        //    _context.Countries.Update(country);
-        //    await _context.SaveChangesAsync();
+            country.Cities.Add(new City { Name = model.Name });
+            _context.Countries.Update(country);
+            await _context.SaveChangesAsync();
+        }
 
-        //}
+        /// <summary>
+        /// Delete city by Id
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns></returns>
+        public async Task<int> DeleteCityAsync(City city)
+        {
+            var country = await _context.Countries.Where(c => c.Cities.Any(ci => ci.Id == city.Id)).FirstOrDefaultAsync();
+            if (country == null)
+            {
+                return 0;
+            }
 
-        ////Apaga a cidade de um determinado país
-        //public async Task<int> DeleteCityAsync(City city)
-        //{
-        //    var country = await _context.Countries.Where(c => c.Cities.Any(ci => ci.Id == city.Id)).FirstOrDefaultAsync();
-        //    if (country == null)
-        //    {
-        //        return 0;
-        //    }
+            _context.Cities.Remove(city);
+            await _context.SaveChangesAsync();
+            return country.Id;
+        }
 
-        //    _context.Cities.Remove(city);
-        //    await _context.SaveChangesAsync();
-        //    return country.Id;
-        //}
+        /// <summary>
+        /// Get city by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<City> GetCityAsync(int id)
+        {
+            return await _context.Cities.FindAsync(id);
+        }
 
+        /// <summary>
+        /// Get cities combobox by country
+        /// </summary>
+        /// <param name="countryId"></param>
+        /// <returns></returns>
+        public IEnumerable<SelectListItem> GetComboCities(int countryId)
+        {
+            var country = _context.Countries.Find(countryId);
+            var list = new List<SelectListItem>();
+            if (country != null)
+            {
+                list = country.Cities.Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+                }).OrderBy(l => l.Text).ToList();
+            }
 
-        //public async Task<City> GetCityAsync(int id)
-        //{
-        //    return await _context.Cities.FindAsync(id);
-        //}
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a city...)",
+                Value = "0"
+            });
 
+            return list;
 
+        }
 
-        //public IEnumerable<SelectListItem> GetComboCities(int countryId)
-        //{
-        //    var country = _context.Countries.Find(countryId);
-        //    var list = new List<SelectListItem>();
-        //    if (country != null)
-        //    {
-        //        list = country.Cities.Select(c => new SelectListItem
-        //        {
-        //            Text = c.Name,
-        //            Value = c.Id.ToString()
-        //        }).OrderBy(l => l.Text).ToList();
-        //    }
+        /// <summary>
+        /// Get countries combobox
+        /// </summary>
+        /// <returns></returns>
 
-        //    list.Insert(0, new SelectListItem
-        //    {
-        //        Text = "(Select a city...)",
-        //        Value = "0"
-        //    });
+        public IEnumerable<SelectListItem> GetComboCountries()
+        {
+            var list = _context.Countries.Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString()
 
-        //    return list;
+            }).OrderBy(l => l.Text).ToList();
 
-        //}
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a country...)",
+                Value = "0"
+            });
 
+            return list;
 
-        //public IEnumerable<SelectListItem> GetComboCountries()
-        //{
-        //    var list = _context.Countries.Select(c => new SelectListItem
-        //    {
-        //        Text = c.Name,
-        //        Value = c.Id.ToString()
+        }
 
-        //    }).OrderBy(l => l.Text).ToList();
+        /// <summary>
+        /// Get countries with cities
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable GetCountriesWithCities()
+        {
+            return _context.Countries
+            .Include(c => c.Cities)
+            .OrderBy(c => c.Name);
 
-        //    list.Insert(0, new SelectListItem
-        //    {
-        //        Text = "(Select a country...)",
-        //        Value = "0"
-        //    });
+        }
 
-        //    return list;
+        /// <summary>
+        /// Populate combobox
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns></returns>
+        public async Task<Country> GetCountryAsync(City city)
+        {
+            return await _context.Countries.Where(c => c.Cities.Any(ci => ci.Id == city.Id)).FirstOrDefaultAsync();
+        }
 
-        //}
+        /// <summary>
+        /// Get countries with cities by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Country> GetCountryWithCitiesAsync(int id)
+        {
+            return await _context.Countries
+             .Include(c => c.Cities)
+             .Where(c => c.Id == id)
+             .FirstOrDefaultAsync();
 
+        }
 
-        //public IQueryable GetCountriesWithCities()
-        //{
-        //    return _context.Countries
-        //    .Include(c => c.Cities)
-        //    .OrderBy(c => c.Name);
+        /// <summary>
+        /// Update city by id
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns></returns>
+        public async Task<int> UpdateCityAsync(City city)
+        {
+            var country = await _context.Countries.Where(c => c.Cities.Any(ci => ci.Id == city.Id)).FirstOrDefaultAsync();
+            if (country == null)
+            {
+                return 0;
+            }
 
-        //}
-
-
-        //public async Task<Country> GetCountryAsync(City city)
-        //{
-        //    return await _context.Countries.Where(c => c.Cities.Any(ci => ci.Id == city.Id)).FirstOrDefaultAsync();
-        //}
-
-
-
-        //public async Task<Country> GetCountryWithCitiesAsync(int id)
-        //{
-        //    return await _context.Countries
-        //     .Include(c => c.Cities)
-        //     .Where(c => c.Id == id)
-        //     .FirstOrDefaultAsync();
-
-        //}
-
-
-        //public async Task<int> UpdateCityAsync(City city)
-        //{
-        //    var country = await _context.Countries.Where(c => c.Cities.Any(ci => ci.Id == city.Id)).FirstOrDefaultAsync();
-        //    if (country == null)
-        //    {
-        //        return 0;
-        //    }
-
-        //    _context.Cities.Update(city);
-        //    await _context.SaveChangesAsync();
-        //    return country.Id;
-        //}
+            _context.Cities.Update(city);
+            await _context.SaveChangesAsync();
+            return country.Id;
+        }
     }
 }

@@ -24,11 +24,20 @@ namespace VetClinicACorreia.Web.Data.Repositories
             _imageHelper = imageHelper;
         }
 
+        /// <summary>
+        /// Get all Doctors
+        /// </summary>
+        /// <returns></returns>
         public IQueryable GetAllWithUsers()
         {
             return _context.Doctors.Include(d => d.User);
         }
 
+        /// <summary>
+        /// Delete doctor by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task DeleteDoctorAsync(int id)
         {
             var doctor = await _context.Doctors.FindAsync(id);
@@ -41,12 +50,23 @@ namespace VetClinicACorreia.Web.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-
+        /// <summary>
+        /// Get Doctor by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<Doctor> GetDoctorAsync(int id)
         {
-            return await _context.Doctors.FindAsync(id);
+            return await _context.Doctors
+                .Include(d => d.Speciality)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
+        /// <summary>
+        /// Get doctor by username/email
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public async Task<IQueryable<Doctor>> GetDoctorsAsync(string userName)
         {
             var user = await _userHelper.GetUserByEmailAsync(userName);
@@ -60,10 +80,12 @@ namespace VetClinicACorreia.Web.Data.Repositories
                 return _context.Doctors
                     .Include(o => o.User)
                     .Include(o => o.Speciality)
+                    .ThenInclude(o => o.Name)
                     .OrderByDescending(o => o.FullName);
             }
             return _context.Doctors
                 .Include(o => o.Speciality)
+                .ThenInclude(o => o.Name)
                 .Where(o => o.User == user)
                 .OrderByDescending(o => o.FullName);
         }

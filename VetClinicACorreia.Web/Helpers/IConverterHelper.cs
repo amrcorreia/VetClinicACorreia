@@ -13,10 +13,6 @@ namespace VetClinicACorreia.Web.Helpers
 
         DoctorViewModel ToDoctorViewModel(Doctor model);
 
-        //Customer ToCustomer(CustomerViewModel model, string path, bool isNew);
-
-        //CustomerViewModel ToCustomerViewModel(Customer model);
-
         Pet ToPet(PetViewModel model, string path, bool isNew);
 
         PetViewModel ToPetViewModel(Pet model);

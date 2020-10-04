@@ -7,16 +7,45 @@ namespace VetClinicACorreia.Web.Data.Repositories
 {
     public interface IGenericRepository<T> where T : class
     {
+        /// <summary>
+        /// get all entities
+        /// </summary>
+        /// <returns></returns>
         IQueryable<T> GetAll();
 
-        Task<T> GetByIdAsync(int id); //get entity by id
+        /// <summary>
+        /// get entity by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<T> GetByIdAsync(int id);
 
-        Task CreateAsync(T entity); //create new entity
+        /// <summary>
+        /// create new entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        Task CreateAsync(T entity);
 
-        Task UpdateAsync(T entity); //update entity
+        /// <summary>
+        /// update entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        Task UpdateAsync(T entity);
 
-        Task DeleteAsync(T entity); //delete entity
+        /// <summary>
+        /// delete entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        Task DeleteAsync(T entity);
 
-        Task<bool> ExistsAsync(int id); //check if exists
+        /// <summary>
+        /// check if exists
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<bool> ExistsAsync(int id);
     }
 }

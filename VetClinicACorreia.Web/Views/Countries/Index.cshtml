@@ -3,86 +3,74 @@
 @{
     ViewData["Title"] = "Index";
 }
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
-<section>
-    <div class="login-box" style="margin:auto; width:800px; height:300px">
-        <br />
-        <br />
-        <br />
-        <p>
-            <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus"></i> Country</a>
-        </p>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Countries</h3>
-                        <br />
-                    </div>
-                    <div class="panel-boby">
-                        <table class="table" table-hover table-responsive table-striped" id="MyTable">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.Name)
-                                    </th>
-                                    @*<th>
-                                        @Html.DisplayNameFor(model => model.NumberCities)
-                                    </th>*@
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Name)
-                                        </td>
-                                        @*<td>
-                                            @Html.DisplayFor(modelItem => item.NumberCities)
-                                        </td>*@
-                                        <td id="@item.Id">
-                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary"><i class="fas fa-pen"></i></a>
-                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary"><i class="fas fa-list-ol"></i></a>
-                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-secondary" id="btnDelete"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div id="deleteDialog" class="modal fade">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
-                            <h4 class="modal-title"></h4>
-                        </div>
-                    <div class="modal-body">
-                        <p>Do you want to delete the country?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
-                        <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+<section>
+    <div style="margin:auto; width:600px; height:300px">
+        <br />
+        <br />
+        <br />
+
+        <h4>Countries</h4>
+        <hr />
+        <p>
+            <a asp-action="Create" class="btn btn-outline-info"><i class="fa fa-plus"></i> Country</a>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NumberCities)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NumberCities)
+                        </td>
+                        <td id="@item.Id">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i></a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="fas fa-list-ol"></i></a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </section>
 
+<div id="deleteDialog" class="modal fade">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
+                <h4 class="modal-title">Delete</h4>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to delete the country?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
+                <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#MyTable').DataTable();
-        });
         $(document).ready(function () {
             var id = 0;
             $('a[id*=btnDelete]').click(function () {
@@ -101,4 +89,3 @@
         });
     </script>
 }
-

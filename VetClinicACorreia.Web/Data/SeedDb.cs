@@ -51,51 +51,52 @@ namespace VetClinicACorreia.Web.Data
             await CheckVetAssitantsAsync();
             await CheckPetsAsync();
             await CheckScheduleAsync();
+            await CheckServiceTypeAsync();
             await CheckAppointmentsAsync();
 
 
-            //if (!_context.Countries.Any())
-            //{
-            //    var cities = new List<City>();
-            //    cities.Add(new City { Name = "Lisbon" });
-            //    cities.Add(new City { Name = "Oporto" });
-            //    _context.Countries.Add(new Country
-            //    {
-            //        Cities = cities,
-            //        Name = "Portugal"
-            //    });
+            if (!_context.Countries.Any())
+            {
+                var cities = new List<City>();
+                cities.Add(new City { Name = "Lisbon" });
+                cities.Add(new City { Name = "Oporto" });
+                _context.Countries.Add(new Country
+                {
+                    Cities = cities,
+                    Name = "Portugal"
+                });
 
-            //    var Scities = new List<City>();
-            //    Scities.Add(new City { Name = "Barcelona" });
-            //    Scities.Add(new City { Name = "Madrid" });
-            //    _context.Countries.Add(new Country
-            //    {
-            //        Cities = Scities,
-            //        Name = "Spain"
-            //    });
+                var Scities = new List<City>();
+                Scities.Add(new City { Name = "Barcelona" });
+                Scities.Add(new City { Name = "Madrid" });
+                _context.Countries.Add(new Country
+                {
+                    Cities = Scities,
+                    Name = "Spain"
+                });
 
-            //    var Fcities = new List<City>();
-            //    Fcities.Add(new City { Name = "Paris" });
-            //    Fcities.Add(new City { Name = "Biarritz" });
-            //    _context.Countries.Add(new Country
-            //    {
-            //        Cities = Fcities,
-            //        Name = "France"
-            //    });
-            //    await _context.SaveChangesAsync();
-            //}
+                var Fcities = new List<City>();
+                Fcities.Add(new City { Name = "Paris" });
+                Fcities.Add(new City { Name = "Biarritz" });
+                _context.Countries.Add(new Country
+                {
+                    Cities = Fcities,
+                    Name = "France"
+                });
+                await _context.SaveChangesAsync();
+            }
 
-            
 
-            var user = await _userHelper.GetUserByEmailAsync("correiandreiamr@gmail.com");
+
+            var user = await _userHelper.GetUserByEmailAsync("yourvet.info@gmail.com");
             if (user == null)
             {
                 user = new User
                 {
                     FirstName = "Andreia",
                     LastName = "Correia",
-                    Email = "correiandreiamr@gmail.com",
-                    UserName = "correiandreiamr@gmail.com",
+                    Email = "yourvet.info@gmail.com",
+                    UserName = "yourvet.info@gmail.com",
                     PhoneNumber = "123654789",
                     TIN = "123456789",
                     
@@ -103,7 +104,7 @@ namespace VetClinicACorreia.Web.Data
                     //City = _context.Countries.FirstOrDefault().Cities.FirstOrDefault()
                 };
 
-                var result = await _userHelper.AddUserAsync(user, "123456");
+                var result = await _userHelper.AddUserAsync(user, "05300530!Aa");
 
                 if (result != IdentityResult.Success)
                 {
@@ -228,23 +229,24 @@ namespace VetClinicACorreia.Web.Data
                 var pet = _context.Pets.FirstOrDefault();
                 var user = _context.Users.FirstOrDefault();
                 var doctor = _context.Doctors.FirstOrDefault();
-                var schedule = _context.Schedules.FirstOrDefault();
-                AddAppointment(customer, pet, doctor, user, schedule);
+                var serviceType = _context.ServiceTypes.FirstOrDefault();
+                AddAppointment(customer, pet, doctor, user, serviceType);
                 await _context.SaveChangesAsync();
             }
         }
 
-        private void AddAppointment(Customer customer, Pet pet, Doctor doctor, User user, Schedule schedule)
+        private void AddAppointment(Customer customer, Pet pet, Doctor doctor, User user, ServiceType serviceType)
         {
             
             _context.Apps.Add(new App
             {
-                AppDate = DateTime.Now.AddDays(+2),
-                Schedule = schedule,
+                AppDate = DateTime.Now.AddDays(-2),
+                serviceType = serviceType,
                 User = user,
                 Doctor = doctor,
                 Customer = customer,
-                Pet = customer.Pets.FirstOrDefault()
+                Pet = pet
+                //Pet = customer.Pets.FirstOrDefault()
                 //Remarks = "Welcome to YourVet!!"
                 
             });
@@ -303,6 +305,17 @@ namespace VetClinicACorreia.Web.Data
             }
         }
 
+        private async Task CheckServiceTypeAsync()
+        {
+            if (!_context.ServiceTypes.Any())
+            {
+                _context.ServiceTypes.Add(new ServiceType { Name = "Appointment" });
+                _context.ServiceTypes.Add(new ServiceType { Name = "Urgency" });
+                _context.ServiceTypes.Add(new ServiceType { Name = "Vaccination" });
+                await _context.SaveChangesAsync();
+            }
+        }
+
         private async Task CheckPetTypesAsync()
         {
             if (!_context.PetTypes.Any())
@@ -338,19 +351,19 @@ namespace VetClinicACorreia.Web.Data
         }
 
 
-        private void AddApp(Doctor doctor, Customer customer, Pet pet, User user, Schedule schedule)
-        {
-            _context.Apps.Add(new App
-            {
-                Doctor = doctor,
-                Customer = customer,                
-                Pet = customer.Pets.FirstOrDefault(),
-                User = user,
-                AppDate = DateTime.Now.AddHours(+2),
-                Schedule = schedule
+        //private void AddApp(Doctor doctor, Customer customer, Pet pet, User user, Schedule schedule)
+        //{
+        //    _context.Apps.Add(new App
+        //    {
+        //        Doctor = doctor,
+        //        Customer = customer,                
+        //        Pet = customer.Pets.FirstOrDefault(),
+        //        User = user,
+        //        AppDate = DateTime.Now.AddHours(+2),
+        //        Schedule = schedule
                 
-            });
-        }
+        //    });
+        //}
 
     }
 }

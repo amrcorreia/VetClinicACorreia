@@ -18,71 +18,69 @@ namespace VetClinicACorreia.Web.Data.Repositories
         {
             _context = context;
         }
-                
 
-        //public async Task AddSpecialityAsync(SpecialityViewModel model)
-        //{
-        //    var speciality = await this.GetSpecialitiesAsync(model.SpecialityId);
-        //    if (speciality == null)
-        //    {
-        //        return;
-        //    }
+        /// <summary>
+        /// Create new Speciality
+        /// </summary>
+        /// <param name="speciality"></param>
+        /// <returns></returns>
+        public async Task CreateSpecialityAsync(Speciality speciality)
+        {
+            _context.Specialities.Add(speciality);
+            await _context.SaveChangesAsync();
+        }
 
-        //    _context.Specialities.Update(speciality);
-        //    await _context.SaveChangesAsync();
-        //}
+        /// <summary>
+        /// Delete Speciality by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task DeleteSpecialityAsync(int id)
+        {
+            var speciality = await _context.Specialities.FindAsync(id);
+            if (speciality == null)
+            {
+                return;
+            }
 
-        //public async Task<int> DeleteSpecialityAsync(Speciality speciality)
-        //{
-        //    //var speciality = await _context.Specialities.FirstOrDefaultAsync();
-        //    if (speciality == null)
-        //    {
-        //        return 0;
-        //    }
-        //    _context.Specialities.Remove(speciality);
-        //    await _context.SaveChangesAsync();
-        //    return speciality.Id;
-        //}
+            _context.Specialities.Remove(speciality);
+            await _context.SaveChangesAsync();
+        }
 
-        //public IEnumerable<SelectListItem> GetComboSpecialities()
-        //{
-        //    var list = _context.Specialities.Select(s => new SelectListItem
-        //    {
-        //        Text = s.Name,
-        //        Value = s.Id.ToString()
+        /// <summary>
+        /// Get all specialities
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable GetSpecialities()
+        {
+            return _context.Specialities;
+        }
 
-        //    }).OrderBy(l => l.Text).ToList();
+        /// <summary>
+        /// Get Speciality by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Speciality> GetSpecialitiesAsync(int id)
+        {
+            return await _context.Specialities.FindAsync(id);
+        }
 
-        //    list.Insert(0, new SelectListItem
-        //    {
-        //        Text = "(Select a speciality...)",
-        //        Value = "0"
-        //    });
+        /// <summary>
+        /// Update Speciality
+        /// </summary>
+        /// <param name="speciality"></param>
+        /// <returns></returns>
+        public async Task<int> UpdateSpecialityAsync(Speciality speciality)
+        {
+            if (speciality == null)
+            {
+                return 0;
+            }
 
-        //    return list;
-        //}
-
-        //public IQueryable GetSpecialities()
-        //{
-        //    return _context.Specialities;
-        //}
-
-        //public async Task<Speciality> GetSpecialitiesAsync(int id)
-        //{
-        //    return await _context.Specialities.FindAsync(id);
-        //}
-
-        //public async Task<int> UpdateSpecialityAsync(Speciality speciality)
-        //{
-        //    //var country = await _context.Countries.Where(c => c.Cities.Any(ci => ci.Id == city.Id)).FirstOrDefaultAsync();
-        //    if (speciality == null)
-        //    {
-        //        return 0;
-        //    }
-
-        //    _context.Specialities.Update(speciality);
-        //    await _context.SaveChangesAsync();
-        //    return speciality.Id;
-        //}
+            _context.Specialities.Update(speciality);
+            await _context.SaveChangesAsync();
+            return speciality.Id;
+        }
     }
 }

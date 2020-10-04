@@ -10,14 +10,11 @@ namespace VetClinicACorreia.Web.Data.Entities
     {
         public int Id { get; set; }
 
-        //[MaxLength(50, ErrorMessage = "The field {0} only can contains {1} characters lenght")]
-        //[Required]
-        //public string Name { get; set; }
-
+        [Required]
         [MaxLength(50, ErrorMessage = "The field {0} only can contain {1} characters.")]
         public string FirstName { get; set; }
 
-
+        [Required]
         [MaxLength(50, ErrorMessage = "The field {0} only can contain {1} characters.")]
         public string LastName { get; set; }
 

@@ -20,7 +20,7 @@
                                 <!-- text input -->
                                 <div class="form-group">
                                     <label asp-for="FirstName" class="control-label"></label>
-                                    <input asp-for="FirstName" class="form-control" placeholder="Enter First Name" type="text"/>
+                                    <input asp-for="FirstName" class="form-control" placeholder="Enter First Name" type="text" />
                                     <span asp-validation-for="FirstName" class="text-danger"></span>
                                 </div>
                             </div>
@@ -68,25 +68,31 @@
                                     <span asp-validation-for="TIN" class="text-danger"></span>
                                 </div>
                             </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    
+                                </div>
+                            </div>
 
                             <div class="form-group">
                                 <br />
-                                <input type="submit" value="Create" class="btn btn-success" />
+                                <input type="submit" value="Create" class="btn btn-outline-warning">
                             </div>
                             <div class="form-group">
                                 <br />
-                                <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                                <a asp-action="Index" class="btn btn-outline-success"><i class="fa fa-arrow-left"></i> Back</a>
                             </div>
                         </div>
+                    </div>
+                    <div class="text-success">
+                        <p>
+                            @ViewBag.Message
+                        </p>
                     </div>
                 </div>
             </form>
         </div>
-        <div class="text-success">
-            <p>
-                @ViewBag.Message
-            </p>
-        </div>
+        
     </section>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -8,23 +8,33 @@ namespace VetClinicACorreia.Web.Data.Repositories
 {
     public interface IAppRepository : IGenericRepository<App>
     {
-        Task<IQueryable<App>> GetAppAsync(string userName); //get all app by user
+        /// <summary>
+        /// get all appointemnt by user
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        Task<IQueryable<App>> GetAppAsync(string userName);
 
+        /// <summary>
+        /// get all appointemnt by user
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        Task<IQueryable<App>> GetOldAppAsync(string userName);
+
+        /// <summary>
+        /// delete appointemnt by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task DeleteAppAsync(int id);
 
+        /// <summary>
+        /// get appointemnt by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<App> GetAppointmentByIdAsync(int id);
 
-        //Task<IQueryable<OrderDetailTemp>> GetDetailTempsAsync(string userName);
-
-        //Task AddItemToOrdemAsync(AddItemViewModel model, string userName);
-
-        //Task ModifyDetailTempQuantityAsync(int id, double quantity);
-
-        //Task DeleteDetailTempAsync(int id);
-
-        //Task<bool> ConfirmOrderAsync(string userName);
-
-        //Task DeliverOrderAsync(DeliverViewModel model);
-
-        //Task<Order> GetOrderAsync(int id);
     }
 }

@@ -14,14 +14,15 @@
             <br />
             <br />
             <br />
-            <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus"></i> Appointment</a>
+            <a asp-action="Create" class="btn btn-outline-primary"><i class="fa fa-plus"></i> Appointment</a>
+            <a asp-action="OldApp" class="btn btn-outline-warning"><i class="fa fa-backward"></i> Old Appointments</a>
         </p>
 
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Appointments</h3>
+                        <h4 class="panel-title">Appointments</h4>
                         <br />
                     </div>
                     <div class="panel-boby">
@@ -53,7 +54,7 @@
                                         @Html.DisplayNameFor(model => model.Pet)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Schedule)
+                                        @Html.DisplayNameFor(model => model.serviceType)
                                     </th>
                                     <th></th>
                                 </tr>
@@ -64,15 +65,15 @@
                                 <tr>
                                     @if (this.User.IsInRole("Admin"))
                                     {
-                                        <th>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.User.FullName)
-                                        </th>
+                                        </td>
                                     }
                                     else if (this.User.IsInRole("VetAssistant"))
                                     {
-                                        <th>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.User.FullName)
-                                        </th>
+                                        </td>
                                     }
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Doctor.FullName)
@@ -84,16 +85,16 @@
                                         @Html.DisplayFor(modelItem => item.Customer.User.FirstName)
                                         @Html.DisplayFor(modelItem => item.Customer.User.LastName)
                                     </td>
-                                    <th>
+                                    <td>
                                         @Html.DisplayFor(modelItem => item.Pet.Name)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayFor(modelItem => item.Schedule.Name)
-                                    </th>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.serviceType.Name)
+                                    </td>
                                     <td id="@item.Id">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger" id="btnDelete">Delete</a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i></a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="fas fa-list-ol"></i></a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
                                 }

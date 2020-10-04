@@ -39,11 +39,19 @@ namespace VetClinicACorreia.Web.Models
 
 
         [Required(ErrorMessage = "The field {0} is mandatory.")]
-        [Display(Name = "Schedule")]
-        [Range(1, int.MaxValue, ErrorMessage = "You must select a schedule.")]
-        public int ScheduleId { get; set; }
+        [Display(Name = "Service Type")]
+        [Range(1, int.MaxValue, ErrorMessage = "You must select a servive type.")]
+        public int ServiveTypeId { get; set; }
 
-        public IEnumerable<SelectListItem> Schedules { get; set; }
+        public IEnumerable<SelectListItem> ServiceTypes { get; set; }
+
+
+        //[Required(ErrorMessage = "The field {0} is mandatory.")]
+        //[Display(Name = "Schedule")]
+        //[Range(1, int.MaxValue, ErrorMessage = "You must select a schedule.")]
+        //public int ScheduleId { get; set; }
+
+        //public IEnumerable<SelectListItem> Schedules { get; set; }
 
     }
 }

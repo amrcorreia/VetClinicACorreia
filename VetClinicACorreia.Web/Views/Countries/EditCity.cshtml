@@ -1,4 +1,4 @@
-﻿@model VetClinicACorreia.Web.Data.Entities.Country
+﻿@model VetClinicACorreia.Web.Data.Entities.City
     <section>
         <div style="margin:auto; width:800px; height:300px">
             <br />
@@ -11,7 +11,7 @@
                 <div class="col-md-4">
                     <form asp-action="EditCity">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        @*<input type="hidden" asp-for="Id" />*@
+                        <input type="hidden" asp-for="Id" />
 
                         <div class="form-group">
                             <label asp-for="Name" class="control-label"></label>

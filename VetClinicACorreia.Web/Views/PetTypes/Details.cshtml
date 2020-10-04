@@ -1,0 +1,33 @@
+﻿@model VetClinicACorreia.Web.Data.Entities.PetType
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<section>
+    <div style="margin:auto; width:800px; height:300px">
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+
+        <h2></h2>
+        <div>
+            <h4>Pet Type Details</h4>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+            </dl>
+        </div>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+            <a asp-action="Index" class="btn btn-success">Back to List</a>
+        </div>
+    </div>
+</section>

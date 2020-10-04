@@ -16,6 +16,7 @@
             <div class="card-body">
                 <div class="form-group">
                     <div class="row">
+
                         <div class="col-md-6">
 
                             <div class="form-group">
@@ -31,35 +32,35 @@
                             </div>
 
                             <div class="form-group">
+                                <label asp-for="ServiveTypeId" class="control-label"></label>
+                                <select asp-for="ServiveTypeId" asp-items="Model.ServiceTypes" class="form-control"></select>
+                                <span asp-validation-for="ServiveTypeId" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="AppDate" class="control-label"></label>
+                                <input asp-for="AppDate" class="form-control" />
+                                <span asp-validation-for="AppDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
                                 <label asp-for="DoctorId" class="control-label"></label>
                                 <select asp-for="DoctorId" asp-items="Model.Doctors" class="form-control"></select>
                                 <span asp-validation-for="DoctorId" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="AppDate" class="control-label"></label>
-                                <input asp-for="AppDate" class="form-control" type="date" />
-                                <span asp-validation-for="AppDate" class="text-danger"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label asp-for="ScheduleId" class="control-label"></label>
-                                <select asp-for="ScheduleId" asp-items="Model.Schedules" class="form-control"></select>
-                                <span asp-validation-for="ScheduleId" class="text-danger"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <input type="submit" value="Create" class="btn btn-primary" />
-                                <a asp-action="Index" class="btn btn-success">Back to List</a>
+                                <input type="submit" value="Create" class="btn btn-outline-warning" />
+                                <a asp-action="Index" class="btn btn-outline-success"><i class="fa fa-arrow-left"></i> Back</a>
                             </div>
                         </div>
-                    </div>
-                    <div class="text-success">
-                        <p>
-                            @ViewBag.Message
-                        </p>
-                    </div>
+                        <div class="text-success">
+                            <p>
+                                @ViewBag.Message
+                            </p>
+                        </div>
 
+                    </div>
                 </div>
             </div>
         </form>
@@ -92,4 +93,32 @@
         	})
     	});
     </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#AppDate").change(function () {
+                
+                    $("#DoctorId").empty();
+                        $.ajax({
+                            type: 'POST',
+                            url: '@Url.Action("GetDoctorsAsync")',
+                            dataType: 'json',
+                            data: { appDate: $("#AppDate").val() },
+                            success: function (doctors) {
+                                $("#DoctorId").append('<option value="0">[Select a doctor mmo...]</option>');
+                                $.each(doctors, function (i, doctor) {
+                                    $("#DoctorId").append('<option value="'
+                                        + doctor.id + '">'
+                                        + doctor.fullName + '</option>');
+                                });
+                            },
+                            error: function (ex) {
+                                alert('Failed to retrieve doctors.' + ex.statusText);
+                            }
+                        });
+                return false;
+            })
+        });
+    </script>
+    
 }

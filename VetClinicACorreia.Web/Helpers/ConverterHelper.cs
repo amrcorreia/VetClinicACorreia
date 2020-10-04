@@ -13,21 +13,18 @@ namespace VetClinicACorreia.Web.Helpers
     public class ConverterHelper : IConverterHelper
     {
         private readonly DataContext _context;
-        private readonly IDoctorRepository _doctorRepository;
         private readonly ICombosHelper _combosHelper;
 
-        public ConverterHelper(DataContext context, 
-            IDoctorRepository doctorRepository,
+        public ConverterHelper(DataContext context,
             ICombosHelper combosHelper)
         {
             _context = context;
-            _doctorRepository = doctorRepository;
             _combosHelper = combosHelper;
         }
         
         public Doctor ToDoctor(DoctorViewModel model, string path, bool isNew)
         {
-            //Speciality speciality = _context.Specialities.Find(model.SpecialityId);
+            Speciality speciality = _context.Specialities.Find(model.SpecialityId);
 
             return new Doctor
             {
@@ -36,7 +33,7 @@ namespace VetClinicACorreia.Web.Helpers
                 IsAvailable = model.IsAvailable,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                Speciality = _context.Specialities.Find(model.SpecialityId),
+                Speciality = speciality,
                 ProfissionalLicence = model.ProfissionalLicence,
                 TIN = model.TIN,
                 Mobile = model.Mobile,
@@ -46,18 +43,17 @@ namespace VetClinicACorreia.Web.Helpers
         }
 
         public DoctorViewModel ToDoctorViewModel(Doctor model)
-        {
-            
+        {            
             return new DoctorViewModel
             {
                 Id = model.Id,
                 ImageUrl = model.ImageUrl,
                 IsAvailable = model.IsAvailable,
                 FirstName = model.FirstName,
-                LastName = model.LastName,     
+                LastName = model.LastName,
+                Speciality = model.Speciality,
+                SpecialityId = model.Speciality.Id,
                 Specialities = _combosHelper.GetComboSpecialities(),
-                //Speciality = model.Speciality,
-                //SpecialityId = model.Speciality.Id,
                 ProfissionalLicence = model.ProfissionalLicence,
                 TIN = model.TIN,
                 Mobile = model.Mobile,
@@ -66,35 +62,7 @@ namespace VetClinicACorreia.Web.Helpers
             };
         }
 
-        //public Customer ToCustomer(CustomerViewModel model, string path, bool isNew)
-        //{
-        //    return new Customer
-        //    {
-        //        Id = isNew ? 0 : model.Id,
-        //        Name = model.Name,
-        //        TIN = model.TIN,
-        //        Mobile = model.Mobile,
-        //        Email = model.Email,
-        //        Remarks = model.Remarks,
-        //        User = model.User
-        //    };
-        //}
-
-        //public CustomerViewModel ToCustomerViewModel(Customer model)
-        //{
-        //    return new CustomerViewModel
-        //    {
-        //        Id = model.Id,
-        //        Name = model.Name,
-        //        TIN = model.TIN,
-        //        Mobile = model.Mobile,
-        //        Email = model.Email,
-        //        Remarks = model.Remarks,
-        //        User = model.User
-        //    };
-        //}
-
-
+        
 
 
         public Pet ToPet(PetViewModel model, string path, bool isNew)
@@ -140,7 +108,7 @@ namespace VetClinicACorreia.Web.Helpers
             Doctor doctor = _context.Doctors.Find(model.DoctorId);
             Customer customer = _context.Customers.Find(model.CustomerId);
             Pet pet = _context.Pets.Find(model.PetId);
-            Schedule schedule = _context.Schedules.Find(model.ScheduleId);
+            ServiceType serviceType = _context.ServiceTypes.Find(model.ServiveTypeId);
 
             return new App
             {
@@ -150,7 +118,7 @@ namespace VetClinicACorreia.Web.Helpers
                 Customer = customer,
                 User = model.User,
                 Pet = pet,
-                Schedule = schedule
+                serviceType = serviceType
             };
         }
 
@@ -159,20 +127,22 @@ namespace VetClinicACorreia.Web.Helpers
             return new AppViewModel
             {
                 Id = appointment.Id,
-                
                 AppDate = appointment.AppDate,
                 User = appointment.User,
+                Customer = appointment.Customer,
+                CustomerId = appointment.Customer.Id,
+                Customers = _combosHelper.GetComboCustomers(),
                 Doctor = appointment.Doctor,
                 DoctorId = appointment.Doctor.Id,
                 Doctors = _combosHelper.GetComboDoctors(),
                 Pet = appointment.Pet,
                 PetId = appointment.Pet.Id,
-                Customer = appointment.Customer,
-                CustomerId = appointment.Customer.Id,
-                ScheduleId = appointment.Schedule.Id,
-                Schedules = _combosHelper.GetComboSchedules(),
-                Customers = _combosHelper.GetComboCustomers(),
                 Pets = _combosHelper.GetComboPets(0),
+                serviceType = appointment.serviceType,
+                ServiveTypeId = appointment.serviceType.Id,
+                ServiceTypes = _combosHelper.GetComboServiceTypes(),
+                
+                
             };
         }
     }

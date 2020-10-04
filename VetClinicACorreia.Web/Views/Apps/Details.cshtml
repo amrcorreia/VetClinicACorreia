@@ -21,31 +21,37 @@
                 @Html.DisplayNameFor(model => model.User)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.User)
+                @Html.DisplayFor(model => model.User.FullName)
             </dd>
             <dt>
                 @Html.DisplayNameFor(model => model.Doctor)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.Doctor)
+                @Html.DisplayFor(model => model.Doctor.FullName)
             </dd>
             <dt>
                 @Html.DisplayNameFor(model => model.Customer)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.Customer)
+                @Html.DisplayFor(model => model.Customer.User.FullName)
             </dd>
             <dt>
                 @Html.DisplayNameFor(model => model.Pet)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.Pet)
+                @Html.DisplayFor(model => model.Pet.Name)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayNameFor(model => model.AppDate)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.User.FullName)
+                @Html.DisplayFor(model => model.AppDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.serviceType)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.serviceType.Name)
             </dd>
         </dl>
 

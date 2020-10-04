@@ -24,6 +24,11 @@ namespace VetClinicACorreia.Web.Data.Repositories
             _userHelper = userHelper;
         }
 
+        /// <summary>
+        /// Delete Vet Assistant by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task DeleteVetAssistantsync(int id)
         {
             var vetAssistant = await _context.VetAssistants.FindAsync(id);
@@ -36,17 +41,31 @@ namespace VetClinicACorreia.Web.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Get all Vet Assistants
+        /// </summary>
+        /// <returns></returns>
         public IQueryable GetAllWithUsers()
         {
             return _context.VetAssistants.Include(p => p.User).OrderBy(p => p.Id);
         }
 
+        /// <summary>
+        /// Get Vet Assistant by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<VetAssistant> GetVetAssistantsync(int id)
         {
             return await _context.VetAssistants.FindAsync(id);
                 //.Include(p => p.User).OrderBy(p => p.Id);
         }
 
+        /// <summary>
+        /// Get Vet Assistant by username
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public async Task<IQueryable<VetAssistant>> GetVetAssitantsAsync(string userName)
         {
             var user = await _userHelper.GetUserByEmailAsync(userName);
@@ -67,12 +86,17 @@ namespace VetClinicACorreia.Web.Data.Repositories
                 .OrderByDescending(o => o.User.FullName);
         }
 
+        /// <summary>
+        /// Get Vet Assistant by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<VetAssistant> GetVetAssistantByIdAsync(int id)
         {
-            return await _context.Set<VetAssistant>()
-                .AsNoTracking()
+            return await _context.VetAssistants
                 .Include(e => e.User)
                 .FirstOrDefaultAsync(e => e.Id == id);
+
         }
     }
 }

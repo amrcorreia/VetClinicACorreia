@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,125 +11,156 @@ using VetClinicACorreia.Web.Models;
 
 namespace VetClinicACorreia.Web.Controllers
 {
+    
     public class SpecialitiesController : Controller
     {
         private readonly ISpecialityRepository _specialityRepository;
+
 
         public SpecialitiesController(ISpecialityRepository specialityRepository)
         {
             _specialityRepository = specialityRepository;
         }
 
-    //    public IActionResult Index()
-    //    {
-    //        return View(_specialityRepository.GetSpecialities());
-    //    }
+        [Authorize(Roles = "Admin")]
+        public IActionResult Index()
+        {
+            return View(_specialityRepository.GetSpecialities());
+        }
 
-    //    public async Task<IActionResult> Details(int? id)
-    //    {
-    //        if (id == null)
-    //        {
-    //            return NotFound();
-    //        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-    //        var speciality = await _specialityRepository.GetSpecialitiesAsync(id.Value);
-    //        if (speciality == null)
-    //        {
-    //            return NotFound();
-    //        }
+            var speciality = await _specialityRepository.GetSpecialitiesAsync(id.Value);
+            if (speciality == null)
+            {
+                return NotFound();
+            }
 
-    //        return View(speciality);
-    //    }
+            return View(speciality);
+        }
 
+        [Authorize(Roles = "Admin")]
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-    //    public IActionResult Create()
-    //    {
-    //        return View();
-    //    }
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Speciality speciality)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _specialityRepository.CreateSpecialityAsync(speciality);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There are a record with the same name.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
 
+            }
+            return View(speciality);
+        }
 
-    //    [HttpPost]
-    //    [ValidateAntiForgeryToken]
-    //    public async Task<IActionResult> Create(Speciality speciality)
-    //    {
-    //        if (ModelState.IsValid)
-    //        {
-    //            await _specialityRepository.CreateAsync(speciality);
-    //            return RedirectToAction(nameof(Index));
-    //        }
-    //        return View(speciality);
-    //    }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-    //    public async Task<IActionResult> Edit(int? id)
-    //    {
-    //        if (id == null)
-    //        {
-    //            return NotFound();
-    //        }
+            var speciality = await _specialityRepository.GetSpecialitiesAsync(id.Value);
+            if (speciality == null)
+            {
+                return NotFound();
+            }
+            return View(speciality);
+        }
 
-    //        var speciality = await _specialityRepository.GetSpecialitiesAsync(id.Value);
-    //        if (speciality == null)
-    //        {
-    //            return NotFound();
-    //        }
-    //        return View(speciality);
-    //    }
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Speciality speciality)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _specialityRepository.UpdateSpecialityAsync(speciality);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
 
-    //    [HttpPost]
-    //    [ValidateAntiForgeryToken]
-    //    public async Task<IActionResult> Edit(Speciality speciality)
-    //    {
-    //        if (ModelState.IsValid)
-    //        {
-    //            await _specialityRepository.UpdateAsync(speciality);
-    //            //        return RedirectToAction(nameof(Index));
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "There are a record with the same name.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
 
-    //            //try
-    //            //{
-    //            //    await _specialityRepository.UpdateSpecialityAsync(speciality);
-    //            //}
-    //            //catch (DbUpdateConcurrencyException)
-    //            //{
-    //            //    if (!SpecialityExists(speciality.Id))
-    //            //    {
-    //            //        return NotFound();
-    //            //    }
-    //            //    else
-    //            //    {
-    //            //        throw;
-    //            //    }
-    //            //}
-    //            return RedirectToAction(nameof(Index));
-    //        }
-    //        return View(speciality);
-    //    }
+            }
+            return View(speciality);
+        }
 
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-    //    public async Task<IActionResult> Delete(int? id)
-    //    {
-    //        if (id == null)
-    //        {
-    //            return NotFound();
-    //        }
+            try
+            {
+                await _specialityRepository.DeleteSpecialityAsync(id.Value);
+            }
+            //catch (DbUpdateException dbUpdateException)
+            //{
+            //    if (dbUpdateException.InnerException.Message.Contains("delete"))
+            //    {
+            //        ModelState.AddModelError(string.Empty, "This record have doctors.");
+            //    }
+            //    else
+            //    {
+            //        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+            //    }
+            //}
+            catch (Exception exception)
+            {
+                ModelState.AddModelError(string.Empty, exception.Message);
+            }
 
-    //        var speciality = await _specialityRepository.GetSpecialitiesAsync(id.Value);
-    //        if (speciality == null)
-    //        {
-    //            return NotFound();
-    //        }
-
-    //        await _specialityRepository.DeleteSpecialityAsync(speciality);
-    //        return RedirectToAction(nameof(Index));
-    //    }
-
-    //    [HttpPost, ActionName("Delete")]
-    //    [ValidateAntiForgeryToken]
-    //    public async Task<IActionResult> DeleteConfirmed(int id)
-    //    {
-    //        var speciality = await _specialityRepository.GetSpecialitiesAsync(id);
-    //        await _specialityRepository.DeleteAsync(speciality);
-    //        return RedirectToAction(nameof(Index));
-    //    }
-
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

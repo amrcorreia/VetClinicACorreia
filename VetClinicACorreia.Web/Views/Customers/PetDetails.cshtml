@@ -1,0 +1,58 @@
+﻿@model VetClinicACorreia.Web.Data.Entities.Pet
+
+@{
+    ViewData["Title"] = "Details";
+}
+<section>
+    <div style="margin:auto; width:800px; height:300px">
+        <br />
+        <br />
+        <br />
+
+        <h4>Pet details</h4>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ImageUrl)
+            </dt>
+            @*<dd>
+                @if (!string.IsNullOrEmpty(model.ImageUrl))
+                {
+                    <img src="@Url.Content(model.ImageUrl)" alt="Image" class="rounded-circle" asp-append-version="true" style="width:150px;height:200px;max-height:100%;height:auto;" />}
+            </dd>*@
+            <dt>
+                @Html.DisplayNameFor(model => model.PetType)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.PetType.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Born)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Born.Date)
+            </dd>
+        </dl>
+
+        <div>
+            <a asp-action="EditPet" asp-route-id="@Model.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i> Customer</a>
+            <a asp-action="AddPet" asp-route-id="@Model.Id" class="btn btn-outline-info"><i class="fa fa-plus"></i> Pet</a>
+            <a asp-action="Index" class="btn btn-outline-success"><i class="fa fa-arrow-left"></i> Back</a>
+
+
+        </div>
+        
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+}

@@ -4,22 +4,27 @@
     ViewData["Title"] = "Details";
 }
 <section>
-    <div style="margin:auto; width:800px; height:300px">
+    <div style="margin:auto; width:1000px; height:300px">
         <br />
         <br />
         <br />
-
-        <h4>Customer details</h4>
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <ejs-tooltip id="target" cssClass="e-tooltip-css" opensOn="Hover" width="350" height="250" content=" <br/> <h6><strong>Name:</strong> @Model.User.FullName</h6>  <h6><br/><strong>Email:</strong> @Model.User.Email</h6>  <br/> <h6> <strong>TIN:</strong> @Model.User.TIN </h6> <br/> <h6> <strong>Phone number:</strong> @Model.User.PhoneNumber </h6>">
+            <e-content-template>
+                <h4><strong>Customer</strong> - @Html.DisplayFor(model => model.User.FullName)</h4>
+            </e-content-template>
+        </ejs-tooltip>
+
+
         <hr />
         <dl class="dl-horizontal">
-            <dt>
+            @*<dt>
                 @Html.DisplayNameFor(model => model.User.FullName)
             </dt>
             <dd>
                 @Html.DisplayFor(model => model.User.FullName)
-            </dd>
-            <dt>
+            </dd>*@
+            @*<dt>
                 @Html.DisplayNameFor(model => model.User.Email)
             </dt>
             <dd>
@@ -36,7 +41,7 @@
             </dt>
             <dd>
                 @Html.DisplayFor(model => model.User.TIN)
-            </dd>
+            </dd>*@
         </dl>
 
         <div>
@@ -47,7 +52,10 @@
 
         </div>
         <br />
-        <h4>Pets</h4>
+        @*<h4>Pets</h4>*@
+
+
+
         @if (Model.Pets == null || Model.Pets.Count == 0)
         {
             <h5>No Pets added yet</h5>
@@ -63,12 +71,12 @@
                         <th>
                             @Html.DisplayNameFor(model => model.Pets.FirstOrDefault().ImageUrl)
                         </th>
-                        @*<th>
-                                @Html.DisplayNameFor(model => model.Pets.FirstOrDefault().Chip)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Pets.FirstOrDefault().ChipDate)
-                            </th>*@
+                        <th>
+                            @Html.DisplayNameFor(model => model.Pets.FirstOrDefault().Born)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Pets.FirstOrDefault().PetType)
+                        </th>
                         <th></th>
                     </tr>
                 </thead>
@@ -77,24 +85,34 @@
                     {
                         <tr>
                             <td>
+
                                 @Html.DisplayFor(modelItem => item.Name)
                             </td>
                             <td>
+
                                 @if (!string.IsNullOrEmpty(item.ImageUrl))
                                 {
                                     <img src="@Url.Content(item.ImageUrl)" alt="Image" class="rounded-circle" asp-append-version="true" style="width:150px;height:200px;max-height:100%;height:auto;" />}
+                                else
+                                {
+                                    <img src="~/images/Doctors/noImage.png" class="rounded-circle" asp-append-version="true" style="width:80px;height:120px;max-height:100%;height:auto" />
+                                }
                             </td>
-                            @*<td>
-                                    @Html.DisplayFor(modelItem => item.Chip)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ChipDate)
-                                </td>*@
-                        <td id="@item.Id">
-                            <a asp-action="EditPet" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i></a>
-                            <a asp-action="DetailsPet" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="fas fa-list-ol"></i></a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
-                        </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Born)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PetType.Name)
+                            </td>
+                            <td id="@item.Id">
+
+
+                                <a asp-action="EditPet" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i></a>
+                                <a asp-action="PetDetails" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="fas fa-list-ol"></i></a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
+
+
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -142,3 +160,29 @@
         });
     </script>
 }
+
+<style>
+    #tooltipContent {
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 65px 10px;
+    }
+
+    .content {
+        display: inline-block;
+        width: 49%;
+    }
+
+    #tooltipFrame {
+        width: 332px;
+        height: 233px;
+    }
+
+    .content button {
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+</style>
+

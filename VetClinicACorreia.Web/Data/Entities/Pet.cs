@@ -25,21 +25,18 @@ namespace VetClinicACorreia.Web.Data.Entities
 
         public PetType PetType { get; set; }
 
-        [Display(Name = "Born")]
+        [Display(Name = "Born Date")]
         //[Required(ErrorMessage = "The field {0} is mandatory.")]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd H:mm}", ApplyFormatInEditMode = true)]
         public DateTime Born { get; set; }
 
         public string Remarks { get; set; }
 
         [Display(Name = "Born")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd H:mm}")]
         public DateTime BornLocal => this.Born.ToLocalTime();
 
-
-
-       
 
         //public string Chip { get; set; }
 

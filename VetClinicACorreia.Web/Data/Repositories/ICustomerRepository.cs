@@ -10,32 +10,18 @@ namespace VetClinicACorreia.Web.Data.Repositories
 {
     public interface ICustomerRepository : IGenericRepository<Customer>
     {
-  //      IQueryable GetAllWithUsers();
+		/// <summary>
+		/// get customer by id
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		Task<Customer> GetCustomerAsync(int id);
 
-		//IQueryable GetCustomersWithPets();
-
-
-		//Task<Customer> GetCustomersWithPetsAsync(int id);
-
-
-		//Task<Pet> GetPetAsync(int id);
-
-
-		//Task AddPetAsync(PetViewModel model);
-
-
-		//Task<int> UpdatePetAsync(Pet pet);
-
-
-		//Task<int> DeletePetAsync(Pet pet);
-
-
-		//IEnumerable<SelectListItem> GetComboCustomers();
-
-
-		//IEnumerable<SelectListItem> GetComboPets(int customerId);
-
-
-		//Task<Customer> GetCustomerAsync(Pet pet);
+		/// <summary>
+		/// delete customer by id
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		Task DeleteCustomerAsync(int id);
 	}
 }

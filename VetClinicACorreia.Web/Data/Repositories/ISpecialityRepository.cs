@@ -10,18 +10,38 @@ namespace VetClinicACorreia.Web.Data.Repositories
 {
     public interface ISpecialityRepository
     {
-		//IEnumerable<SelectListItem> GetComboSpecialities(); //que me dá todas as especialidades
+		/// <summary>
+		/// get all specialities
+		/// </summary>
+		/// <returns></returns>
+		IQueryable GetSpecialities();
 
-		//IQueryable GetSpecialities(); //dou-lhe um id e ele vai dar-me a epecialidade a que corresponde
+		/// <summary>
+		/// get speciality by id
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		Task<Speciality> GetSpecialitiesAsync(int id); //
 
-		//Task<Speciality> GetSpecialitiesAsync(int id); 
+		/// <summary>
+		/// add new speciality
+		/// </summary>
+		/// <param name="speciality"></param>
+		/// <returns></returns>
+		Task CreateSpecialityAsync(Speciality speciality);
 
-		//Task AddSpecialityAsync(SpecialityViewModel model); //adicionar cidades novas
+		/// <summary>
+		/// edit speciality
+		/// </summary>
+		/// <param name="speciality"></param>
+		/// <returns></returns>
+		Task<int> UpdateSpecialityAsync(Speciality speciality);
 
-
-		//Task<int> UpdateSpecialityAsync(Speciality speciality);
-
-
-		//Task<int> DeleteSpecialityAsync(Speciality speciality);
+		/// <summary>
+		/// delete speciality
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		Task DeleteSpecialityAsync(int id);
 	}
 }

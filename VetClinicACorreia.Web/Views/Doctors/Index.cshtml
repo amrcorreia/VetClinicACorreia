@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+ 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 <section>
     <div style="margin:auto; width:1400px; height:300px">
@@ -11,13 +11,13 @@
         <br />
         <br />
         <p>
-            <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus"></i> Doctor</a>
+            <a asp-action="Create" class="btn btn-outline-info"><i class="fa fa-plus"></i> Doctor</a>
         </p>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Doctors</h3>
+                        <h4 class="panel-title">Doctors</h4>
                         <br />
                     </div>
                     <div class="panel-boby">
@@ -45,64 +45,61 @@
                                     <th>
                                         @Html.DisplayNameFor(model => model.Remarks)
                                     </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.User)
-                                    </th>
+                                    @*<th>
+                                            @Html.DisplayNameFor(model => model.User)
+                                        </th>*@
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.FullName)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Speciality.Name)
-                                    </td>
-                                    <td>
-                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
-                                        {
-                                            <img src=" @Url.Content(item.ImageUrl)" alt="Image" class="rounded-circle" style="width:100px;height:150px;max-height:100%;height:auto" />}
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.FullName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Speciality.Name)
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                            {
+                                                <img src=" @Url.Content(item.ImageUrl)" alt="Image" class="rounded-circle" style="width:100px;height:150px;max-height:100%;height:auto" />}
 
-                                        else if (item.Id == 1)
-                                        {
-                                            <img src="~/images/Doctors/doctor1.jpg" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
-                                        }
-                                        else if (item.Id == 2)
-                                        {
-                                            <img src="~/images/Doctors/doctor2.jpg" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
-                                        }
-                                        else
-                                        {
-                                            <img src="~/images/Doctors/noImage.png" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
-                                        }
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.TIN)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Mobile)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.IsAvailable)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Remarks)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.User)
-                                    </td>
-                                    <td id="@item.Id">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i></a>
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="fas fa-list-ol"></i></a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
-                                    </td>
-                                </tr>
+                                            else
+                                            {
+                                                <img src="~/images/Doctors/noImage.png" class="rounded-circle" asp-append-version="true" style="width:100px;height:150px;max-height:100%;height:auto" />
+                                            }
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.TIN)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Mobile)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.IsAvailable)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Remarks)
+                                        </td>
+                                        @*<td>
+                                                @Html.DisplayFor(modelItem => item.User.FullName)
+                                            </td>*@
+                                        <td id="@item.Id">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning"><i class="fas fa-pen"></i></a>
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="fas fa-list-ol"></i></a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" id="btnDelete"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
                                 }
                             </tbody>
                         </table>
+                    </div>
+                    <div class="text-danger">
+                        <p>
+                            @ViewBag.Message
+                        </p>
                     </div>
                 </div>
             </div>

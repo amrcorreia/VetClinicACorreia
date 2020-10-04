@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VetClinicACorreia.Web.Data.Entities
 {
-    public class ServiceType
+    public class ServiceType : IEntity
     {
         public int Id { get; set; }
 
